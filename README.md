@@ -1,7 +1,8 @@
 WikipOff
 ========
 
-Offline wikipedia android browser
+Offline Wikipedia android browser.
+Not working yet.
 
 Introduction
 ------------
@@ -18,6 +19,16 @@ I am not:
 - a developer.
 
 Everything here has mostly been written by copy-pasting code from stackoverflow.com and bashing ctrl-space shortcut in Eclipse.
+
+
+Preparing Databases
+-------------------
+
+- download  `http://dumps.wikimedia.org/<lang>/lates/<lang>-latest-pages-articles.xml.bz2`
+- strip off stuff `bzcat <lang>-latest-pages-articles.xml.bz2 | python tools/WikiExtractor.py -l -s -o .`
+- extract text, compress it with lzma `ruby tools/ruby to_db.rb`
+- send the database to your device `adb push <lang>.sqlite /mnt/sdcard/fr.renzo.pocketwiki/databases/<lang>.sqlite`
+
 
 LICENSE
 --------
