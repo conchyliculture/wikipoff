@@ -1,4 +1,4 @@
-wikipoff
+WkipOff
 ========
 
 Offline wikipedia android browser
