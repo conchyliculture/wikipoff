@@ -5,10 +5,6 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_settings"/>
-        <item
-        android:id="@+id/action_set_database"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_set_database"/>
+        
 
 </menu>

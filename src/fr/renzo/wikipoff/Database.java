@@ -1,4 +1,4 @@
-package fr.renzo.pocketwiki;
+package fr.renzo.wikipoff;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -12,8 +12,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 
 
@@ -32,11 +34,17 @@ public class Database   {
 			} else {
 				Log.d(TAG,"Alors lisons "+this.seldatabasefile.getAbsolutePath());
 			}
-
-			SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(this.seldatabasefile.getAbsolutePath(), null, 0);
-		
-			this.sqlh=sqlh;
-			//openDatabase(this.selectedDb);
+			if (!databasefile.exists()) {
+				Log.d(TAG,"Unable to find '"+databasefile+"'");
+				Toast.makeText(context, "Unable to find '"+databasefile+"'", Toast.LENGTH_LONG).show();
+			}
+			try {
+				SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(this.seldatabasefile.getAbsolutePath(), null, 0);
+				this.sqlh=sqlh;
+			} catch (SQLiteCantOpenDatabaseException e) {
+    			Toast.makeText(context, "Problem opening database '"+databasefile+"'"+e.getMessage(), Toast.LENGTH_LONG).show();
+			} 
+			
 	}
 	
 	public String decodeBlob(byte[]coded) {
@@ -118,7 +126,6 @@ public class Database   {
 		if (c.moveToFirst()) {
             do {
                 String t = c.getString(0);
-                Log.d(TAG,"kikoo "+t);
                 res.add(t);
             } while (c.moveToNext());
         } else {

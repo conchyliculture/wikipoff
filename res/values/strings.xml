@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PocketWiki</string>
+    <string name="app_name">WikipOff</string>
     <string name="action_settings">Settings</string>
     <string name="action_set_database">Select Database</string>
     <string name="hello_world">Hello world!</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
-    <string name="config_key_appRootDirPath"></string>
-    <string name="config_key_selecteddbfile">seldb</string>
+    <string name="database_select_pref">dbpref</string>
     
-    <string name="appNamePath">fr.renzo.pocketwiki</string>
-    <string name="DBDir">fr.renzo.pocketwiki/databases</string>
+    
+    <string name="config_key_selecteddbfile">seldb</string>
+    <string name="config_key_use_mathjax">usermathjax</string>
+    <string name="config_key_available_database">config_key_available_database</string>
+    
+    <string name="DBDir">fr.renzo.wikipoff/databases</string>
     <string name="sql_table_name">articles</string>
-    <string name="sql_col_lastUsedDB">fr.renzo.pocketwiki</string>
+    
+    <string name="link_to_mathjax">http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML</string>
+    
+    <string name="pref_mathjax">Use MathJax</string>
+    <string name="pref_mathjax_summ">Use MathJax.js from the web to display math in articles</string>
+
 </resources>

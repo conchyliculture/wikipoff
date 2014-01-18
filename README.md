@@ -27,7 +27,7 @@ Preparing Databases
 - download  `http://dumps.wikimedia.org/<lang>/lates/<lang>-latest-pages-articles.xml.bz2`
 - strip off stuff `bzcat <lang>-latest-pages-articles.xml.bz2 | python tools/WikiExtractor.py -l -s -o .`
 - extract text, compress it with lzma `ruby tools/ruby to_db.rb`
-- send the database to your device `adb push <lang>.sqlite /mnt/sdcard/fr.renzo.pocketwiki/databases/<lang>.sqlite`
+- send the database to your device `adb push <lang>.sqlite /mnt/sdcard/fr.renzo.wikipoff/databases/<lang>.sqlite`
 
 
 LICENSE
