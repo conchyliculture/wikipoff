@@ -1,8 +1,9 @@
 package fr.renzo.wikipoff;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,10 +20,8 @@ public class ArticleActivity extends Activity {
 	private static final String TAG = "ArticleActivity";
 	private WikipOff app;
 	private WebView webview;
-	private String article;
+	private Article article;
 	private SharedPreferences config;
-	
-
 	  
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,49 +32,48 @@ public class ArticleActivity extends Activity {
 		setContentView(R.layout.activity_article);
 
 		this.webview= (WebView) findViewById(R.id.article_webview);
-		//this.webview.getSettings().setUseWideViewPort(true); // comportement desktop?
 	    this.webview.getSettings().setBuiltInZoomControls(true);
-	    //this.webview.getSettings().setDisplayZoomControls(true);
-	    //this.webview.getSettings().setLayoutAlgorithm(LayoutAlgorithm.NARROW_COLUMNS);
-	    // this.webview.getSettings().setLoadWithOverviewMode(true); // Load tout dezoomed
 	    this.webview.getSettings().setJavaScriptEnabled(true);
-	    
 		
-		Intent intent = getIntent();
-		String title = intent.getStringExtra("article_title");
-		this.article = app.dbHandler.getArticle(title);
-		showHTML(this.article,title);
+		Intent source_intent = getIntent();
+		int article_id = source_intent.getIntExtra("article_id",0);
+		this.article = app.dbHandler.getArticleFromId(article_id);
+		showHTML();		
 		
 		this.webview.setWebViewClient(new WebViewClient(){
-			
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				Log.d(TAG,"Overriding"+ url);
+				// Catch clicks on links
+//				Log.d(TAG,"Overriding"+ url);
+				String article_title=url;
 				if (url.startsWith("data:text/html")) {
 					
-				}else {
-					startArticleActivity(url);
+				}else if (url.startsWith("file:///")) {
+					article_title=url.substring(8);					
 				}
-		    	return true;
-		        
-		    }
-		});
-		setTitle(intent.getStringExtra("article_title"));
-	}
+				try {
+					startArticleActivity(URLDecoder.decode(article_title, "UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	return true;  
+		    } // method
+		});// setWebViewClient
+	} // onCreate
 	
 	private void startArticleActivity(String title) {
 		Intent myIntent = new Intent(this, ArticleActivity.class);
-		myIntent.putExtra("article_title", title); //Optional parameters
+		int newid = app.dbHandler.getArticleIdFromTitle(title);
+		myIntent.putExtra("article_id", newid);
 		startActivity(myIntent);
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_settings:
 			Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
 		    return true;
-		  
 		 default:
 		 return super.onOptionsItemSelected(item);
 		}
@@ -88,22 +86,32 @@ public class ArticleActivity extends Activity {
 		return true;
 	}
 	
-	private void showHTML(String html,String title) {
-		Log.d(TAG, html.substring(0,10));
+	private void showHTML() {
+//		Log.d(TAG, html.substring(0,10));
 		String data ="<html><head>\n";
-		data+="<meta name=\"viewport\" content=\"width=device-width,  user-scalable=yes\">\n";
-		data+="</head>";
-		if (config.getBoolean(s(R.string.config_key_use_mathjax),true)) {
-			data+="<script type=\"text/javascript\" src=\""+app.s(R.string.link_to_mathjax)+"\"></script>\n";
+		if (this.article != null) {
+			setTitle(this.article.title);
+			data+="<meta name=\"viewport\" content=\"width=device-width,  user-scalable=yes\">\n";
+			data+="</head>";
+			if (config.getBoolean(s(R.string.config_key_use_mathjax),true)) {
+				data+="<script type=\"text/javascript\" src=\""+s(R.string.link_to_mathjax)+"\"></script>\n";
+			}
+			data+="<body>";
+			data +="<h1>"+this.article.title+"</h1>";
+			data += this.article.text;
+					
+		} else {
+			data +="<h1>No article found : =( </h1>";
 		}
-		data+="<body>";
-		data +="<h1>"+title+"</h1>";
-		data = data+html+"</body></html>";
-		Log.d(TAG,data.substring(0,300));
+		data+="</body></html>";
+		int len=300;
+		if (data.length()<300)
+			len=data.length();
+		Log.d(TAG,data.substring(0,len));
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html; charset=UTF-8",null,null);
 	}
 
-	  private  String s(int i) {
-	    	return this.getString(i);
-	    }
+	private  String s(int i) {
+		return this.getString(i);
+	}
 }

@@ -9,7 +9,6 @@
         android:id="@+id/article_webview"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="ifContentScrolls"
-        android:text="@string/hello_world" />
+        android:overScrollMode="ifContentScrolls" />
 
 </LinearLayout>

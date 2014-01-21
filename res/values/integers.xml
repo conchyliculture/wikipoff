@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <!--  default values -->
+    <integer name="def_random_list_nb">10</integer>
+    
+</resources>

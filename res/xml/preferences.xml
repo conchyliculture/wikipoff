@@ -8,7 +8,7 @@
         android:defaultValue="true" />
         <ListPreference
         android:id="@+id/action_set_database"
-        android:key="@string/database_select_pref"
+        android:key="@string/pref_key_database_select"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_set_database"/>

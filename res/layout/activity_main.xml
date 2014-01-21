@@ -30,9 +30,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.33"
             android:ems="10"
-            android:completionThreshold="2"
-            android:hint="Search"
-            android:text="Argentine" >
+            android:completionThreshold="3"
+            android:hint="@string/searchhint"
+            android:singleLine="true"
+            android:text="" >
         </AutoCompleteTextView>
 
         <ImageButton
@@ -56,7 +57,7 @@
         android:id="@+id/buttonRandom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Random Article" />
+        android:text="@string/randomsearch" />
 
     <ListView
         android:id="@+id/randomView"
