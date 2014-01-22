@@ -34,3 +34,5 @@ libs/
 lint.xml
 proguard-project.txt
 
+*.pyc
+tools/lib
