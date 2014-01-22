@@ -6,6 +6,13 @@ This app is an offline [Wikipedia](https://www.wikipedia.org/) reader. It helps 
 # WARNING
 The whole app and DB building process is **heavily** french wiki oriented. Your mileage may vary.
 
+I am not:
+- an android developer
+- a Java developer
+- a developer.
+
+Everything here has mostly been written by copy-pasting code from stackoverflow.com and bashing ctrl-space shortcut in Eclipse.
+
 ## Getting Started
 1. git pull it
 2. compile
