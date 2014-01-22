@@ -14,13 +14,14 @@ I am not:
 Everything here has mostly been written by copy-pasting code from stackoverflow.com and bashing ctrl-space shortcut in Eclipse.
 
 ## Getting Started
-1. git pull it
-2. compile
-3. install apk
-4. `cd tool`
-5. `make.sh` and follow instructions
-6. `adb push wiki.sqlite /mnt/sdcard/fr.renzo.wikipoff/databases/
-7. enjoy
+1. `git clone https://github.com/conchyliculture/wikipoff.git`
+2. `cd wikipoff` 
+3. `export ANDROID_HOME=<path/to/sdk>; ant debug`
+4. install apk
+5. `cd tool`
+6. `make.sh` and follow instructions
+7. `adb push wiki.sqlite /mnt/sdcard/fr.renzo.wikipoff/databases/
+8. enjoy
 
 ## License
 GPLv2. Get it, hack it, compile it, share it.
