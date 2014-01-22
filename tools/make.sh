@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WIKIDUMPURL="http://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2"
-WIKIBBZ="frwiki-latest-pages-articles.xml.bz2"
+WIKIBZ="frwiki-latest-pages-articles.xml.bz2"
 WIKILANG="fr"
 
 LIBDIRR="`pwd`/lib/"
