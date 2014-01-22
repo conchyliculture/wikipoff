@@ -37,7 +37,11 @@ public class ArticleActivity extends Activity {
 		
 		Intent source_intent = getIntent();
 		int article_id = source_intent.getIntExtra("article_id",0);
-		this.article = app.dbHandler.getArticleFromId(article_id);
+		if (article_id==0){
+			this.article = app.dbHandler.getArticleFromTitle(source_intent.getStringExtra("article_title"));
+		} else {
+			this.article = app.dbHandler.getArticleFromId(article_id);
+		}
 		showHTML();		
 		
 		this.webview.setWebViewClient(new WebViewClient(){
