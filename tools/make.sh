@@ -33,4 +33,4 @@ if [ ! -d "$LIBDIRR" ]; then
     echo "you can : rm -rf $PYLZMA*"
 fi
 
-bzcat "$WIKIBZ" | $PYTHON WikiExctract.py -l -s -o . -L $WIKILANG -e
+bzcat "$WIKIBZ" | $PYTHON WikiExtractor.py -l -s -o . -L $WIKILANG -e
