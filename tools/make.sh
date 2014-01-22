@@ -15,8 +15,9 @@ export PYTHONPATH=$PYTHONPATH:$EGGDIR/../
 
 PYTHON="python"
 
-if [ ! -f frwiki-latest-pages-articles.xml ]; then
-    echo "download http://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2 first"
+if [ ! -f frwiki-latest-pages-articles.xml.bz2 ]; then
+    echo "download http://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2 first" 1>&2
+    exit 1
 fi
 
 if [ ! -d "$LIBDIRR" ]; then
@@ -32,4 +33,4 @@ if [ ! -d "$LIBDIRR" ]; then
     echo "you can : rm -rf $PYLZMA*"
 fi
 
-bzcat "$WIKIBZ" | $PYTHON WikiExctract.py -l -s -o . -L $WIKILANG -e
+bzcat "$WIKIBZ" | $PYTHON WikiExtractor.py -l -s -o . -L $WIKILANG -e

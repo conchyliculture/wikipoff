@@ -566,7 +566,7 @@ class OutputSqlite:
             self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?)",self.curr_values)
         self.conn.commit()
         self.curs.execute("CREATE INDEX tidx1 ON articles(title)")
-        self.curs.execute("CREATE INDEX tidx1 ON redirects(title_from)")
+        self.curs.execute("CREATE INDEX tidx2 ON redirects(title_from)")
         self.curs.close()
         self.conn.close()
         sys.exit(0)
