@@ -17,7 +17,7 @@ Everything here has mostly been written by copy-pasting code from stackoverflow.
 1. `git clone https://github.com/conchyliculture/wikipoff.git`
 2. `cd wikipoff` 
 3. `export ANDROID_HOME=<path/to/sdk>; ant debug`
-4. install apk
+4. `ant install bin/fr.renzo.wikipoff-debug.apk`
 5. `cd tool`
 6. `make.sh` and follow instructions
 7. `adb push wiki.sqlite /mnt/sdcard/fr.renzo.wikipoff/databases/
