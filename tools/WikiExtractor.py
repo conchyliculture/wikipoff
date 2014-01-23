@@ -565,8 +565,12 @@ class OutputSqlite:
             print type(self.curr_values)
             self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?)",self.curr_values)
         self.conn.commit()
+        print "Building indexes"
         self.curs.execute("CREATE INDEX tidx1 ON articles(title)")
         self.curs.execute("CREATE INDEX tidx2 ON redirects(title_from)")
+        self.curs.execute("CREATE VIRTUAL TABLE searchTitles USING fts3(_id, title);")
+        print "Building FTS table"
+        self.curs.execute("INSERT INTO searchTitles(_id,title) SELECT _id,title FROM articles;")
         self.curs.close()
         self.conn.close()
         sys.exit(0)
