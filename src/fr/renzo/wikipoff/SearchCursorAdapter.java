@@ -41,8 +41,10 @@ public class SearchCursorAdapter extends CursorAdapter {
 	
 	@Override
 	public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
+		if (constraint == null)
+			return null;
 		try {
-			return dbh.myRawQuery("select title from searchTitles WHERE title MATCH ? LIMIT 10", "*"+constraint+"*");
+			return dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? LIMIT 10", "*"+constraint+"*");
 		} catch (DatabaseException e) {
 			 e.alertUser(context);
 		}
