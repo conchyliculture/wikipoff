@@ -32,7 +32,7 @@ public class ArticleActivity extends Activity {
 		setContentView(R.layout.activity_article);
 
 		this.webview= (WebView) findViewById(R.id.article_webview);
-	    this.webview.getSettings().setBuiltInZoomControls(true);
+	    //this.webview.getSettings().setBuiltInZoomControls(true);
 	    this.webview.getSettings().setJavaScriptEnabled(true);
 		
 		Intent source_intent = getIntent();
