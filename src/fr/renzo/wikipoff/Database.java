@@ -181,9 +181,7 @@ public class Database   {
 		try {
 			c = myRawQuery("SELECT title, text FROM articles WHERE _id= "+article_id);
 			if (c.moveToFirst()) {
-	            String title=c.getString(0);
-	            String text = decodeBlob(c.getBlob(1));
-	            Article res = new Article(article_id,title,text);
+	            Article res = new Article(article_id,c.getString(0),c.getBlob(1));
 	            return res;           
 	        } else {
 	        	Log.d(TAG,"No article found for id '"+article_id+"'");
@@ -205,9 +203,7 @@ public class Database   {
 		try {
 			c = myRawQuery("SELECT _id,text FROM articles WHERE title= ?",title);
 			if (c.moveToFirst()) {
-				int article_id = c.getInt(0);
-	            String text = decodeBlob(c.getBlob(1));
-	            Article res = new Article(article_id,title,text);
+	            Article res = new Article(c.getInt(0),title,c.getBlob(1));
 	            return res;           
 	        } else {
 	        	if (!redirect)
@@ -264,45 +260,7 @@ public class Database   {
 		}
 		return "";
 	}
-	
-	public String decodeBlob(byte[]coded) {
-		ByteArrayOutputStream baos=new ByteArrayOutputStream();
-		try {
-			int propertiesSize = 5;
-			byte[] properties = new byte[propertiesSize];
-			
-			InputStream inStream = new ByteArrayInputStream(coded);
-			
-			OutputStream outStream = new BufferedOutputStream(baos,1024*1024);
-			SevenZip.Compression.LZMA.Decoder decoder = new SevenZip.Compression.LZMA.Decoder();
 
-			if (inStream.read(properties, 0, propertiesSize) != propertiesSize)
-				throw new Exception("input .lzma file is too short");
-			if (!decoder.SetDecoderProperties(properties))
-				throw new Exception("Incorrect stream properties");
-			long outSize = 0;
-			for (int i = 0; i < 8; i++)
-			{
-				int v = inStream.read();
-				if (v < 0)
-					throw new Exception("Can't read stream size");
-				outSize |= ((long)v) << (8 * i);
-			}
-		
-			if (!decoder.Code(inStream, outStream, outSize))
-				throw new Exception("Error in data stream");
-			outStream.flush();
-			outStream.close();
-			inStream.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return baos.toString();
-	}
 
 	public class DatabaseException extends Exception {
 
