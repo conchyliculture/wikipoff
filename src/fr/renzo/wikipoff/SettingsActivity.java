@@ -27,7 +27,7 @@ public class SettingsActivity extends PreferenceActivity {
         rootDbDir= new File(Environment.getExternalStorageDirectory(),s(R.string.DBDir));
         addPreferencesFromResource(R.xml.preferences);
         config = PreferenceManager.getDefaultSharedPreferences(this);
-		 ListPreference lp =(ListPreference) findPreference(context.getString(R.string.pref_key_database_select));
+		 ListPreference lp =(ListPreference) findPreference(s(R.string.pref_key_database_select));
 		 String[] avDB = getAvailableDb();
 		 if (avDB.length ==0) {
 			 String[] msg = {"Please install some .sqlite files in"+rootDbDir.getAbsolutePath()};
@@ -59,6 +59,6 @@ public class SettingsActivity extends PreferenceActivity {
 	}
 
 	private  String s(int i) {
-		return this.getString(i);
+		return context.getString(i);
 	}
 }
