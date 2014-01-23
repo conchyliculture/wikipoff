@@ -1,7 +1,5 @@
 package fr.renzo.wikipoff;
 
-
-
 import java.io.File;
 import java.util.List;
 
@@ -41,6 +39,10 @@ public class MainActivity extends Activity {
     private ListView randomlistview;
 	private Context context=this;
 	private SharedPreferences config;
+	private String seldb;
+	private ImageButton searchButton;
+	private ImageButton clearSearchButton;
+	private Button rndbutton;
 
 	public class SearchButtonClickListener implements OnClickListener{
 		@Override
@@ -49,48 +51,6 @@ public class MainActivity extends Activity {
 			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 			myIntent.putExtra("article_title", searchtextview.getText().toString()); 
 			MainActivity.this.startActivity(myIntent);
-			}
-		}
-	}
-	
-	public class SearchViewOnClickListener implements OnClickListener{
-		private Context context;
-
-		public SearchViewOnClickListener(Context context){
-			super();
-			this.context=context;
-		}
-		
-		@Override
-		public void onClick(View v) {
-			Cursor tc;
-			try {
-				tc = app.dbHandler.getAllTitles();
-				final SimpleCursorAdapter adapter = new SimpleCursorAdapter(this.context,android.R.layout.simple_list_item_1, tc, new String[] {"title"},new int[] {android.R.id.text1},0);
-				adapter.setFilterQueryProvider(new FilterQueryProvider() {
-					public Cursor runQuery(CharSequence constraint) {
-						Cursor c=null;
-						try {
-							if (constraint == null) {
-								c= app.dbHandler.getAllTitles();
-							} else {
-								String s = '%' + constraint.toString() + '%';
-								c= app.dbHandler.getAllTitles(s);
-							} 
-						} catch (DatabaseException e) {e.alertUser(context);}
-						return c;
-					}
-				 });
-
-				adapter.setCursorToStringConverter( new CursorToStringConverter() {
-				@Override
-					public CharSequence convertToString(Cursor cursor) {
-						return cursor.getString(1);
-					}
-				});
-				searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.dbHandler));
-			} catch (DatabaseException e) {
-				e.alertUser(context);
 			}
 		}
 	}
@@ -131,6 +91,12 @@ public class MainActivity extends Activity {
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
+		
+		searchButton = (ImageButton) findViewById(R.id.search_button);
+		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
+		randomlistview= (ListView) findViewById(R.id.randomView);
+		rndbutton = (Button) findViewById(R.id.buttonRandom);
+		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
 
 		try {
 			newDatabaseSelected();
@@ -144,33 +110,22 @@ public class MainActivity extends Activity {
 				}  //onCancel
 			}); //setOnCancelListener
 		}
-		
-		ImageButton searchButton = (ImageButton) findViewById(R.id.search_button);
-		searchButton.setOnClickListener(new SearchButtonClickListener());
-		
-		ImageButton clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
-		clearSearchButton.setOnClickListener(new ClearSearchClickListener());
-		
-		randomlistview= (ListView) findViewById(R.id.randomView);
-		randomlistview.setOnItemClickListener(new RandomSelectedClickListener());			
-		
-		Button rndbutton = (Button) findViewById(R.id.buttonRandom);
-		 
-		rndbutton.setOnClickListener(new ShowRandomClickListener());
-		
-		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
-		searchtextview.setOnClickListener(new SearchViewOnClickListener(context));
-	}
 
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		try {
-			newDatabaseSelected();
-		} catch (DatabaseException e) {
-			e.alertUser(context);
-			finish(); 
-		}
-	};
+		showViews();
+
+	}
+	
+	public void showViews(){
+		if (this.seldb != null) {
+			searchButton.setOnClickListener(new SearchButtonClickListener());
+			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
+			randomlistview.setOnItemClickListener(new RandomSelectedClickListener());			
+			rndbutton.setOnClickListener(new ShowRandomClickListener());
+			searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.dbHandler));
+
+			toggleAllViews(true);
+		} 
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,19 +148,29 @@ public class MainActivity extends Activity {
 	}
 	
 	private void newDatabaseSelected() throws DatabaseException {
-		String seldb = config.getString(s(R.string.config_key_selecteddbfile),"" );
-		if (seldb!="") {
-			File dbfile = new File(app.DBDir,seldb);
-				app.dbHandler = new Database(context,dbfile);
+		this.seldb = config.getString(s(R.string.config_key_selecteddbfile),null );
+		if (this.seldb!=null) {
+			File dbfile = new File(app.DBDir,this.seldb);
+			app.dbHandler = new Database(context,dbfile);
+			showViews();
+			toggleAllViews(true);
+			Log.d(TAG,"We selected db '"+seldb+"'");
 		} else {
 			Toast.makeText(getApplicationContext(), "You need to select a database", 
 					   Toast.LENGTH_LONG).show();
-			Intent i = new Intent(this, SettingsActivity.class);
-			startActivity(i);
-		}
-		Log.d(TAG,"We selected db '"+seldb+"'");
+			toggleAllViews(false);
+
+		}		
 	}
 	
+	private void toggleAllViews(boolean state) {
+		this.searchButton.setEnabled(state);
+		this.clearSearchButton.setEnabled(state);
+		this.randomlistview.setEnabled(state);
+		this.rndbutton.setEnabled(state);
+		this.searchtextview.setEnabled(state);
+	}
+
 	private  String s(int i) {
 	    return context.getString(i);
 	}

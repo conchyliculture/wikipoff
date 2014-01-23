@@ -25,12 +25,13 @@
     <!--  Text strings in GUI -->
     <!--       menus       -->
     <string name="pref_mathjax">Use MathJax</string>
-    <string name="pref_mathjax_summ">Use MathJax.js from the web to display math in articles</string>
+    <string name="pref_mathjax_summ">Download MathJax.js from the web to display math in articles</string>
     <string name="action_settings">Settings</string>
     <string name="action_set_database">Select Database</string>
     <!--       buttons     -->
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    
     <!--       views       -->
     <string name="randomsearch">Random Articles</string>
     <string name="searchhint">Search Article</string>

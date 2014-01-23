@@ -5,12 +5,10 @@
         android:key="@string/config_key_use_mathjax"
         android:title="@string/pref_mathjax"
         android:summary="@string/pref_mathjax_summ"
-        android:defaultValue="true" />
+        android:defaultValue="false" />
         <ListPreference
         android:id="@+id/action_set_database"
         android:key="@string/pref_key_database_select"
-        android:orderInCategory="100"
-        android:showAsAction="never"
         android:title="@string/action_set_database"/>
 
 </PreferenceScreen>

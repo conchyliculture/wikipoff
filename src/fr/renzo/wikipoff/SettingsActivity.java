@@ -39,9 +39,8 @@ public class SettingsActivity extends PreferenceActivity {
 			
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				String clicked= (String) ((ListPreference)preference).getEntry();
+				String clicked= (String) ((ListPreference)preference).getValue();
 				config.edit().putString(s(R.string.config_key_selecteddbfile),clicked ).commit();
-				Log.d(TAG,"putted '"+clicked+"' as '"+R.string.config_key_selecteddbfile+"'");
 				return true;
 			}
 		});	 
