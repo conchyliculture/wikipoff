@@ -40,20 +40,8 @@ public class MainActivity extends Activity {
 	private Context context=this;
 	private SharedPreferences config;
 	private String seldb;
-	private ImageButton searchButton;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
-
-	public class SearchButtonClickListener implements OnClickListener{
-		@Override
-		public void onClick(View v) {
-			if (searchtextview.getText().length()>0) {
-			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
-			myIntent.putExtra("article_title", searchtextview.getText().toString()); 
-			MainActivity.this.startActivity(myIntent);
-			}
-		}
-	}
 	
 	public class ClearSearchClickListener implements OnClickListener {
 		@Override
@@ -62,12 +50,22 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	public class RandomSelectedClickListener implements OnItemClickListener {
+	public class RandomItemClickListener implements OnItemClickListener {
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 			myIntent.putExtra("article_title",  (String) randomlistview.getItemAtPosition(position));
+			MainActivity.this.startActivity(myIntent);
+		}
+	}
+	public class SearchItemClickListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
+			Cursor c = (Cursor) parent.getItemAtPosition(position);
+			myIntent.putExtra("article_title", c.getString(1));
 			MainActivity.this.startActivity(myIntent);
 		}
 	}
@@ -81,7 +79,6 @@ public class MainActivity extends Activity {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rndtitles); 
 				randomlistview.setAdapter(adapter);
 			} catch (DatabaseException e) {e.alertUser(context);}
-			
 		}
 	}
 
@@ -92,7 +89,6 @@ public class MainActivity extends Activity {
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
 		
-		searchButton = (ImageButton) findViewById(R.id.search_button);
 		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
 		randomlistview= (ListView) findViewById(R.id.randomView);
 		rndbutton = (Button) findViewById(R.id.buttonRandom);
@@ -117,11 +113,11 @@ public class MainActivity extends Activity {
 	
 	public void showViews(){
 		if (this.seldb != null) {
-			searchButton.setOnClickListener(new SearchButtonClickListener());
 			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
-			randomlistview.setOnItemClickListener(new RandomSelectedClickListener());			
+			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
 			rndbutton.setOnClickListener(new ShowRandomClickListener());
 			searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.dbHandler));
+			searchtextview.setOnItemClickListener(new SearchItemClickListener());
 
 			toggleAllViews(true);
 		} 
@@ -164,7 +160,6 @@ public class MainActivity extends Activity {
 	}
 	
 	private void toggleAllViews(boolean state) {
-		this.searchButton.setEnabled(state);
 		this.clearSearchButton.setEnabled(state);
 		this.randomlistview.setEnabled(state);
 		this.rndbutton.setEnabled(state);

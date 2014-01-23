@@ -31,7 +31,6 @@ public class SearchCursorAdapter extends CursorAdapter {
 	public View newView(Context ctx, Cursor cursor, ViewGroup parent) {
 		inflater = LayoutInflater.from(ctx);
 	    final TextView view = (TextView) inflater.inflate(android.R.layout.simple_dropdown_item_1line, parent, false);
-	  //  String te = cursor.getString(1);
 	    return view;
 	}
 	@Override
@@ -44,7 +43,7 @@ public class SearchCursorAdapter extends CursorAdapter {
 		if (constraint == null)
 			return null;
 		try {
-			return dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? LIMIT 10", "*"+constraint+"*");
+			return dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? LIMIT 20", "*"+constraint+"*");
 		} catch (DatabaseException e) {
 			 e.alertUser(context);
 		}
