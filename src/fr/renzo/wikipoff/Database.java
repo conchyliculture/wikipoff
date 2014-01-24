@@ -1,12 +1,6 @@
 package fr.renzo.wikipoff;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,6 +193,7 @@ public class Database   {
 	}
 	
 	public Article getArticleFromTitle(String title, boolean redirect) {
+		//Log.d(TAG,"getarticlefromtitle '"+title+"' "+redirect);
 		Cursor c;
 		try {
 			c = myRawQuery("SELECT _id,text FROM articles WHERE title= ?",title);

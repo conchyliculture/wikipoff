@@ -43,7 +43,7 @@ public class SearchCursorAdapter extends CursorAdapter {
 		if (constraint == null)
 			return null;
 		try {
-			return dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? LIMIT 20", "*"+constraint+"*");
+			return dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY title", (String) constraint);
 		} catch (DatabaseException e) {
 			 e.alertUser(context);
 		}
