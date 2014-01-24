@@ -99,15 +99,6 @@ public class Database   {
 		cursor.close();
 		return res;
 	}
-
-	public Cursor getAllTitles() throws DatabaseException  {
-		return  myRawQuery("SELECT _id,title FROM articles ORDER BY title LIMIT 10 ");
-
-	}
-
-	public Cursor getAllTitles(String query) throws DatabaseException {
-		return myRawQuery("SELECT _id,title FROM articles WHERE title LIKE '%?%' ORDER BY title LIMIT 10",query);		
-	}
 	
 	public int getMaxId() throws DatabaseException{
 		Cursor c= myRawQuery("SELECT MAX(_id) FROM articles");
@@ -201,8 +192,12 @@ public class Database   {
 	            Article res = new Article(c.getInt(0),title,c.getBlob(1));
 	            return res;           
 	        } else {
-	        	if (!redirect)
-	        		return getArticleFromTitle(getRedirectArticleTitle(title),false);
+	        	if (!redirect) {
+	        		String redirtitle = getRedirectArticleTitle(title);
+	        		if (redirtitle!=null) {
+	        			return getArticleFromTitle(redirtitle,false);
+	        		}
+	        	}
 	        	Log.d(TAG,"No article found for title '"+title+"'");
 	        }
 			c.close();
@@ -227,7 +222,7 @@ public class Database   {
 	            return res;
 	        } else {
 	        	if (!redirect)
-	        		return getArticleIdFromTitle(getRedirectArticleTitle(title),false);
+	        		getArticleIdFromTitle(getRedirectArticleTitle(title),false);
 	        	Log.d(TAG,"No article found with title '"+title+"'");
 		        
 	        }

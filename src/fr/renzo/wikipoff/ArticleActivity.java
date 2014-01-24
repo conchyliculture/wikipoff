@@ -21,6 +21,7 @@ public class ArticleActivity extends Activity {
 	private WikipOff app;
 	private WebView webview;
 	private Article article;
+	private String wanted_title;
 	private SharedPreferences config;
 	  
 	@Override
@@ -36,12 +37,9 @@ public class ArticleActivity extends Activity {
 	    this.webview.getSettings().setJavaScriptEnabled(true);
 		
 		Intent source_intent = getIntent();
-		int article_id = source_intent.getIntExtra("article_id",0);
-		if (article_id==0){
-			this.article = app.dbHandler.getArticleFromTitle(source_intent.getStringExtra("article_title"));
-		} else {
-			this.article = app.dbHandler.getArticleFromId(article_id);
-		}
+		wanted_title = source_intent.getStringExtra("article_title");
+		this.article = app.dbHandler.getArticleFromTitle(wanted_title);
+				
 		showHTML();		
 		
 		this.webview.setWebViewClient(new WebViewClient(){
@@ -67,8 +65,7 @@ public class ArticleActivity extends Activity {
 	
 	private void startArticleActivity(String title) {
 		Intent myIntent = new Intent(this, ArticleActivity.class);
-		int newid = app.dbHandler.getArticleIdFromTitle(title);
-		myIntent.putExtra("article_id", newid);
+		myIntent.putExtra("article_title", title);
 		startActivity(myIntent);
 	}
 	
@@ -105,7 +102,7 @@ public class ArticleActivity extends Activity {
 			data += this.article.text;
 					
 		} else {
-			data +="<h1>No article found : =( </h1>";
+			data +="<h1>No article '"+wanted_title+"' found =( </h1>";
 		}
 		data+="</body></html>";
 		int len=300;
