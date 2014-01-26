@@ -50,9 +50,6 @@ public class Database   {
 		if (seldatabasefile.length()==0) {
 			return "Database file '"+p+"' is an empty file";
 		} 
-//		if (seldatabasefile.length()<=100000000) { //TODO
-//			return "Database file '"+p+"' is less than 100Mb. This is not normal";
-//		} 
 		return error;
 	}
 	
@@ -180,7 +177,11 @@ public class Database   {
 	}
 	
 	public Article getArticleFromTitle(String title) {
-		return getArticleFromTitle(title, true);
+		Article res = getArticleFromTitle(title, true);
+		if (res ==null) {
+			return getArticleFromTitle(title.substring(0,1).toUpperCase()+title.substring(1),true);
+		}
+		return res;
 	}
 	
 	public Article getArticleFromTitle(String title, boolean redirect) {
@@ -205,32 +206,6 @@ public class Database   {
 			e.alertUser(context);
 		}
 		return null;
-	}
-
-	public int getArticleIdFromTitle(String title) {
-		return getArticleIdFromTitle(title,true);
-	}
-
-	public int getArticleIdFromTitle(String title,boolean redirect) {
-		Cursor c;
-		String uppertitle=title.substring(0, 1).toUpperCase() + title.substring(1);
-		try {
-			c = myRawQuery("SELECT _id FROM articles WHERE title= ? or title =?", new String[]{title, uppertitle});
-			if (c.moveToFirst()) {
-	            int res=c.getInt(0);
-	            c.close();
-	            return res;
-	        } else {
-	        	if (!redirect)
-	        		getArticleIdFromTitle(getRedirectArticleTitle(title),false);
-	        	Log.d(TAG,"No article found with title '"+title+"'");
-		        
-	        }
-			c.close();
-		} catch (DatabaseException e) {
-			e.alertUser(context);
-		}
-		return 0;
 	}
 
 	public String getRedirectArticleTitle(String title) {
