@@ -192,7 +192,7 @@ public class Database   {
 	            Article res = new Article(c.getInt(0),title,c.getBlob(1));
 	            return res;           
 	        } else {
-	        	if (!redirect) {
+	        	if (redirect) {
 	        		String redirtitle = getRedirectArticleTitle(title);
 	        		if (redirtitle!=null) {
 	        			return getArticleFromTitle(redirtitle,false);
