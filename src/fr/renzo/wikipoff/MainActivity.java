@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -76,6 +77,7 @@ public class MainActivity extends Activity {
 	public class ShowRandomClickListener implements OnClickListener {
 		@Override
 		public void onClick(View arg0) {
+			hideSoftKeyboard();
 			List<String> rndtitles;
 			try {
 				rndtitles = app.dbHandler.getRandomTitles();
@@ -170,5 +172,11 @@ public class MainActivity extends Activity {
 
 	private  String s(int i) {
 	    return context.getString(i);
+	}
+	
+	
+	private void hideSoftKeyboard() {
+	    InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+	    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 	}
 }
