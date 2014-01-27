@@ -38,7 +38,7 @@ public class ArticleActivity extends Activity {
 		
 		Intent source_intent = getIntent();
 		wanted_title = source_intent.getStringExtra("article_title");
-		this.article = app.dbHandler.getArticleFromTitle(wanted_title);
+		this.article = app.dbHandler.searchArticleFromTitle(wanted_title);
 				
 		showHTML();		
 		

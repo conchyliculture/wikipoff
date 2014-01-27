@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 	
 	public class ShowRandomClickListener implements OnClickListener {
 		@Override
-		public void onClick(View arg0) {			
+		public void onClick(View arg0) {
 			List<String> rndtitles;
 			try {
 				rndtitles = app.dbHandler.getRandomTitles();

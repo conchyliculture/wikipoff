@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -176,36 +177,53 @@ public class Database   {
 		return null;
 	}
 	
-	public Article getArticleFromTitle(String title) {
-		Article res = getArticleFromTitle(title, true);
-		if (res ==null) {
-			return getArticleFromTitle(title.substring(0,1).toUpperCase()+title.substring(1),true);
-		}
+	
+	// This gets an existing article from an existing titne and won't try weird stuff
+	public Article getArticleFromTitle(String title) throws DatabaseException {
+		Cursor c;
+		Article res=null;
+		c = myRawQuery("SELECT _id,text FROM articles WHERE title= ?",title);
+		if (c.moveToFirst()) {
+            res = new Article(c.getInt(0),title,c.getBlob(1));
+        }
 		return res;
 	}
 	
-	public Article getArticleFromTitle(String title, boolean redirect) {
+	
+	public Article searchArticleFromTitle(String title) {
 		//Log.d(TAG,"getarticlefromtitle '"+title+"' "+redirect);
-		Cursor c;
+		
+		Article res=null;
 		try {
-			c = myRawQuery("SELECT _id,text FROM articles WHERE title= ?",title);
-			if (c.moveToFirst()) {
-	            Article res = new Article(c.getInt(0),title,c.getBlob(1));
-	            return res;           
-	        } else {
-	        	if (redirect) {
-	        		String redirtitle = getRedirectArticleTitle(title);
-	        		if (redirtitle!=null) {
-	        			return getArticleFromTitle(redirtitle,false);
-	        		}
-	        	}
-	        	Log.d(TAG,"No article found for title '"+title+"'");
-	        }
-			c.close();
+			// First, let's try the easy way
+			res=getArticleFromTitle(title);
+			if (res==null) {
+				// *sigh* maybe there's a redirect
+				String redirtitle = getRedirectArticleTitle(title);
+        		if (redirtitle!=null) {
+        			Log.d(TAG, "ah, we found a redirect => "+redirtitle);
+        			res=getArticleFromTitle(Html.fromHtml(redirtitle).toString());
+        		}
+        		if (res==null) {
+        			// WTF who failed that much?
+        			// Maybe just a case-sensitivity issue
+        			Cursor c;
+        			c=myRawQuery("SELECT title FROM searchTitles WHERE title match ?",title);
+					if (c.moveToFirst()) {
+						res= getArticleFromTitle(c.getString(0));
+					} else {
+						Log.d(TAG, "allezzzzz");
+					}
+					c.close();
+        		}
+    		} 
 		} catch (DatabaseException e) {
 			e.alertUser(context);
 		}
-		return null;
+		if (res==null) {
+			Log.d(TAG,"No article found for title '"+title+"'");
+		}
+		return res;
 	}
 
 	public String getRedirectArticleTitle(String title) {
@@ -223,7 +241,7 @@ public class Database   {
 		} catch (DatabaseException e) {
 			e.alertUser(context);
 		}
-		return "";
+		return null;
 	}
 
 
