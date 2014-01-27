@@ -33,7 +33,7 @@
             android:completionThreshold="3"
             android:hint="@string/searchhint"
             android:singleLine="true"
-            android:text="" >
+            android:text="Capreolinae" >
         </AutoCompleteTextView>
 
 

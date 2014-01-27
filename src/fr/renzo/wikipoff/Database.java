@@ -217,7 +217,7 @@ public class Database   {
 	            String res=c.getString(0);
 	            return res;
 	        } else {
-	        	Log.d(TAG,"No article found with title '"+title+"'");
+	        	Log.d(TAG,"No redirect found for title '"+title+"'");
 	        }
 			c.close();
 		} catch (DatabaseException e) {
