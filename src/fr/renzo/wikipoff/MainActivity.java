@@ -47,6 +47,12 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+	@Override
+	public void onRestart(){
+		super.onRestart();	
+		newDatabaseSelected();
+	}
+	
 	public class RandomItemClickListener implements OnItemClickListener {
 
 		@Override
@@ -91,18 +97,7 @@ public class MainActivity extends Activity {
 		rndbutton = (Button) findViewById(R.id.buttonRandom);
 		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
 
-		try {
-			newDatabaseSelected();
-		} catch (DatabaseException e) {
-			Builder b = e.alertUser(context);
-			b.setCancelable(false);
-			b.setOnCancelListener(new OnCancelListener() {
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					finish();
-				}  //onCancel
-			}); //setOnCancelListener
-		}
+		newDatabaseSelected();
 
 		showViews();
 
@@ -140,20 +135,30 @@ public class MainActivity extends Activity {
 		}
 	}
 	
-	private void newDatabaseSelected() throws DatabaseException {
-		this.seldb = config.getString(s(R.string.config_key_selecteddbfile),null );
-		if (this.seldb!=null) {
-			File dbfile = new File(app.DBDir,this.seldb);
-			app.dbHandler = new Database(context,dbfile);
-			showViews();
-			toggleAllViews(true);
-			Log.d(TAG,"We selected db '"+seldb+"'");
-		} else {
-			Toast.makeText(getApplicationContext(), "You need to select a database", 
-					   Toast.LENGTH_LONG).show();
-			toggleAllViews(false);
-
-		}		
+	private void newDatabaseSelected() {
+		try {
+			this.seldb = config.getString(s(R.string.config_key_selecteddbfile),null );
+			if (this.seldb!=null) {
+				File dbfile = new File(app.DBDir,this.seldb);
+				app.dbHandler = new Database(context,dbfile);
+				showViews();
+				toggleAllViews(true);
+				Log.d(TAG,"We selected db '"+seldb+"'");
+			} else {
+				Toast.makeText(getApplicationContext(), "You need to select a database", 
+						   Toast.LENGTH_LONG).show();
+				toggleAllViews(false);
+			}		
+		} catch (DatabaseException e) {
+			Builder b = e.alertUser(context);
+			b.setCancelable(false);
+			b.setOnCancelListener(new OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					finish();
+				}  //onCancel
+			}); //setOnCancelListener
+		} // try
 	}
 	
 	private void toggleAllViews(boolean state) {

@@ -8,7 +8,7 @@
         android:defaultValue="false" />
         <ListPreference
         android:id="@+id/action_set_database"
-        android:key="@string/pref_key_database_select"
+        android:key="@string/config_key_selecteddbfile"
         android:title="@string/action_set_database"/>
 
 </PreferenceScreen>

@@ -14,7 +14,7 @@
     -->
     
     <!-- preferences keys -->
-    <string name="pref_key_database_select">dbpref</string>
+    <!-- string name="pref_key_database_select">dbpref</string-->
     
     <!--  app settings keys -->
     <string name="config_key_selecteddbfile">seldb</string>
