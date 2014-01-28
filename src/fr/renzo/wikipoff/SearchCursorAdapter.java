@@ -2,6 +2,8 @@ package fr.renzo.wikipoff;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +45,11 @@ public class SearchCursorAdapter extends CursorAdapter {
 		if (constraint == null)
 			return null;
 		try {
-			return dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY title", (String) constraint);
+			Cursor c = dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY title", (String) constraint);
+			MatrixCursor extras = new MatrixCursor(new String[] { "_id", "title" });
+			extras.addRow(new String[] { "-1", (String) constraint });
+			Cursor[] cursors = { extras, c };
+			return (Cursor) new MergeCursor(cursors);
 		} catch (DatabaseException e) {
 			 e.alertUser(context);
 		}

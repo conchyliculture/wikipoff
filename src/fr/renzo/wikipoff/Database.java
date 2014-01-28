@@ -79,25 +79,6 @@ public class Database   {
 		return c;
 	}
 	
-	public String getArticleTitleFromId(int id) throws DatabaseException{
-		String res="";
-
-		Cursor cursor;
-		cursor = myRawQuery("SELECT title FROM articles WHERE _id = "+id);
-	
-		if (cursor.getCount()==1) {
-			cursor.moveToFirst();
-			res = cursor.getString(0);
-			
-		} else if (cursor.getCount()==0) {
-			res = "No article not found with id '"+id+"'";
-		} else {
-			res = "Found "+cursor.getCount()+" articles with id "+id+"!!!!";
-		}
-		cursor.close();
-		return res;
-	}
-	
 	public int getMaxId() throws DatabaseException{
 		Cursor c= myRawQuery("SELECT MAX(_id) FROM articles");
 		if (c.moveToFirst()){
@@ -155,34 +136,13 @@ public class Database   {
 		int nb=context.getResources().getInteger(R.integer.def_random_list_nb);
 		return getRandomTitles(nb);
 	}
-
-	public Article getArticleFromId(int article_id) {
-		if (article_id == 0) {
-			return null;
-		}
-		Cursor c;
-		try {
-			c = myRawQuery("SELECT title, text FROM articles WHERE _id= "+article_id);
-			if (c.moveToFirst()) {
-	            Article res = new Article(article_id,c.getString(0),c.getBlob(1));
-	            return res;           
-	        } else {
-	        	Log.d(TAG,"No article found for id '"+article_id+"'");
-	        }
-			c.close();
-		} catch (DatabaseException e) {
-			e.alertUser(context);
-		}
-		
-		return null;
-	}
-	
 	
 	// This gets an existing article from an existing titne and won't try weird stuff
 	public Article getArticleFromTitle(String title) throws DatabaseException {
 		Cursor c;
 		Article res=null;
-		c = myRawQuery("SELECT _id,text FROM articles WHERE title= ?",title);
+		String uppertitle=title.substring(0, 1).toUpperCase() + title.substring(1);
+		c = myRawQuery("SELECT _id,text FROM articles WHERE title= ? or title =?",new String[]{title,uppertitle});
 		if (c.moveToFirst()) {
             res = new Article(c.getInt(0),title,c.getBlob(1));
         }
