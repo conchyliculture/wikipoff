@@ -24,7 +24,7 @@ Everything here has mostly been written by copy-pasting code from stackoverflow.
 8. enjoy
 
 ## License
-GPLv2. Get it, hack it, compile it, share it.
+GPLv3. Get it, hack it, compile it, share it.
 
 ## Why
 I was used to have [WikiDroyd](https://play.google.com/store/apps/details?id=com.osa.android.wikidroyd) for winning arguments and to have something to read when I don't have my ebook reader.

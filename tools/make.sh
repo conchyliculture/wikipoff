@@ -1,5 +1,4 @@
 #!/bin/bash
-
 WIKIDUMPURL="http://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2"
 WIKIBZ="frwiki-latest-pages-articles.xml.bz2"
 WIKILANG="fr"
