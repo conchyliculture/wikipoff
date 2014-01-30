@@ -16,6 +16,18 @@
         android:focusable="true"
         android:focusableInTouchMode="true" >
 
+        <AutoCompleteTextView
+            android:id="@+id/searchField"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1.33"
+            android:completionThreshold="3"
+            android:ems="10"
+            android:hint="@string/searchhint"
+            android:singleLine="true"
+            android:text="" >
+
+        </AutoCompleteTextView>
         <ImageButton
             android:id="@+id/clear_search_button"
             android:src="@drawable/ic_action_delete"
@@ -23,19 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
              />
-
-        <AutoCompleteTextView
-            android:id="@+id/searchField"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.33"
-            android:ems="10"
-            android:completionThreshold="3"
-            android:hint="@string/searchhint"
-            android:singleLine="true"
-            android:text="" >
-        </AutoCompleteTextView>
-
 
     </LinearLayout>
     <View style="@style/Divider"
