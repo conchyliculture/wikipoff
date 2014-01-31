@@ -33,6 +33,8 @@ Unfortunately, the app isn't compatible with my [ParanoidAndroid](http://paranoi
 ## Donate
 I accept donations in beer, litecoins, angry and happy emails.
 * LTC: LYAaCu2SuPA36QDZrjvYCK8HcVHXxYVmfu
+* DOGE: DAQhTKVj592GrjbzYgogDyiBAHm6t6HpiQ 
+* BTC: 1BAaxTvK1jkoFKf7qWF2C6M4UX1y86MxaF
 * happy emails : wikipoff@renzokuken.eu
 * angry emails : devnull@renzokuken.eu
 
