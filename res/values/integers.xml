@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
 
 Copyright 2014 "Renzokuken" (pseudonym, first committer of WikipOff project) at
@@ -19,7 +20,7 @@ This file is part of WikipOff.
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<?xml version="1.0" encoding="utf-8"?>
+
 <resources>
         <!--  default values -->
     <integer name="def_random_list_nb">10</integer>
