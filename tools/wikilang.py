@@ -57,6 +57,7 @@ class SaveFRTemplates:
         self.fr_saveWeirdNumbersTemplatesRE=re.compile(r'{{((?:(exp|ind)\|[^}]+)|\d|e|1er|1re|2nd|2nde)}}', re.IGNORECASE)
         self.fr_saveCouleursTemplatesRE=re.compile(r'{{(rouge|bleu|vert|jaune|orange|gris|marron|rose)\|([^\|}]+)}}', re.IGNORECASE)
         self.fr_saveCodeTemplatesRE=re.compile(r'{{code\|([^\|}]+)}}', re.IGNORECASE)
+        self.fr_saveJaponaisTemplatesRE=re.compile(r'{{japonais\|([^\|]+)\|([^}]+)}}', re.IGNORECASE)
 
         self.fr_saveSieclesTempaltesRE=re.compile(ur'{{(?:([^|}]+(?:siècle|millénaire)[^|}]*)|(-?s2?-?(?:\|[^|}]+\|e)+))}}', re.IGNORECASE)
 
@@ -165,6 +166,11 @@ class SaveFRTemplates:
     def fr_saveCodeTemplates(self,text):
         return self.fr_saveCodeTemplatesRE.sub(r'<span style=\"font-family:monospace,Courier\">\1</span>',text)
 
+    def repljaponais(self,m):
+         return m.group(1)+" ("+m.group(2).replace("|",", ").replace("extra=","")+")"
+
+    def fr_saveJaponaisTemplates(self,text):
+        return re.sub(self.fr_saveJaponaisTemplatesRE,self.repljaponais,text)
 
     def fr_saveCouleursTemplates(self,text):
         return re.sub(self.fr_saveCouleursTemplatesRE,self.replcolors,text)
