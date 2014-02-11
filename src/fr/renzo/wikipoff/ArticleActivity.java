@@ -25,6 +25,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,8 +34,12 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
 
 
 public class ArticleActivity extends Activity {
@@ -44,7 +50,8 @@ public class ArticleActivity extends Activity {
 	private Article article;
 	private String wanted_title;
 	private SharedPreferences config;
-	  
+	private MenuItem searchItem;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,7 +90,7 @@ public class ArticleActivity extends Activity {
 		    } // method
 		});// setWebViewClient
 	} // onCreate
-	
+
 	private void startArticleActivity(String title) {
 		Intent myIntent = new Intent(this, ArticleActivity.class);
 		myIntent.putExtra("article_title", title);
@@ -104,7 +111,34 @@ public class ArticleActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.mainmenu, menu);
+		getMenuInflater().inflate(R.menu.articlemenu, menu);
+		searchItem = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+		        if (!hasFocus) {
+		            searchItem.collapseActionView();
+		        }
+				
+			}
+		} );
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
+			
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				webview.findNext(true);
+				return true;
+			}
+			
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				webview.findAll(newText);
+				return true;
+			}
+		});
+
 		return true;
 	}
 	
@@ -132,7 +166,7 @@ public class ArticleActivity extends Activity {
 		Log.d(TAG,data.substring(0,len));
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html; charset=UTF-8",null,null);
 	}
-
+	
 	private  String s(int i) {
 		return this.getString(i);
 	}

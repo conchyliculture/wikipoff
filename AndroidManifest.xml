@@ -51,7 +51,8 @@ This file is part of WikipOff.
             android:name="fr.renzo.wikipoff.ArticleActivity"
             android:label="articleactivity" >
         </activity>
-                <activity
+                
+        <activity
             android:name="fr.renzo.wikipoff.SettingsActivity"
             android:label="settingsactivity" >
         </activity>
