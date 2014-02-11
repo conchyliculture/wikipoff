@@ -27,12 +27,17 @@ This file is part of WikipOff.
         android:showAsAction="never"
         android:title="@string/action_settings"/>
     <item
+        android:id="@+id/action_webbrowser"
+        android:orderInCategory="200"
+        android:showAsAction="never"
+        android:title="@string/action_webbrowser"/>
+    <item
         android:id="@+id/menu_search"
         android:actionViewClass="android.widget.SearchView"
         android:orderInCategory="2000"
         android:icon="@drawable/ic_action_search"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="Search"/>
+        android:title="string/action_search"/>
         
 
 </menu>
