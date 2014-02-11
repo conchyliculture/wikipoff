@@ -25,8 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -106,7 +104,7 @@ public class ArticleActivity extends Activity {
 		    return true;
 		case R.id.action_webbrowser:
 	        Intent webIntent = new Intent( Intent.ACTION_VIEW );
-	        webIntent.setData( Uri.parse("http://fr.wikipedia.org/wiki/"+this.article.title) );
+	        webIntent.setData( Uri.parse("http://"+app.dbHandler.lang+".wikipedia.org/wiki/"+this.article.title) );
 	        this.startActivity( webIntent );
 		
 		 default:

@@ -41,6 +41,7 @@ public class Database   {
 	public File seldatabasefile;
 	private Context context;
 	public SQLiteDatabase sqlh;
+	public String lang;
 	private long maxId;
 	
 	public Database(Context context, File databasefile) throws DatabaseException {
@@ -58,8 +59,18 @@ public class Database   {
     			Toast.makeText(context, "Problem opening database '"+databasefile+"'"+e.getMessage(), Toast.LENGTH_LONG).show();
 			} 
 			this.maxId=getMaxId();
+			this.lang=getDbLang();
 	}
 	
+	private String getDbLang() throws DatabaseException {
+		Cursor c= myRawQuery("SELECT value FROM metadata WHERE key ='lang'");
+		if (c.moveToFirst()){
+			return c.getString(0);
+		}
+		c.close();
+		return "";
+	}
+
 	public String checkDatabaseHealth(){
 		String error="";
 		String p = seldatabasefile.getAbsolutePath();
