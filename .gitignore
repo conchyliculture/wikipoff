@@ -36,3 +36,4 @@ proguard-project.txt
 
 *.pyc
 *.sqlite
+tools/lib/python2.7
