@@ -13,6 +13,7 @@ PYLZMAARCH="pylzma-0.4.4.tar.gz"
 export PYTHONPATH=$PYTHONPATH:$EGGDIR/../
 
 PYTHON="python"
+# PYTHON PATH  = /home/renzokuken/workspace/wikipoff/tools/test/lib/:/home/renzokuken/workspace/wikipoff/tools/test/lib//python2.7/site-packages/pylzma-0.4.4-py2.7-linux-x86_64.egg
 
 if [ ! -f "$WIKIBZ" ]; then
     echo "download http://dumps.wikimedia.org/frwiki/latest/$WIKIBZ first" 1>&2
