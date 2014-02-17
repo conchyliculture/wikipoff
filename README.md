@@ -28,7 +28,9 @@ GPLv3. Get it, hack it, compile it, share it.
 
 ## Why
 I was used to have [WikiDroyd](https://play.google.com/store/apps/details?id=com.osa.android.wikidroyd) for winning arguments and to have something to read when I don't have my ebook reader.
-Unfortunately, the app isn't compatible with my [ParanoidAndroid](http://paranoidandroid.co/roms/mako/) ROM without Gapps. So I had to make my own.
+Unfortunately, the app isn't compatible with my [ParanoidAndroid](http://paranoidandroid.co/roms/mako/) ROM without Gapps. 
+There are tons of offline readers on Google Playstore, but not on F-Droid. I would have had to get the corresponding APK (some are 4Gb because they ship with the whole database...), test them, check if I could update my own DB, etc.... 
+It looked easier/funnier to make my own app.
 
 ## Donate
 I accept donations in beer, litecoins, angry and happy emails.
