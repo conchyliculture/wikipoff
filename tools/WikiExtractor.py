@@ -151,6 +151,7 @@ class OutputSqlite:
         self.curs.execute("CREATE VIRTUAL TABLE searchTitles USING fts3(_id, title);")
         print "Building FTS table"
         self.curs.execute("INSERT INTO searchTitles(_id,title) SELECT _id,title FROM articles;")
+        self.curs.commit()
         self.curs.close()
         self.conn.close()
         sys.exit(0)
