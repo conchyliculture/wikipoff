@@ -7,7 +7,7 @@ import wikifr
 ##
 # Whether to preseve links in output
 #
-keepLinks = False
+keepLinks = True
 
 # handle 'a' separetely, depending on keepLinks
 ignoredTags = [
@@ -22,7 +22,7 @@ prefix = None
 ##
 # Whether to transform sections into HTML
 #
-keepSections = False
+keepSections = True
 
 ##
 # Recognize only these namespaces
@@ -51,7 +51,7 @@ placeholder_tags = { 'code':'codice'}
 
 toomanybr=re.compile(r'<br/>(<br/>(?:<br/>)+)')
 
-def WikiDocumentSQL(out, title, text):
+def WikiDocumentSQL(out, article_id, title, text):
     text = clean(text)
     buff=""
     for line in compact(text):
@@ -59,10 +59,11 @@ def WikiDocumentSQL(out, title, text):
     buff = toomanybr.sub(r'<br/><br/>',buff) 
     buff=buff.replace("<math>","\\(")
     buff=buff.replace("</math>","\\)")
-    out.write(title, buff)
+    out.write( article_id, title, buff)
 ##
 # Normalize title
 def normalizeTitle(title):
+  global acceptedNamespaces
   # remove leading whitespace and underscores
   title = title.strip(' _')
   # replace sequences of whitespace and underscore chars with a single space
@@ -252,7 +253,7 @@ parametrizedLink = re.compile(r'\[\[.*?\]\]')
 
 # Function applied to wikiLinks
 def make_anchor_tag(match):
-    global keepLinks
+    global keepLinks, acceptedNamespaces
     link = match.group(1)
     colon = link.find(':')
     if colon > 0 and link[:colon] not in acceptedNamespaces:

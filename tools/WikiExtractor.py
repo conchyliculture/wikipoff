@@ -87,21 +87,22 @@ import datetime
 
 # Program version
 version = '2.5'
+dbversion = "0.0.0.1"
 
 ##### Main function ###########################################################
 
-#------------------------------------------------------------------------------
-
-
+inputsize = 0
 
 class OutputSqlite:
     def __init__(self, sqlite_file):
+        global dbversion
         self.sqlite_file=sqlite_file
         self.conn = sqlite3.connect(sqlite_file)
         self.conn.isolation_level="EXCLUSIVE"
         self.curs = self.conn.cursor()
         self.curs.execute("PRAGMA synchronous=NORMAL")
         self.curs.execute('''CREATE TABLE IF NOT EXISTS articles (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                                                                  article_id INTEGER UNIQUE NOT NULL,
                                                                   title VARCHAR(255) NOT NULL,
                                                                   text BLOB)''')
         self.curs.execute('''CREATE TABLE IF NOT EXISTS redirects (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -109,9 +110,10 @@ class OutputSqlite:
                                                                   title_to VARCHAR(255))''')
         self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key VARCHAR(255), value VARCHAR(255));''')
         self.set_gen_date(str(datetime.date.today()))
+        self.set_version(version)
         self.conn.commit()
         self.curr_values=[]
-        self.max_inserts=50
+        self.max_inserts=100
 
     def insert_redirect(self,from_,to_):
         self.curs.execute("INSERT INTO redirects VALUES (NULL,?,?)",(from_,to_))
@@ -122,23 +124,26 @@ class OutputSqlite:
     def set_gen_date(self,sdate):
         self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('date',?)",(sdate,))
 
+    def set_version(self,version):
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('version',?)",(version,))
+
     def reserve(self,size):
         pass
 
-    def write(self,title,text):
+    def write(self,article_id,title,text):
         if (len(self.curr_values)==self.max_inserts):
-            self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?)",self.curr_values)
+            self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?,?)",self.curr_values)
             self.conn.commit()
             self.curr_values=[]
         else:
             c=pylzma.compressfile(StringIO(text),dictionary=23)
             result=c.read(5)
             result+=struct.pack('<Q', len(text))
-            self.curr_values.append((title,buffer(result+c.read())))
+            self.curr_values.append((article_id,title,buffer(result+c.read())))
             
     def close(self):
         if (len(self.curr_values)>0):
-            self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?)",self.curr_values)
+            self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?,?)",self.curr_values)
         self.conn.commit()
         print "Building indexes"
         self.curs.execute("CREATE INDEX tidx1 ON articles(title)")
@@ -156,15 +161,21 @@ class OutputSqlite:
 tagRE = re.compile(r'(.*?)<(/?\w+)[^>]*>(?:([^<]*)(<.*?>)?)?')
 redirRE = re.compile(r'(?:.*?)<redirect title="(.+)"\s*/>')
 
+eta_every = 100
+
 def process_data(input, output):
     global prefix
-
+    st = datetime.datetime.now() 
+    i=0
     page = []
     id = None
     inText = False
     redirect = False
     redir_title = ""
+    article_id=None
+    past_rev = False
     for line in input:
+#        print input.tell()
         line = line.decode('utf-8')
         tag = ''
         if '<' in line:
@@ -174,8 +185,12 @@ def process_data(input, output):
         if tag == 'page':
             page = []
             redirect = False
+        elif tag == "regision":
+            past_rev = True
         elif tag == 'id' and not id:
             id = m.group(3)
+            if not past_rev:
+                article_id = id 
         elif tag == 'title':
             title = m.group(3)
         elif tag == 'redirect':
@@ -197,14 +212,20 @@ def process_data(input, output):
             page.append(line)
         elif tag == '/page':
             colon = title.find(':')
-            if (colon < 0 or title[:colon] in acceptedNamespaces): 
+            past_rev=False
+            if (colon < 0 or title[:colon] in wikitools.acceptedNamespaces): 
                 if redirect:
                     output.insert_redirect(title,redir_title)
-
                 else:
-                    print id, title.encode('utf-8')
+                #    print id, title.encode('utf-8')
                     sys.stdout.flush()
-                    wikitools.WikiDocumentSQL(output, title, ''.join(page))
+                    wikitools.WikiDocumentSQL(output, article_id, title, ''.join(page))
+                    i+=1
+                    if i%eta_every == 0:
+                        percent =  (100.0 * input.tell()) / inputsize
+                        delta=((100-percent)*(datetime.datetime.now()-st).total_seconds())/percent
+                        status_s= "%.02f%% ETA=%s\r"%(percent, str(datetime.timedelta(seconds=delta)))
+                        print status_s,
             id = None
             page = []
         elif tag == 'base':
@@ -225,12 +246,12 @@ def show_usage(script_name):
     print >> sys.stderr, 'Usage: %s [options]' % script_name
 
 def main():
-    global keepSections, prefix, acceptedNamespaces
+    global prefix,inputsize
     script_name = os.path.basename(sys.argv[0])
 
     try:
-        long_opts = ['help', 'basename=', 'links', 'ns=', 'sections', 'output=', 'version',]
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 'hln:o:B:svL:', long_opts)
+        long_opts = ['help', 'basename=', 'ns=', "db=", "xml="]
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 'hn:B:L:x:d:', long_opts)
     except getopt.GetoptError:
         show_usage(script_name)
         sys.exit(1)
@@ -244,20 +265,16 @@ def main():
             sys.exit()
         elif opt in ('-L'):
             wikitools.lang = arg
-        elif opt in ('-l', '--links'):
-            wikitools.keepLinks = True
         elif opt in ('-s', '--sections'):
-            keepSections = True
+            wikitools.keepSections = True
         elif opt in ('-B', '--base'):
             prefix = arg
         elif opt in ('-n', '--ns'):
-                acceptedNamespaces = set(arg.split(','))
-        elif opt in ('-o', '--output'):
-                output_file = arg
-        elif opt in ('-v', '--version'):
-                print 'WikiExtractor.py version:', version
-                sys.exit(0)
-
+            wikitools.acceptedNamespaces = set(arg.split(','))
+        elif opt in ('-d', '--db'):
+            output_file = arg
+        elif opt in ('-x','--xml'):
+            input_file = arg
 
     if len(args) > 0:
         show_usage(script_name)
@@ -266,9 +283,13 @@ def main():
     if not wikitools.keepLinks:
         wikitools.ignoreTag('a')
 
+    inputsize = os.path.getsize(input_file)
+    input = open(input_file,"r")
+
     worker = OutputSqlite(output_file)
 
-    process_data(sys.stdin, worker)
+    print "Converting xml dump %s to database %s. This may take eons..."%(input_file,output_file) 
+    process_data(input, worker)
     worker.close()
 
 if __name__ == '__main__':
