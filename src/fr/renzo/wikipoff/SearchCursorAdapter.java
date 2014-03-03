@@ -66,7 +66,7 @@ public class SearchCursorAdapter extends CursorAdapter {
 		if (constraint == null)
 			return null;
 		try {
-			Cursor c = dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY title", (String) constraint);
+			Cursor c = dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY length(title), title limit 500 ", (String) constraint);
 			MatrixCursor extras = new MatrixCursor(new String[] { "_id", "title" });
 			extras.addRow(new String[] { "-1", (String) constraint });
 			Cursor[] cursors = { extras, c };
