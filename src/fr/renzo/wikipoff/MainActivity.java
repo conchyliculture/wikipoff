@@ -35,6 +35,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,8 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -84,14 +87,25 @@ public class MainActivity extends Activity {
 			MainActivity.this.startActivity(myIntent);
 		}
 	}
-	public class SearchItemClickListener implements OnItemClickListener {
+	public class SearchClickListener implements OnItemClickListener, OnEditorActionListener {
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 			Cursor c = (Cursor) parent.getItemAtPosition(position);
-			myIntent.putExtra("article_title", c.getString(1));
+			gogogo(c.getString(1));
+		}
+		
+		private void gogogo(CharSequence q){
+			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
+			myIntent.putExtra("article_title",q );
+			Log.d(TAG,"coincoin "+q.getClass());
 			MainActivity.this.startActivity(myIntent);
+		}
+
+		@Override
+		public boolean onEditorAction(TextView view, int arg1, KeyEvent arg2) {
+			gogogo(view.getText().toString());
+			return true;
 		}
 	}
 	
@@ -132,7 +146,8 @@ public class MainActivity extends Activity {
 			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
 			rndbutton.setOnClickListener(new ShowRandomClickListener());
 			searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.dbHandler));
-			searchtextview.setOnItemClickListener(new SearchItemClickListener());
+			searchtextview.setOnItemClickListener(new SearchClickListener());
+			searchtextview.setOnEditorActionListener(new SearchClickListener());
 
 			toggleAllViews(true);
 		} 
