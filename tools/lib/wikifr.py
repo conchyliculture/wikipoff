@@ -30,7 +30,7 @@ class SaveFRTemplates:
         # Templates that allow inclusion of }} in parameters will fail....
         # We should use the dropNested thing  maybe?
         # TODO
-        self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(\d+)\|(\w+)\|(\d+)}}', re.IGNORECASE)
+        self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(\d+)\|(\w+)\|(\d+)(?:\|[^}]+)}}', re.IGNORECASE)
         self.fr_saveLangTemplatesRE=re.compile(r'{{lang\|(\w+)\|([^}]+)}}', re.IGNORECASE)
         self.fr_saveUnitsTemplatesRE=re.compile(r'{{unit.\|(\d+)\|([^}\|]+)(?:\|(\d+))?}}', re.IGNORECASE)
         self.fr_saveRefIncTemplatesRE=re.compile(ur'{{Référence [^\|]+\|([^\|]+)}}',re.IGNORECASE) # incomplete/insuff/a confirmer/nécessaire
@@ -73,6 +73,7 @@ class SaveFRTemplates:
         text=self.fr_saveUnitsTemplates(text)
         text=self.fr_saveCouleursTemplates(text)
         text=self.fr_saveRefIncTemplates(text)
+        text=self.fr_saveDateTemplates(text)
         text=self.fr_saveQuiQuoiTemplates(text)
         text=self.fr_saveCodeTemplates(text)
         text=self.fr_saveCitationTemplate(text)

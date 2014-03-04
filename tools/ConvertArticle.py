@@ -7,10 +7,10 @@ import re
 import os
 import getopt
 import wikitools
+import wikiglobals
 import sqlite3
 
 article_ids = []
-
 
 class OutputText:
     def __init__(self):
@@ -19,8 +19,8 @@ class OutputText:
     def reserve(self,size):
         pass
 
-    def write(self,title,text):
-        print(title+" : ")
+    def write(self,artid,title,text):
+        print(title+"/"+artid+" : ")
         print(text.decode("utf-8"))
             
     def close(self):
@@ -91,9 +91,9 @@ def process_data(input, output):
             page.append(line)
         elif tag == '/page':
             colon = title.find(':')
-            if (colon < 0 or title[:colon] in acceptedNamespaces): 
+            if (colon < 0 or title[:colon] in wikiglobals.acceptedNamespaces): 
                 sys.stdout.flush()
-                wikitools.WikiDocumentSQL(output, title, ''.join(page))
+                wikitools.WikiDocumentSQL(output, id, title, ''.join(page))
             id = None
             page = []
             return
@@ -102,20 +102,20 @@ def process_data(input, output):
             # /mediawiki/siteinfo/base
             base = m.group(3)
             prefix = base[:base.rfind("/")]
-            if wikitools.lang =="":
-                wikitools.lang=base.split(".wikipedia.org")[0].split("/")[-1]
+            if wikiglobals.lang =="":
+                wikiglobals.lang=base.split(".wikipedia.org")[0].split("/")[-1]
 
 ### CL INTERFACE ############################################################
 
 
 def main():
-    global keepSections, prefix, acceptedNamespaces,article_ids
+    global prefix, article_ids
     script_name = os.path.basename(sys.argv[0])
 
     titles=[]
     try:
-        long_opts = ['id=',"db=","--dumpfile=","--title="]
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 'i:d:f:t:', long_opts)
+        long_opts = ['id=',"db=","--dumpfile=","--title=","--orig","--lang"]
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 'i:d:f:t:rl:', long_opts)
     except getopt.GetoptError:
         show_usage(script_name)
         sys.exit(1)
@@ -129,6 +129,10 @@ def main():
             xmlfile=arg
         if opt in ('-t','--title'):
             titles=arg.split(",")
+        if opt in ('-r',"--orig"):
+            wikiglobals.convert=False
+        if opt in ('-l',"--lang"):
+            wikiglobals.lang=arg
 
     if article_ids==[] and titles==[]:
         print "Need at least one article id or one title"
@@ -138,7 +142,7 @@ def main():
         show_usage(script_name)
         sys.exit(4)
 
-    if not wikitools.keepLinks:
+    if not wikiglobals.keepLinks:
         wikitools.ignoreTag('a')
 
     conn = sqlite3.connect(sqlite_file)

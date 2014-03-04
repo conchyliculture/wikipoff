@@ -3,67 +3,28 @@
 import re
 import sys
 import wikifr
+import wikiglobals
+from htmlentitydefs import name2codepoint
 
-##
-# Whether to preseve links in output
-#
-keepLinks = True
-
-# handle 'a' separetely, depending on keepLinks
-ignoredTags = [
-         'big', 'blockquote', 'center', 'cite', 'div', 'em',
-        'font', 'h1', 'h2', 'h3', 'h4', 'hiero',  'kbd', 'nowiki',
-        's', 'tt', 'var',
-]
-
-# This is obtained from the dump itself
-prefix = None
-
-##
-# Whether to transform sections into HTML
-#
-keepSections = True
-
-##
-# Recognize only these namespaces
-# w: Internal links to the Wikipedia
-# wiktionary: Wiki dictionry
-# wikt: shortcut for Wikctionry
-#
-acceptedNamespaces = set(['w', 'wiktionary', 'wikt'])
-
-##
-# Drop these elements from article text
-#
-discardElements = set([
-        'gallery', 'timeline', 'noinclude', 'pre',
-        'table', 'tr', 'td', 'th', 'caption',
-        'form', 'input', 'select', 'option', 'textarea',
-        'ul', 'li', 'ol', 'dl', 'dt', 'dd', 'menu', 'dir',
-        'ref', 'references', 'img', 'imagemap', 'source'
-        ])
-
-selfClosingTags = [ 'br', 'hr', 'nobr', 'ref', 'references' ]
-
-lang=""
-
-placeholder_tags = { 'code':'codice'}
 
 toomanybr=re.compile(r'<br/>(<br/>(?:<br/>)+)')
 
 def WikiDocumentSQL(out, article_id, title, text):
-    text = clean(text)
     buff=""
-    for line in compact(text):
-        buff += line.encode('utf-8')
-    buff = toomanybr.sub(r'<br/><br/>',buff) 
-    buff=buff.replace("<math>","\\(")
-    buff=buff.replace("</math>","\\)")
-    out.write( article_id, title, buff)
+    if wikiglobals.convert:
+        text = clean(text)
+        for line in compact(text):
+            buff += line.encode('utf-8')
+        buff = toomanybr.sub(r'<br/><br/>',buff) 
+        buff=buff.replace("<math>","\\(")
+        buff=buff.replace("</math>","\\)")
+    else:
+        buff=text.encode('utf-8')
+
+    out.write(article_id, title, buff)
 ##
 # Normalize title
 def normalizeTitle(title):
-  global acceptedNamespaces
   # remove leading whitespace and underscores
   title = title.strip(' _')
   # replace sequences of whitespace and underscore chars with a single space
@@ -79,7 +40,7 @@ def normalizeTitle(title):
       rest = m.group(3)
 
       ns = prefix.capitalize()
-      if ns in acceptedNamespaces:
+      if ns in wikiglobals.acceptedNamespaces:
           # If the prefix designates a known namespace, then it might be
           # followed by optional whitespace that should be removed to get
           # the canonical page name
@@ -127,7 +88,7 @@ comment = re.compile(r'<!--.*?-->', re.DOTALL)
 
 # Match elements to ignore
 discard_element_patterns = []
-for tag in discardElements:
+for tag in wikiglobals.discardElements:
     pattern = re.compile(r'<\s*%s\b[^>]*>.*?<\s*/\s*%s>' % (tag, tag), re.DOTALL | re.IGNORECASE)
     discard_element_patterns.append(pattern)
 
@@ -138,18 +99,18 @@ def ignoreTag(tag):
     right = re.compile(r'<\s*/\s*%s>' % tag, re.IGNORECASE)
     ignored_tag_patterns.append((left, right))
 
-for tag in ignoredTags:
+for tag in wikiglobals.ignoredTags:
     ignoreTag(tag)
 
 # Match selfClosing HTML tags
 selfClosing_tag_patterns = []
-for tag in selfClosingTags:
+for tag in wikiglobals.selfClosingTags:
     pattern = re.compile(r'<\s*%s\b[^/]*/\s*>' % tag, re.DOTALL | re.IGNORECASE)
     selfClosing_tag_patterns.append(pattern)
 
 # Match HTML placeholder tags
 placeholder_tag_patterns = []
-for tag, repl in placeholder_tags.items():
+for tag, repl in wikiglobals.placeholder_tags.items():
     pattern = re.compile(r'<\s*%s(\s*| [^>]+?)>.*?<\s*/\s*%s\s*>' % (tag, tag), re.DOTALL | re.IGNORECASE)
     placeholder_tag_patterns.append((pattern, repl))
 
@@ -253,25 +214,23 @@ parametrizedLink = re.compile(r'\[\[.*?\]\]')
 
 # Function applied to wikiLinks
 def make_anchor_tag(match):
-    global keepLinks, acceptedNamespaces
     link = match.group(1)
     colon = link.find(':')
-    if colon > 0 and link[:colon] not in acceptedNamespaces:
+    if colon > 0 and link[:colon] not in wikiglobals.acceptedNamespaces:
         return ''
     trail = match.group(3)
     anchor = match.group(2)
     if not anchor:
         anchor = link
     anchor += trail
-    if keepLinks:
+    if wikiglobals.keepLinks:
         return '<a href="%s">%s</a>' % (link, anchor)
     else:
         return anchor
 
 def clean(text):
-    global lang
 
-    if lang=="fr":
+    if wikiglobals.lang=="fr":
         save=wikifr.SaveFRTemplates()
         text=save.save(text)
 
@@ -378,7 +337,7 @@ def compact(text):
         if m:
             title = m.group(2)
             lev = len(m.group(1))
-            if keepSections:
+            if wikiglobals.keepSections:
                 page.append("<h%d>%s</h%d>" % (lev, title, lev))
             else:
                 if title and title[-1] not in '!?':
@@ -399,7 +358,7 @@ def compact(text):
                 page.append(title)
         # handle lists
         elif line[0] in '*#:;':
-            if keepSections:
+            if wikiglobals.keepSections:
                 page.append("<li>%s</li>" % line[1:])
             else:
                 continue

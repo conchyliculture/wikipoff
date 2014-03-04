@@ -65,8 +65,8 @@ import bz2
 import os.path
 import base64
 import sqlite3
-from htmlentitydefs import name2codepoint
 import wikitools
+import wikiglobals
 import pylzma
 import datetime
 
@@ -151,8 +151,8 @@ class OutputSqlite:
         self.curs.execute("CREATE VIRTUAL TABLE searchTitles USING fts3(_id, title);")
         print "Building FTS table"
         self.curs.execute("INSERT INTO searchTitles(_id,title) SELECT _id,title FROM articles;")
-        self.curs.commit()
         self.curs.close()
+        self.conn.commit()
         self.conn.close()
         sys.exit(0)
 
@@ -214,7 +214,7 @@ def process_data(input, output):
         elif tag == '/page':
             colon = title.find(':')
             past_rev=False
-            if (colon < 0 or title[:colon] in wikitools.acceptedNamespaces): 
+            if (colon < 0 or title[:colon] in wikiglobals.acceptedNamespaces): 
                 if redirect:
                     output.insert_redirect(title,redir_title)
                 else:
@@ -234,9 +234,9 @@ def process_data(input, output):
             # /mediawiki/siteinfo/base
             base = m.group(3)
             prefix = base[:base.rfind("/")]
-            if wikitools.lang =="":
-                wikitools.lang=base.split(".wikipedia.org")[0].split("/")[-1]
-                output.set_lang(wikitools.lang)
+            if wikiglobals.lang =="":
+                wikiglobals.lang=base.split(".wikipedia.org")[0].split("/")[-1]
+                output.set_lang(wikiglobals.lang)
 
 ### CL INTERFACE ############################################################
 
@@ -265,13 +265,13 @@ def main():
             show_help()
             sys.exit()
         elif opt in ('-L'):
-            wikitools.lang = arg
+            wikiglobals.lang = arg
         elif opt in ('-s', '--sections'):
-            wikitools.keepSections = True
+            wikiglobals.keepSections = True
         elif opt in ('-B', '--base'):
             prefix = arg
         elif opt in ('-n', '--ns'):
-            wikitools.acceptedNamespaces = set(arg.split(','))
+            wikiglobals.acceptedNamespaces = set(arg.split(','))
         elif opt in ('-d', '--db'):
             output_file = arg
         elif opt in ('-x','--xml'):
@@ -281,8 +281,8 @@ def main():
         show_usage(script_name)
         sys.exit(4)
 
-    if not wikitools.keepLinks:
-        wikitools.ignoreTag('a')
+    if not wikiglobals.keepLinks:
+        wikiglobals.ignoreTag('a')
 
     inputsize = os.path.getsize(input_file)
     input = open(input_file,"r")
