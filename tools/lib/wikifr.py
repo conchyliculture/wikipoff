@@ -23,6 +23,7 @@
 import re
 import sys
 import locale
+import unittest
 locale.setlocale(locale.LC_ALL, 'fr_FR.utf-8')
 
 class SaveFRTemplates:
@@ -31,7 +32,8 @@ class SaveFRTemplates:
         # We should use the dropNested thing  maybe?
         # TODO
         self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(\d+)\|(\w+)\|(\d+)(?:\|[^}]+)}}', re.IGNORECASE)
-        self.fr_saveLangTemplatesRE=re.compile(r'{{lang\|(\w+)\|([^}]+)}}', re.IGNORECASE)
+        self.fr_saveLangTemplatesRE=re.compile(r'{{lang(?:ue)?\|([^}\|]+)(?:\|([^}]+))?}}', re.IGNORECASE|re.UNICODE)
+        self.fr_saveLanggTemplatesRE=re.compile(r'{{lang-.{1,3}\|([^}\|]+)}}', re.IGNORECASE)
         self.fr_saveUnitsTemplatesRE=re.compile(r'{{unit.\|(\d+)\|([^}\|]+)(?:\|(\d+))?}}', re.IGNORECASE)
         self.fr_saveRefIncTemplatesRE=re.compile(ur'{{Référence [^\|]+\|([^\|]+)}}',re.IGNORECASE) # incomplete/insuff/a confirmer/nécessaire
         self.fr_saveNumeroTemplatesRE=re.compile(ur'{{(numéro|n°|nº)}}',re.IGNORECASE)
@@ -141,6 +143,8 @@ class SaveFRTemplates:
 
     def fr_saveLangTemplates(self,text):
         return self.fr_saveLangTemplatesRE.sub(r'\2',text) 
+    def fr_saveLanggTemplates(self,text):
+        return self.fr_saveLanggTemplatesRE.sub(r'\1',text) 
 
     def replcolors(self,m):
         col=m.group(1)
@@ -224,3 +228,44 @@ class SaveFRTemplates:
 
     def fr_saveUnitsTemplates(self,text):
         return re.sub(self.fr_saveUnitsTemplatesRE,self.replunit,text)
+
+
+
+
+class WikiFRTests(unittest.TestCase):
+
+    sfrt=SaveFRTemplates()
+
+    def testLang(self):
+        lang_tests=[
+            ["lolilol ''{{lang|la|domus Dei}}''","lolilol ''domus Dei''"],
+            ["{{lang|ko|입니다.}}","입니다."],
+            ["Ainsi, le {{lang|en|''[[Quicksort]]''}} (ou tri rapide)","Ainsi, le ''[[Quicksort]]'' (ou tri rapide)"],
+            [" ''{{lang|hy|Hayastan}}'', {{lang|hy|Հայաստան}} et ''{{lang|hy|Hayastani Hanrapetut’yun}}'', {{lang|hy|Հայաստանի Հանրապետություն}}"," ''Hayastan'', Հայաստան et ''Hayastani Hanrapetut’yun'', Հայաստանի Հանրապետություն"],
+            ["{{langue|ja|酸度}} || １.４（{{langue|ja|芳醇}}","酸度 || １.４（芳醇"],
+            ["{{langue|thaï|กรุงเทพฯ}}","กรุงเทพฯ"],
+            ["ce qui augmente le risque de {{lang|en|''[[Mémoire virtuelle#Swapping|swapping]]''}})","ce qui augmente le risque de ''[[Mémoire virtuelle#Swapping|swapping]]'')"]
+        ]
+
+        langg_tests=[
+            ["''{{lang-en|Irish Republican Army}}, IRA'' ; ''{{lang-ga|Óglaigh na hÉireann}}'') est le nom porté","''Irish Republican Army, IRA'' ; ''Óglaigh na hÉireann'') est le nom porté"],
+        ]
+
+        for t in lang_tests:
+            self.assertEqual(self.sfrt.fr_saveLangTemplates(t[0]), t[1])
+        for t in langg_tests:
+            self.assertEqual(self.sfrt.fr_saveLanggTemplates(t[0]), t[1])
+
+def main():
+    unittest.main()
+
+if __name__ == '__main__':
+    main()
+
+
+if __name__ == "__main__":
+    t=SaveFRTemplates()
+    # Lang test
+    w=WikiFrLangTest(t)
+    w.fr_tests()
+
