@@ -252,6 +252,7 @@ class WikiFRTests(unittest.TestCase):
     sfrt=SaveFRTemplates()
 
     def testLang(self):
+        print "Testing lang conversion"
         lang_tests=[
             ["lolilol ''{{lang|la|domus Dei}}''","lolilol ''domus Dei''"],
             ["''{{lang-en|Irish Republican Army}}, IRA'' ; ''{{lang-ga|Óglaigh na hÉireann}}'') est le nom porté","''Irish Republican Army, IRA'' ; ''Óglaigh na hÉireann'') est le nom porté"],
@@ -273,11 +274,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-if __name__ == "__main__":
-    t=SaveFRTemplates()
-    # Lang test
-    w=WikiFrLangTest(t)
-    w.fr_tests()
 
