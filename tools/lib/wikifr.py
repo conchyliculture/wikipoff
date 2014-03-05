@@ -244,6 +244,8 @@ class WikiFRTests(unittest.TestCase):
             [" ''{{lang|hy|Hayastan}}'', {{lang|hy|Հայաստան}} et ''{{lang|hy|Hayastani Hanrapetut’yun}}'', {{lang|hy|Հայաստանի Հանրապետություն}}"," ''Hayastan'', Հայաստան et ''Hayastani Hanrapetut’yun'', Հայաստանի Հանրապետություն"],
             ["{{langue|ja|酸度}} || １.４（{{langue|ja|芳醇}}","酸度 || １.４（芳醇"],
             ["{{langue|thaï|กรุงเทพฯ}}","กรุงเทพฯ"],
+            ["{{Lang|ar|texte=''Jabal ad Dukhan''}}","''Jabal ad Dukhan''"]
+            ["{{lang|arc-Hebr|dir=rtl|texte=ארמית}} {{lang|arc-Latn|texte=''Arāmît''}},}}","ארמית ''Arāmît''}},}}"],
             ["ce qui augmente le risque de {{lang|en|''[[Mémoire virtuelle#Swapping|swapping]]''}})","ce qui augmente le risque de ''[[Mémoire virtuelle#Swapping|swapping]]'')"]
         ]
 
