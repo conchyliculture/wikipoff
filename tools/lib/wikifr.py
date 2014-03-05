@@ -32,8 +32,7 @@ class SaveFRTemplates:
         # We should use the dropNested thing  maybe?
         # TODO
         self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(\d+)\|(\w+)\|(\d+)(?:\|[^}]+)}}', re.IGNORECASE)
-        self.fr_saveLangTemplatesRE=re.compile(r'{{lang(?:ue)?\|([^}\|]+)(?:\|([^}]+))?}}', re.IGNORECASE|re.UNICODE)
-        self.fr_saveLanggTemplatesRE=re.compile(r'{{lang-.{1,3}\|([^}\|]+)}}', re.IGNORECASE)
+        self.fr_saveLangTemplatesRE=re.compile(r'{{(lang(?:ue)?(?:-\w+)?(?:\|[^}\|]+)+)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveUnitsTemplatesRE=re.compile(r'{{unit.\|(\d+)\|([^}\|]+)(?:\|(\d+))?}}', re.IGNORECASE)
         self.fr_saveRefIncTemplatesRE=re.compile(ur'{{Référence [^\|]+\|([^\|]+)}}',re.IGNORECASE) # incomplete/insuff/a confirmer/nécessaire
         self.fr_saveNumeroTemplatesRE=re.compile(ur'{{(numéro|n°|nº)}}',re.IGNORECASE)
@@ -141,10 +140,26 @@ class SaveFRTemplates:
     def fr_saveDateTemplates(self,text):
         return self.fr_saveDateTemplatesRE.sub(r'\1 \2 \3',text) 
 
+    def repllang(self,m):
+        lol=m.group(1).split("|")
+        if (re.match(r'.*\[\[.+\|.+\]\]',m.group(0))):
+            return "|".join(lol[2:])
+
+        if (re.match(r'lang-\w+',lol[0],re.IGNORECASE)):
+            return lol[1]
+        else:
+            reste=lol[2:]
+            if len(reste)==1:
+                return reste[0].replace("texte=",'')
+            else: 
+                for p in reste:
+                    coin=re.match(r'texte=(.*)',p,re.IGNORECASE)
+                    if coin:
+                        return coin.group(1)
+
+
     def fr_saveLangTemplates(self,text):
-        return self.fr_saveLangTemplatesRE.sub(r'\2',text) 
-    def fr_saveLanggTemplates(self,text):
-        return self.fr_saveLanggTemplatesRE.sub(r'\1',text) 
+        return re.sub(self.fr_saveLangTemplatesRE,self.repllang,text) 
 
     def replcolors(self,m):
         col=m.group(1)
@@ -239,24 +254,19 @@ class WikiFRTests(unittest.TestCase):
     def testLang(self):
         lang_tests=[
             ["lolilol ''{{lang|la|domus Dei}}''","lolilol ''domus Dei''"],
+            ["''{{lang-en|Irish Republican Army}}, IRA'' ; ''{{lang-ga|Óglaigh na hÉireann}}'') est le nom porté","''Irish Republican Army, IRA'' ; ''Óglaigh na hÉireann'') est le nom porté"],
             ["{{lang|ko|입니다.}}","입니다."],
             ["Ainsi, le {{lang|en|''[[Quicksort]]''}} (ou tri rapide)","Ainsi, le ''[[Quicksort]]'' (ou tri rapide)"],
             [" ''{{lang|hy|Hayastan}}'', {{lang|hy|Հայաստան}} et ''{{lang|hy|Hayastani Hanrapetut’yun}}'', {{lang|hy|Հայաստանի Հանրապետություն}}"," ''Hayastan'', Հայաստան et ''Hayastani Hanrapetut’yun'', Հայաստանի Հանրապետություն"],
             ["{{langue|ja|酸度}} || １.４（{{langue|ja|芳醇}}","酸度 || １.４（芳醇"],
             ["{{langue|thaï|กรุงเทพฯ}}","กรุงเทพฯ"],
-            ["{{Lang|ar|texte=''Jabal ad Dukhan''}}","''Jabal ad Dukhan''"]
-            ["{{lang|arc-Hebr|dir=rtl|texte=ארמית}} {{lang|arc-Latn|texte=''Arāmît''}},}}","ארמית ''Arāmît''}},}}"],
+            ["{{Lang|ar|texte=''Jabal ad Dukhan''}}","''Jabal ad Dukhan''"],
+            ["{{lang|arc-Hebr|dir=rtl|texte=ארמית}} {{lang|arc-Latn|texte=''Arāmît''}},}}","ארמית ''Arāmît'',}}"],
             ["ce qui augmente le risque de {{lang|en|''[[Mémoire virtuelle#Swapping|swapping]]''}})","ce qui augmente le risque de ''[[Mémoire virtuelle#Swapping|swapping]]'')"]
-        ]
-
-        langg_tests=[
-            ["''{{lang-en|Irish Republican Army}}, IRA'' ; ''{{lang-ga|Óglaigh na hÉireann}}'') est le nom porté","''Irish Republican Army, IRA'' ; ''Óglaigh na hÉireann'') est le nom porté"],
         ]
 
         for t in lang_tests:
             self.assertEqual(self.sfrt.fr_saveLangTemplates(t[0]), t[1])
-        for t in langg_tests:
-            self.assertEqual(self.sfrt.fr_saveLanggTemplates(t[0]), t[1])
 
 def main():
     unittest.main()
