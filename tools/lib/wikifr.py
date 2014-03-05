@@ -31,9 +31,10 @@ class SaveFRTemplates:
         # Templates that allow inclusion of }} in parameters will fail....
         # We should use the dropNested thing  maybe?
         # TODO
-        self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(\d+)\|(\w+)\|(\d+)(?:\|[^}]+)}}', re.IGNORECASE)
+        self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(|\d+)(?:er)?\|([^|}]+)\|?(\d*)(?:\|[^}]+)?}}', re.IGNORECASE|re.UNICODE)
+        self.fr_saveDateShortTemplatesRE=re.compile(r'{{1er (janvier|f.vrier|mars|avril|mai|juin|juillet|ao.t|septembre|octobre|novembre|d.cembre)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveLangTemplatesRE=re.compile(r'{{(lang(?:ue)?(?:-\w+)?(?:\|[^}\|]+)+)}}', re.IGNORECASE|re.UNICODE)
-        self.fr_saveUnitsTemplatesRE=re.compile(r'{{unit.\|(\d+)\|([^}\|]+)(?:\|(\d+))?}}', re.IGNORECASE)
+        self.fr_saveUnitsTemplatesRE=re.compile(ur'{{unit.\|([^|}]+(?:\|[^[|]*)*)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveRefIncTemplatesRE=re.compile(ur'{{Référence [^\|]+\|([^\|]+)}}',re.IGNORECASE) # incomplete/insuff/a confirmer/nécessaire
         self.fr_saveNumeroTemplatesRE=re.compile(ur'{{(numéro|n°|nº)}}',re.IGNORECASE)
         self.fr_saveCitationTemplatesRE=re.compile(ur'{{citation ?(?:bloc|nécessaire)?\|([^}]+)}}',re.IGNORECASE)
@@ -59,8 +60,8 @@ class SaveFRTemplates:
         self.fr_saveCouleursTemplatesRE=re.compile(r'{{(rouge|bleu|vert|jaune|orange|gris|marron|rose)\|([^\|}]+)}}', re.IGNORECASE)
         self.fr_saveCodeTemplatesRE=re.compile(r'{{code\|([^\|}]+)}}', re.IGNORECASE)
         self.fr_saveJaponaisTemplatesRE=re.compile(r'{{japonais\|([^\|]+)\|([^}]+)}}', re.IGNORECASE)
-
-        self.fr_saveSieclesTempaltesRE=re.compile(ur'{{(?:([^|}]+(?:siècle|millénaire)[^|}]*)|(-?s2?-?(?:\|[^|}]+\|e)+))}}', re.IGNORECASE)
+        self.fr_saveSimpleSieclesTempaltesRE=re.compile(ur'{{([^}]+ (?:si.cle|mill.naire)[^}]*)}}', re.IGNORECASE|re.LOCALE)
+        self.fr_saveSieclesTempaltesRE=re.compile(ur'{{(?:([^|}]+(?:si.cle|mill.naire)[^|}]*)|(-?s2?-?(?:\|[^|}]+\|e)+))}}', re.IGNORECASE)
 
         self.aRE=re.compile(r'<math>')
         self.bRE=re.compile(r'</math>')
@@ -69,7 +70,7 @@ class SaveFRTemplates:
         text=self.fr_saveFormatnumTemplates(t)
         text=self.fr_saveWeirdNumbersTemplates(text)
         text=self.fr_saveNumeroTemplate(text)
-        text=self.fr_saveSieclesTempaltes(text)
+        text=self.fr_saveSieclesTemplates(text)
         text=self.fr_saveLangTemplates(text)
         text=self.fr_saveUnitsTemplates(text)
         text=self.fr_saveCouleursTemplates(text)
@@ -112,18 +113,24 @@ class SaveFRTemplates:
             a,b,c=nb.split("|",2)
             if a.startswith("-"):
                 avjc=" av. J.-C. "
-            a=a[1:]
             if a.startswith("s2"):
                 _,d,e = c.split("|")
                 return b+"e et "+d+u"e siècles"+avjc
+            elif a.startswith("-s2"):
+                _,d,e = c.split("|")
+                return b+"e et "+d+u"e siècles"+avjc
+
             else:
                 return b+u"e siècle"+avjc
         else:
             nb=m.group(1)
             return "<a href=\"%s\">%s</a>"%(nb,nb)
 
-    def fr_saveSieclesTempaltes(self,text):
+    def fr_saveSieclesTemplates(self,text):
         return re.sub(self.fr_saveSieclesTempaltesRE,self.replsiecles,text)
+
+    def fr_saveSimpleSieclesTemplates(self,text):
+        return self.fr_saveSimpleSieclesTempaltesRE.sub(ur'\1',text,re.LOCALE)
 
     def fr_saveCitationTemplate(self,text):
         return self.fr_saveCitationTemplatesRE.sub(ur'«&#160;<i>\1</i>&#160;»',text)
@@ -138,7 +145,10 @@ class SaveFRTemplates:
         return self.fr_saveRefIncTemplatesRE.sub(ur'<u>\1</u><sup>[ref incomplète??]</sup>',text)
 
     def fr_saveDateTemplates(self,text):
-        return self.fr_saveDateTemplatesRE.sub(r'\1 \2 \3',text) 
+        return self.fr_saveDateTemplatesRE.sub(r'\1 \2 \3',text).lstrip().replace(r'1 ',"1er ",1).replace("  "," ")
+
+    def fr_saveDateShortTemplates(self,text):
+        return self.fr_saveDateShortTemplatesRE.sub(r'1<sup>er</sup> \1',text)
 
     def repllang(self,m):
         lol=m.group(1).split("|")
@@ -234,12 +244,46 @@ class SaveFRTemplates:
     def fr_saveFormatnumTemplates(self,text):
         return re.sub(self.fr_saveFormatnumTemplatesRE,self.replformat,text)
 
+    def num_to_loc(self,num):
+        virg=num.split(r".")
+        res=locale.format("%d",int(virg[0]),grouping=True)
+        if len(virg)>1:
+            res+="."+virg[1]
+        return res
+
     def replunit(self,m):
-        sup = m.group(3)
-        if not sup:
-            return "%s %s"%(m.group(1),m.group(2))
-        else:
-            return "%s %s<sup>%s</sup>"%(m.group(1),m.group(2),m.group(3))
+        print m.group(1)
+        l=m.group(1).split("|")
+        if len(l)==1:
+            a=self.num_to_loc(l[0])
+            return "%s"%(a)
+        else: 
+            # It becomes clear in the test function testUnit below THAT THIS IS A FUCKING MESS
+            dot=""
+            exp=" "
+            tab=[]
+            for s in l[1:]:
+                index=s.find("=")
+                if index>0:
+                    s=s[2:]
+                    exp=u"×10"
+                if (re.match(r'-?[0-9]',s)):
+                    tab.append(u"%s<sup>%s</sup>"%(dot,self.num_to_loc(s)))
+                elif s=="":
+                    tab.append(dot)
+                else:
+                    dot=s
+            res=self.num_to_loc(l[0])+exp
+            if len(tab)==0:
+                res+=dot
+            elif len(tab)==1:
+                res+=tab[0]
+            else:
+                res+= u"⋅".join(tab)
+                res=re.sub(ur'×10<sup>([^<]+)</sup>⋅', ur'×10<sup>\1</sup> ',res)
+            return res 
+
+        return "fail "+str(len(l))
 
     def fr_saveUnitsTemplates(self,text):
         return re.sub(self.fr_saveUnitsTemplatesRE,self.replunit,text)
@@ -252,8 +296,7 @@ class WikiFRTests(unittest.TestCase):
     sfrt=SaveFRTemplates()
 
     def testLang(self):
-        print "Testing lang conversion"
-        lang_tests=[
+        tests=[
             ["lolilol ''{{lang|la|domus Dei}}''","lolilol ''domus Dei''"],
             ["''{{lang-en|Irish Republican Army}}, IRA'' ; ''{{lang-ga|Óglaigh na hÉireann}}'') est le nom porté","''Irish Republican Army, IRA'' ; ''Óglaigh na hÉireann'') est le nom porté"],
             ["{{lang|ko|입니다.}}","입니다."],
@@ -266,8 +309,81 @@ class WikiFRTests(unittest.TestCase):
             ["ce qui augmente le risque de {{lang|en|''[[Mémoire virtuelle#Swapping|swapping]]''}})","ce qui augmente le risque de ''[[Mémoire virtuelle#Swapping|swapping]]'')"]
         ]
 
-        for t in lang_tests:
+        for t in tests:
             self.assertEqual(self.sfrt.fr_saveLangTemplates(t[0]), t[1])
+
+    def testDateShort(self):
+        tests=[
+            ["{{1er janvier}}","1<sup>er</sup> janvier"],
+            [u"{{1er février}}",u"1<sup>er</sup> février"],
+            ["{{1er mars}}","1<sup>er</sup> mars"],
+            ["{{1er avril}}","1<sup>er</sup> avril"],
+            ["{{1er mai}}","1<sup>er</sup> mai"],
+            ["{{1er juin}}","1<sup>er</sup> juin"],
+            ["{{1er juillet}}","1<sup>er</sup> juillet"],
+            [u"{{1er août}}",u"1<sup>er</sup> août"],
+            ["{{1er septembre}}","1<sup>er</sup> septembre"],
+            ["{{1er octobre}}","1<sup>er</sup> octobre"],
+            ["{{1er novembre}}","1<sup>er</sup> novembre"],
+            [u"{{1er décembre}}",u"1<sup>er</sup> décembre"],
+        ]
+        for t in tests:
+            self.assertEqual(self.sfrt.fr_saveDateShortTemplates(t[0]),t[1])
+
+    def testDate(self):
+        tests=[
+            ["{{date|10|août|1425}}","10 août 1425"],
+            ["{{Date|10|août|1989}} - {{Date|28|février|1990}}","10 août 1989 - 28 février 1990"],
+            ["{{date|6|février|1896|en France}}","6 février 1896"],
+            ["{{Date|1er|janvier|537}}","1er janvier 537"],
+            ["{{Date||Octobre|1845|en sport}}","Octobre 1845"],
+            ["{{Date|1|octobre|2005|dans les chemins de fer}}","1er octobre 2005"],
+            ["les {{Date|25|mars}} et {{Date|8|avril|1990}}","les 25 mars et 8 avril 1990"],
+        ]
+        for t in tests:
+            self.assertEqual(self.sfrt.fr_saveDateTemplates(t[0]), t[1])
+
+    def testSimpleSiecle(self):
+        tests=[
+                [u"{{Ier siècle}}, {{IIe siècle}}, ... {{XXe siècle}}, ...",u"Ier siècle, IIe siècle, ... XXe siècle, ..."],
+                [u"{{Ier siècle av. J.-C.}}, {{IIe siècle av. J.-C.}}, ...",u"Ier siècle av. J.-C., IIe siècle av. J.-C., ..."],
+                [u"{{Ier millénaire}}, {{IIe millénaire}}, ...",u"Ier millénaire, IIe millénaire, ..."],
+                [u"{{Ier millénaire av. J.-C.}}, {{IIe millénaire av. J.-C.}}, ...",u"Ier millénaire av. J.-C., IIe millénaire av. J.-C., ..."],
+        ]
+        for t in tests:
+            self.assertEqual(self.sfrt.fr_saveSimpleSieclesTemplates(t[0]), t[1])
+
+    def testSiecle(self):
+        tests=[
+                ["{{s|III|e}}",     u"IIIe siècle"],
+                ["{{-s|III|e}}",    u"IIIe siècle av. J.-C. "],
+                ["{{s-|III|e}}",    u"IIIe siècle"],
+                ["{{-s-|III|e}}",   u"IIIe siècle av. J.-C. "],
+                ["{{s2|III|e|IX|e}}",   u"IIIe et IXe siècles"],
+                ["{{-s2|III|e|IX|e}}",  u"IIIe et IXe siècles av. J.-C. "],
+                ["{{s2-|III|e|IX|e}}",  u"IIIe et IXe siècles"],
+                ["{{-s2-|III|e|IX|e}}",     u"IIIe et IXe siècles av. J.-C. "],
+
+        ]
+        for t in tests:
+            self.assertEqual(self.sfrt.fr_saveSieclesTemplates(t[0]), t[1])
+    def testUnit(self):
+        tests=[
+                [u"{{Unité|1234567}}","1 234 567"],
+                [u"{{Unité|1234567.89}}","1 234 567.89"],
+                [u"{{Unité|1.23456789|e=15}}",u"1.23456789×10<sup>15</sup>"],
+                [u"{{Unité|10000|km}}",u"10 000 km"],
+                [u"{{Unité|10000|km/h}}","10 000 km/h"],
+                [u"{{Unité|10000|km|2}}","10 000 km<sup>2</sup>"],
+                [u"{{Unité|10000|m|3}}","10 000 m<sup>3</sup>"],
+                [u"{{Unité|10000|km||h|-1}}",u"10 000 km⋅h<sup>-1</sup>"],
+                [u"{{Unité|10000|J|2|K|3|s|-1}}",u"10 000 J<sup>2</sup>⋅K<sup>3</sup>⋅s<sup>-1</sup>"],
+                [u"{{Unité|10000|J||kg||m|-2}}",u"10 000 J⋅kg⋅m<sup>-2</sup>"],
+                [u"{{Unité|-40.234|°C}}",u"-40.234 °C"],
+                [u"{{Unité|1.23456|e=9|J|2|K|3|s|-1}}",u"1.23456×10<sup>9</sup> J<sup>2</sup>⋅K<sup>3</sup>⋅s<sup>-1</sup>"],
+        ]
+        for t in tests:
+            self.assertEqual(self.sfrt.fr_saveUnitsTemplates(t[0]), t[1])
 
 def main():
     unittest.main()
