@@ -35,7 +35,7 @@ class SaveFRTemplates:
         self.fr_saveDateShortTemplatesRE=re.compile(r'{{1er (janvier|f.vrier|mars|avril|mai|juin|juillet|ao.t|septembre|octobre|novembre|d.cembre)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveLangTemplatesRE=re.compile(r'{{(lang(?:ue)?(?:-\w+)?(?:\|[^}\|]+)+)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveUnitsTemplatesRE=re.compile(ur'{{unit.\|([^|}]+(?:\|[^[|]*)*)}}', re.IGNORECASE|re.UNICODE)
-        self.fr_saveRefIncTemplatesRE=re.compile(ur'{{Référence [^\|]+\|([^\|]+)}}',re.IGNORECASE) # incomplete/insuff/a confirmer/nécessaire
+        self.fr_saveRefIncTemplatesRE=re.compile(ur'{{Référence [^|}]+\|([^|]+)}}',re.IGNORECASE) # incomplete/insuff/a confirmer/nécessaire
         self.fr_saveNumeroTemplatesRE=re.compile(ur'{{(numéro|n°|nº)}}',re.IGNORECASE)
         self.fr_saveCitationTemplatesRE=re.compile(ur'{{citation ?(?:bloc|nécessaire)?\|([^}]+)}}',re.IGNORECASE)
         self.fr_savePassageEvasifTemplatesRE=re.compile(ur'{{passage évasif\|([^}]+)}}',re.IGNORECASE)
@@ -252,7 +252,6 @@ class SaveFRTemplates:
         return res
 
     def replunit(self,m):
-        print m.group(1)
         l=m.group(1).split("|")
         if len(l)==1:
             a=self.num_to_loc(l[0])
