@@ -245,7 +245,7 @@ class SaveFRTemplates:
         return re.sub(self.fr_saveFormatnumTemplatesRE,self.replformat,text)
 
     def num_to_loc(self,num):
-        virg=num.split(r".")
+        virg=num.replace(",",".").split(r".")
         res=locale.format("%d",int(virg[0]),grouping=True)
         if len(virg)>1:
             res+="."+virg[1]
@@ -370,6 +370,7 @@ class WikiFRTests(unittest.TestCase):
         tests=[
                 [u"{{Unité|1234567}}","1 234 567"],
                 [u"{{Unité|1234567.89}}","1 234 567.89"],
+                [u"{{Unité|1234567,89}}","1 234 567.89"],
                 [u"{{Unité|1.23456789|e=15}}",u"1.23456789×10<sup>15</sup>"],
                 [u"{{Unité|10000|km}}",u"10 000 km"],
                 [u"{{Unité|10000|km/h}}","10 000 km/h"],
@@ -380,6 +381,7 @@ class WikiFRTests(unittest.TestCase):
                 [u"{{Unité|10000|J||kg||m|-2}}",u"10 000 J⋅kg⋅m<sup>-2</sup>"],
                 [u"{{Unité|-40.234|°C}}",u"-40.234 °C"],
                 [u"{{Unité|1.23456|e=9|J|2|K|3|s|-1}}",u"1.23456×10<sup>9</sup> J<sup>2</sup>⋅K<sup>3</sup>⋅s<sup>-1</sup>"],
+                [u"{{Unité|1,23456|e=9|J|2|K|3|s|-1}}",u"1.23456×10<sup>9</sup> J<sup>2</sup>⋅K<sup>3</sup>⋅s<sup>-1</sup>"],
         ]
         for t in tests:
             self.assertEqual(self.sfrt.fr_saveUnitsTemplates(t[0]), t[1])
