@@ -236,7 +236,9 @@ def process_data(input, output):
             prefix = base[:base.rfind("/")]
             if wikiglobals.lang =="":
                 wikiglobals.lang=base.split(".wikipedia.org")[0].split("/")[-1]
-                output.set_lang(wikiglobals.lang)
+                if wikiglobals.lang!="":
+                    print "Autodetected language : %s. Will apply corresponding conversion rules from lib/wikifr.py"
+                    output.set_lang(wikiglobals.lang)
 
 ### CL INTERFACE ############################################################
 
@@ -285,6 +287,10 @@ def main():
         wikiglobals.ignoreTag('a')
 
     inputsize = os.path.getsize(input_file)
+
+    if os.path.isfile(output_file):
+        print "%s already exists. Won't overwrite it."%output_file
+        sys.exit(1)
     input = open(input_file,"r")
 
     worker = OutputSqlite(output_file)
