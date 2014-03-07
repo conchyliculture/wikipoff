@@ -24,6 +24,7 @@ import re
 import sys
 import locale
 import unittest
+import traceback
 locale.setlocale(locale.LC_ALL, 'fr_FR.utf-8')
 
 class SaveFRTemplates:
@@ -34,7 +35,7 @@ class SaveFRTemplates:
         self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(|\d+)(?:er)?\|([^|}]+)\|?(\d*)(?:\|[^}]+)?}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveDateShortTemplatesRE=re.compile(r'{{1er (janvier|f.vrier|mars|avril|mai|juin|juillet|ao.t|septembre|octobre|novembre|d.cembre)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveLangTemplatesRE=re.compile(r'{{(lang(?:ue)?(?:-\w+)?(?:\|[^}\|]+)+)}}', re.IGNORECASE|re.UNICODE)
-        self.fr_saveUnitsTemplatesRE=re.compile(ur'{{unit.\|([^|}]+(?:\|[^[|]*)*)}}', re.IGNORECASE|re.UNICODE)
+        self.fr_saveUnitsTemplatesRE=re.compile(ur'{{unit.\|([^|{}]+(?:\|[^{}[|]*)*)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveRefIncTemplatesRE=re.compile(ur'{{Référence [^|}]+\|([^|]+)}}',re.IGNORECASE) # incomplete/insuff/a confirmer/nécessaire
         self.fr_saveNumeroTemplatesRE=re.compile(ur'{{(numéro|n°|nº)}}',re.IGNORECASE)
         self.fr_saveCitationTemplatesRE=re.compile(ur'{{citation ?(?:bloc|nécessaire)?\|([^}]+)}}',re.IGNORECASE)
@@ -55,7 +56,7 @@ class SaveFRTemplates:
         self.fr_saveDepuisQuandTemplatesRE=re.compile(r'{{Depuis Quand\|([^\|]+)(?:\|[^}]+)?}}', re.IGNORECASE)
         self.fr_saveQuiQuoiTemplatesRE=re.compile(r'{{(?:Qui|Lequel|combien|enquoi|en quoi|lesquels|laquelle|lesquelles|par qui|parqui|pour qui)\|([^\|]+)}}', re.IGNORECASE)
         self.fr_savestyleTemplatesRE=re.compile(r'{{style\|([^\|]+)(?:\|[^}]+)?}}', re.IGNORECASE)
-        self.fr_saveFormatnumTemplatesRE=re.compile(r'{{(?:formatnum|nombre|num|nau):([0-9.]+)}}', re.IGNORECASE)
+        self.fr_saveFormatnumTemplatesRE=re.compile(r'{{(?:formatnum|nombre|num|nau):([0-9.,]+)}}', re.IGNORECASE)
         self.fr_saveWeirdNumbersTemplatesRE=re.compile(r'{{((?:(exp|ind)\|[^}]+)|\d|e|1er|1re|2nd|2nde)}}', re.IGNORECASE)
         self.fr_saveCouleursTemplatesRE=re.compile(r'{{(rouge|bleu|vert|jaune|orange|gris|marron|rose)\|([^\|}]+)}}', re.IGNORECASE)
         self.fr_saveCodeTemplatesRE=re.compile(r'{{code\|([^\|}]+)}}', re.IGNORECASE)
@@ -67,12 +68,13 @@ class SaveFRTemplates:
         self.bRE=re.compile(r'</math>')
 
     def save(self,t):
-        text=self.fr_saveFormatnumTemplates(t)
+        text=t
+        text=self.fr_saveFormatnumTemplates(text)
+        text=self.fr_saveUnitsTemplates(text)
         text=self.fr_saveWeirdNumbersTemplates(text)
         text=self.fr_saveNumeroTemplate(text)
         text=self.fr_saveSieclesTemplates(text)
         text=self.fr_saveLangTemplates(text)
-        text=self.fr_saveUnitsTemplates(text)
         text=self.fr_saveCouleursTemplates(text)
         text=self.fr_saveRefIncTemplates(text)
         text=self.fr_saveDateTemplates(text)
@@ -108,20 +110,24 @@ class SaveFRTemplates:
     def replsiecles(self,m):
         nb=m.group(2)
         if nb:
-            siecle=""
-            avjc=""
-            a,b,c=nb.split("|",2)
-            if a.startswith("-"):
-                avjc=" av. J.-C. "
-            if a.startswith("s2"):
-                _,d,e = c.split("|")
-                return b+"e et "+d+u"e siècles"+avjc
-            elif a.startswith("-s2"):
-                _,d,e = c.split("|")
-                return b+"e et "+d+u"e siècles"+avjc
+            try:
+                siecle=""
+                avjc=""
+                a,b,c=nb.split("|",2)
+                if a.startswith("-"):
+                    avjc=" av. J.-C. "
+                if a.startswith("s2"):
+                    _,d,e = c.split("|")
+                    return b+"e et "+d+u"e siècles"+avjc
+                elif a.startswith("-s2"):
+                    _,d,e = c.split("|")
+                    return b+"e et "+d+u"e siècles"+avjc
 
-            else:
-                return b+u"e siècle"+avjc
+                else:
+                    return b+u"e siècle"+avjc
+            except ValueError as e:
+                # Failing humbly...
+                return nb
         else:
             nb=m.group(1)
             return "<a href=\"%s\">%s</a>"%(nb,nb)
@@ -239,17 +245,22 @@ class SaveFRTemplates:
                 else:
                     return locale.format("%d",int(nb),grouping=True)
         except ValueError:
+            # Failing humbly...
             return nb
 
     def fr_saveFormatnumTemplates(self,text):
         return re.sub(self.fr_saveFormatnumTemplatesRE,self.replformat,text)
 
     def num_to_loc(self,num):
-        virg=num.replace(",",".").split(r".")
-        res=locale.format("%d",int(virg[0]),grouping=True)
-        if len(virg)>1:
-            res+="."+virg[1]
-        return res
+        try:
+            virg=num.replace(" ","").replace(",",".").split(r".")
+            res=locale.format("%d",int(virg[0]),grouping=True)
+            if len(virg)>1:
+                res+="."+virg[1]
+            return res
+        except ValueError as e:
+            # Failing humbly...
+            return num
 
     def replunit(self,m):
         l=m.group(1).split("|")
@@ -281,8 +292,6 @@ class SaveFRTemplates:
                 res+= u"⋅".join(tab)
                 res=re.sub(ur'×10<sup>([^<]+)</sup>⋅', ur'×10<sup>\1</sup> ',res)
             return res 
-
-        return "fail "+str(len(l))
 
     def fr_saveUnitsTemplates(self,text):
         return re.sub(self.fr_saveUnitsTemplatesRE,self.replunit,text)
