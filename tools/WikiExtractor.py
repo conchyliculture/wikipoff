@@ -237,7 +237,8 @@ def process_data(input, output):
             if wikiglobals.lang =="":
                 wikiglobals.lang=base.split(".wikipedia.org")[0].split("/")[-1]
                 if wikiglobals.lang!="":
-                    print "Autodetected language : %s. Will apply corresponding conversion rules from lib/wikifr.py"
+                    print "Autodetected language : %s."%wikiglobals.lang
+                    print "Will apply corresponding conversion rules from lib/wiki%s.py"%wikiglobals.lang
                     output.set_lang(wikiglobals.lang)
 
 ### CL INTERFACE ############################################################
