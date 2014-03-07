@@ -18,8 +18,7 @@ export PYTHONPATH=$PYTHONPATH:$EGGDIR/../
 PYTHON="python"
 
 if [ ! -f "$WIKIBZ" ]; then
-    echo "download http://dumps.wikimedia.org/frwiki/latest/$WIKIBZ first" 1>&2
-    exit 1
+    wget $WIKIDUMPURL
 fi
 
 if [ ! -d "$LIBDIRR" ]; then
