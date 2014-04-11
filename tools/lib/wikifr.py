@@ -36,6 +36,7 @@ class SaveFRTemplates:
         self.fr_saveDateShortTemplatesRE=re.compile(r'{{1er (janvier|f.vrier|mars|avril|mai|juin|juillet|ao.t|septembre|octobre|novembre|d.cembre)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveLangTemplatesRE=re.compile(r'{{(lang(?:ue)?(?:-\w+)?(?:\|[^}\|]+)+)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveUnitsTemplatesRE=re.compile(ur'{{unit.\|([^|{}]+(?:\|[^{}[|]*)*)}}', re.IGNORECASE|re.UNICODE)
+        self.fr_saveTemperatureTemplatesRE=re.compile(ur'{{tmp\|([^\|]+)\|°C}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveRefIncTemplatesRE=re.compile(ur'{{Référence [^|}]+\|([^|]+)}}',re.IGNORECASE) # incomplete/insuff/a confirmer/nécessaire
         self.fr_saveNumeroTemplatesRE=re.compile(ur'{{(numéro|n°|nº)}}',re.IGNORECASE)
         self.fr_saveCitationTemplatesRE=re.compile(ur'{{citation ?(?:bloc|nécessaire)?\|([^}]+)}}',re.IGNORECASE)
@@ -69,6 +70,7 @@ class SaveFRTemplates:
 
     def save(self,t):
         text=t
+        text=self.fr_saveTemperatureTemplates(text)
         text=self.fr_saveFormatnumTemplates(text)
         text=self.fr_saveUnitsTemplates(text)
         text=self.fr_saveWeirdNumbersTemplates(text)
@@ -201,6 +203,9 @@ class SaveFRTemplates:
 
     def fr_saveCodeTemplates(self,text):
         return self.fr_saveCodeTemplatesRE.sub(r'<span style=\"font-family:monospace,Courier\">\1</span>',text)
+
+    def fr_saveTemperatureTemplates(self,text):
+        return self.fr_saveTemperatureTemplatesRE.sub(ur'\1°C',text)
 
     def repljaponais(self,m):
          return m.group(1)+" ("+m.group(2).replace("|",", ").replace("extra=","")+")"
@@ -360,6 +365,17 @@ class WikiFRTests(unittest.TestCase):
         ]
         for t in tests:
             self.assertEqual(self.sfrt.fr_saveSimpleSieclesTemplates(t[0]), t[1])
+
+
+
+    def testTemperature(self):
+        tests=[
+                [u"température supérieure à {{tmp|10|°C}}.",u"température supérieure à 10°C."],
+                [u"Il se décompose de façon explosive aux alentours de {{tmp|95|°C}}.",u"Il se décompose de façon explosive aux alentours de 95°C."],
+                [u"Entre 40 et {{tmp|70|°C}}",u"Entre 40 et 70°C"],
+                 ]
+        for t in tests:
+            self.assertEqual(self.sfrt.fr_saveTemperatureTemplates(t[0]), t[1])
 
     def testSiecle(self):
         tests=[
