@@ -32,7 +32,7 @@ class SaveFRTemplates:
         # Templates that allow inclusion of }} in parameters will fail....
         # We should use the dropNested thing  maybe?
         # TODO
-        self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(|\d+)(?:er)?\|([^|}]+)\|?(\d*)(?:\|[^}]+)?}}', re.IGNORECASE|re.UNICODE)
+        self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(|\d+(?:er)?)\|([^|}]+)\|?(\d*)(?:\|[^}]+)?}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveDateShortTemplatesRE=re.compile(r'{{1er (janvier|f.vrier|mars|avril|mai|juin|juillet|ao.t|septembre|octobre|novembre|d.cembre)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveLangTemplatesRE=re.compile(r'{{(lang(?:ue)?(?:-\w+)?(?:\|[^}\|]+)+)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveUnitsTemplatesRE=re.compile(ur'{{unit.\|([^|{}]+(?:\|[^{}[|]*)*)}}', re.IGNORECASE|re.UNICODE)
@@ -152,8 +152,18 @@ class SaveFRTemplates:
     def fr_saveRefIncTemplates(self,text):
         return self.fr_saveRefIncTemplatesRE.sub(ur'<u>\1</u><sup>[ref incomplète??]</sup>',text)
 
+    def repldate(self,m):
+        res=""
+        if m.group(1)=="":
+            res= "%s %s"%(m.group(2),m.group(3))
+        elif m.group(1)=="1":
+            res= "1er %s %s"%(m.group(2).lstrip(),m.group(3))
+        else:
+            res= "%s %s %s"%(m.group(1),m.group(2).lstrip(),m.group(3))
+        return res.strip()
+
     def fr_saveDateTemplates(self,text):
-        return self.fr_saveDateTemplatesRE.sub(r'\1 \2 \3',text).lstrip().replace(r'1 ',"1er ",1).replace("  "," ")
+        return re.sub(self.fr_saveDateTemplatesRE,self.repldate,text)
 
     def fr_saveDateShortTemplates(self,text):
         return self.fr_saveDateShortTemplatesRE.sub(r'1<sup>er</sup> \1',text)
@@ -410,6 +420,22 @@ class WikiFRTests(unittest.TestCase):
         ]
         for t in tests:
             self.assertEqual(self.sfrt.fr_saveUnitsTemplates(t[0]), t[1])
+
+    def testFormatNum(self):
+        tests=[
+                [u"Elle comporte plus de {{formatnum:1000}} [[espèce]]s dans {{formatnum:90}}",u"Elle comporte plus de 1 000 [[espèce]]s dans 90"],
+                ]
+        for t in tests:
+            self.assertEqual(self.sfrt.fr_saveFormatnumTemplates(t[0]), t[1])
+
+    def testJaponais(self):
+        tests=[
+                [u"{{Japonais|'''Happa-tai'''|はっぱ隊||Brigade des feuilles}}",u"'''Happa-tai''' (はっぱ隊, , Brigade des feuilles)"],
+            ]
+        for t in tests:
+            self.assertEqual(self.sfrt.fr_saveJaponaisTemplates(t[0]), t[1])
+
+
 
 def main():
     unittest.main()
