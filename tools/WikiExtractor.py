@@ -280,9 +280,9 @@ def main():
         elif opt in ('-x','--xml'):
             input_file = arg
 
-    if len(args) > 0:
-        show_usage(script_name)
-        sys.exit(4)
+    if not 'input_file' in locals():
+        print "Please give me a wiki xml dump with -x or --xml"
+        sys.exit()
 
     if not wikiglobals.keepLinks:
         wikiglobals.ignoreTag('a')
@@ -294,9 +294,9 @@ def main():
         sys.exit(1)
     input = open(input_file,"r")
 
+    print "Converting xml dump %s to database %s. This may take eons..."%(input_file,output_file) 
     worker = OutputSqlite(output_file)
 
-    print "Converting xml dump %s to database %s. This may take eons..."%(input_file,output_file) 
     process_data(input, worker)
     worker.close()
 
