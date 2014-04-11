@@ -246,6 +246,9 @@ def main():
     if not 'xmlfile' in locals():
         print "Please give me a XML wiki dump file with -f"
         sys.exit()
+    if wikiglobals.lang=="":
+        print "If you don't specify a language with -l, you're gonna have a bad time"
+        sys.exit()
 
     if not check_helper_db(sqlite_file):
         print "%s is not a correct helper db."%sqlite_file
@@ -288,6 +291,7 @@ def main():
             worker.close()
         else:
             print "Can't find article with title %s in helper database : %s "%(title,sqlite_file)
+            print "Maybe you need to re-create it? rm will help"
 
 if __name__ == '__main__':
     main()
