@@ -151,8 +151,10 @@ class OutputSqlite:
         self.curs.execute("CREATE VIRTUAL TABLE searchTitles USING fts3(_id, title);")
         print("Building FTS table")
         self.curs.execute("INSERT INTO searchTitles(_id,title) SELECT _id,title FROM articles;")
-        self.curs.close()
         self.conn.commit()
+        print("Cleaning up")
+        self.curs.execute("VACUUM")
+        self.curs.close()
         self.conn.close()
         sys.exit(0)
 
@@ -176,7 +178,7 @@ def process_data(input, output):
     article_id=None
     past_rev = False
     for line in input:
-#        print(input.tell())
+   #     print(input.tell())
         line = line.decode('utf-8')
         tag = ''
         if '<' in line:
@@ -226,7 +228,7 @@ def process_data(input, output):
                         percent =  (100.0 * input.tell()) / inputsize
                         delta=((100-percent)*(datetime.datetime.now()-st).total_seconds())/percent
                         status_s= "%.02f%% ETA=%s\r"%(percent, str(datetime.timedelta(seconds=delta)))
-                        print(status_s,)
+                        sys.stdout.write(status_s)
             id = None
             page = []
         elif tag == 'base':
@@ -292,8 +294,8 @@ def main():
     if os.path.isfile(output_file):
         print("%s already exists. Won't overwrite it."%output_file)
         sys.exit(1)
-    input = open(input_file,"r")
 
+    input = open(input_file,"r")
     print("Converting xml dump %s to database %s. This may take eons..."%(input_file,output_file))
     worker = OutputSqlite(output_file)
 
