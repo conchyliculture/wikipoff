@@ -145,11 +145,11 @@ class OutputSqlite:
         if (len(self.curr_values)>0):
             self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?,?)",self.curr_values)
         self.conn.commit()
-        print "Building indexes"
+        print("Building indexes")
         self.curs.execute("CREATE INDEX tidx1 ON articles(title)")
         self.curs.execute("CREATE INDEX tidx2 ON redirects(title_from)")
         self.curs.execute("CREATE VIRTUAL TABLE searchTitles USING fts3(_id, title);")
-        print "Building FTS table"
+        print("Building FTS table")
         self.curs.execute("INSERT INTO searchTitles(_id,title) SELECT _id,title FROM articles;")
         self.curs.close()
         self.conn.commit()
@@ -176,7 +176,7 @@ def process_data(input, output):
     article_id=None
     past_rev = False
     for line in input:
-#        print input.tell()
+#        print(input.tell())
         line = line.decode('utf-8')
         tag = ''
         if '<' in line:
@@ -218,7 +218,7 @@ def process_data(input, output):
                 if redirect:
                     output.insert_redirect(title,redir_title)
                 else:
-                #    print id, title.encode('utf-8')
+                #    print(id, title.encode('utf-8'))
                     sys.stdout.flush()
                     wikitools.WikiDocumentSQL(output, article_id, title, ''.join(page))
                     i+=1
@@ -226,7 +226,7 @@ def process_data(input, output):
                         percent =  (100.0 * input.tell()) / inputsize
                         delta=((100-percent)*(datetime.datetime.now()-st).total_seconds())/percent
                         status_s= "%.02f%% ETA=%s\r"%(percent, str(datetime.timedelta(seconds=delta)))
-                        print status_s,
+                        print(status_s,)
             id = None
             page = []
         elif tag == 'base':
@@ -237,8 +237,8 @@ def process_data(input, output):
             if wikiglobals.lang =="":
                 wikiglobals.lang=base.split(".wikipedia.org")[0].split("/")[-1]
                 if wikiglobals.lang!="":
-                    print "Autodetected language : %s."%wikiglobals.lang
-                    print "Will apply corresponding conversion rules from lib/wiki%s.py"%wikiglobals.lang
+                    print("Autodetected language : %s."%wikiglobals.lang)
+                    print("Will apply corresponding conversion rules from lib/wiki%s.py"%wikiglobals.lang)
                     output.set_lang(wikiglobals.lang)
 
 ### CL INTERFACE ############################################################
@@ -281,7 +281,7 @@ def main():
             input_file = arg
 
     if not 'input_file' in locals():
-        print "Please give me a wiki xml dump with -x or --xml"
+        print("Please give me a wiki xml dump with -x or --xml")
         sys.exit()
 
     if not wikiglobals.keepLinks:
@@ -290,11 +290,11 @@ def main():
     inputsize = os.path.getsize(input_file)
 
     if os.path.isfile(output_file):
-        print "%s already exists. Won't overwrite it."%output_file
+        print("%s already exists. Won't overwrite it."%output_file)
         sys.exit(1)
     input = open(input_file,"r")
 
-    print "Converting xml dump %s to database %s. This may take eons..."%(input_file,output_file) 
+    print("Converting xml dump %s to database %s. This may take eons..."%(input_file,output_file))
     worker = OutputSqlite(output_file)
 
     process_data(input, worker)

@@ -167,7 +167,7 @@ def create_helper_db(input_xml,output_sql):
     for line in iter(inputstream.readline, ''):
         lol_python_is_shit=endpageRE.match(line)
         if lol_python_is_shit!=None:
-            #print "%d %s %d"%(id_,title,start)
+            #print("%d %s %d"%(id_,title,start))
             output.insert(id_,title,start)
             title=""
             id_=0
@@ -200,7 +200,7 @@ def create_helper_db(input_xml,output_sql):
         curpos=inputstream.tell()
         percentdone=100*curpos/filesize
         if curpos%500==0:
-            print u"\r%f %%"%(100.0*curpos/filesize),
+            print(u"\r%f %%"%(100.0*curpos/filesize),)
 
 
 
@@ -211,8 +211,8 @@ def create_helper_db(input_xml,output_sql):
 ### CL INTERFACE ############################################################
 
 def show_usage(s):
-    print """%s : Selectively converts articles from XML file to stdout. It needs a "helper database"
-"""%(s)
+    print("""%s : Selectively converts articles from XML file to stdout. It needs a "helper database"
+"""%(s))
 
 def main():
     global prefix, article_ids
@@ -223,7 +223,7 @@ def main():
         long_opts = ['id=',"db=","--dumpfile=","--title=","--orig","--lang"]
         opts, args = getopt.gnu_getopt(sys.argv[1:], 'i:d:f:t:rl:H:', long_opts)
     except getopt.GetoptError, e:
-        print "ERROR : ",e
+        print("ERROR : ",e)
         show_usage
         sys.exit(1)
 
@@ -241,13 +241,13 @@ def main():
         if opt in ('-l',"--lang"):
             wikiglobals.lang=arg
     if not 'sqlite_file' in locals():
-        print "Please give me a SQLite database file with indexes with -d"
+        print("Please give me a SQLite database file with indexes with -d")
         sys.exit()
     if not 'xmlfile' in locals():
-        print "Please give me a XML wiki dump file with -f"
+        print("Please give me a XML wiki dump file with -f")
         sys.exit()
     if wikiglobals.lang=="":
-        print "If you don't specify a language with -l, you're gonna have a bad time"
+        print("If you don't specify a language with -l, you're gonna have a bad time")
         sys.exit()
 
     if not check_helper_db(sqlite_file):
