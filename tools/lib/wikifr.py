@@ -32,7 +32,7 @@ class SaveFRTemplates:
         # Templates that allow inclusion of }} in parameters will fail....
         # We should use the dropNested thing  maybe?
         # TODO
-        self.fr_saveDateTemplatesRE=re.compile(r'{{date\|(|\d+(?:er)?)\|([^|}]+)\|?(\d*)(?:\|[^}]+)?}}', re.IGNORECASE|re.UNICODE)
+        self.fr_saveDateTemplatesRE=re.compile(ur'{{date(?: de naissance| de décès)?\|(|\d+(?:er)?)\|([^|}]+)\|?(\d*)(?:\|[^}]+)?}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveDateShortTemplatesRE=re.compile(r'{{1er (janvier|f.vrier|mars|avril|mai|juin|juillet|ao.t|septembre|octobre|novembre|d.cembre)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveLangTemplatesRE=re.compile(r'{{(lang(?:ue)?(?:-\w+)?(?:\|[^}\|]+)+)}}', re.IGNORECASE|re.UNICODE)
         self.fr_saveUnitsTemplatesRE=re.compile(ur'{{unit.\|([^|{}]+(?:\|[^{}[|]*)*)}}', re.IGNORECASE|re.UNICODE)
@@ -362,6 +362,7 @@ class WikiFRTests(unittest.TestCase):
             ["{{Date||Octobre|1845|en sport}}","Octobre 1845"],
             ["{{Date|1|octobre|2005|dans les chemins de fer}}","1er octobre 2005"],
             ["les {{Date|25|mars}} et {{Date|8|avril|1990}}","les 25 mars et 8 avril 1990"],
+            [u"'''Jean-François Bergier''', né à [[Lausanne]], le {{date de naissance|5|décembre|1931}} et mort le {{date de décès|29|octobre|2009}}&lt;ref name=&quot;swissinfo&quot;/&gt;, est un [[historien]] [[suisse]].",u"'''Jean-François Bergier''', né à [[Lausanne]], le 5 décembre 1931 et mort le 29 octobre 2009&lt;ref name=&quot;swissinfo&quot;/&gt;, est un [[historien]] [[suisse]]."],
         ]
         for t in tests:
             self.assertEqual(self.sfrt.fr_saveDateTemplates(t[0]), t[1])
