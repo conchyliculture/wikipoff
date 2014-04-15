@@ -16,6 +16,12 @@ PYLZMAARCH="pylzma-0.4.4.tar.gz"
 export PYTHONPATH=$PYTHONPATH:$EGGDIR/../
 
 PYTHON="python"
+BUNZIP=`which bunzip2`
+
+if [ "x$BUNZIP" == "x" ] ; then
+    echo "Please install bunzip2"
+    exit 1
+fi
 
 if [ ! -f "$WIKIBZ" ]; then
     wget $WIKIDUMPURL
@@ -35,6 +41,6 @@ if [ ! -d "$LIBDIRR" ]; then
 fi
 
 echo "Unbziping $WIKIBZ"
-bunzip "$WIKIBZ"
+bunzip2 "$WIKIBZ"
 
-$PYTHON WikiExtractor.py -x "$$WIKIBZ" -d wiki.sqlite
+$PYTHON WikiExtractor.py -x "$(WIKIBZ/.xml)" -d wiki.sqlite
