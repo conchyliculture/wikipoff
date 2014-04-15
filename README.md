@@ -33,10 +33,19 @@ There are tons of offline readers on Google Playstore, but not on F-Droid. I wou
 It looked easier/funnier to make my own app.
 
 ## Donate
-I accept donations in beer, litecoins, angry and happy emails.
-* LTC: LYAaCu2SuPA36QDZrjvYCK8HcVHXxYVmfu
-* DOGE: DAQhTKVj592GrjbzYgogDyiBAHm6t6HpiQ 
-* BTC: 1BAaxTvK1jkoFKf7qWF2C6M4UX1y86MxaF
+I accept donations in beer, various cryptcoins, angry and happy emails.
+* AUR   AH9hYc6BxHNxqGWn21Gmv8Q3ztDtnWurSo
+* BTC   1BAaxTvK1jkoFKf7qWF2C6M4UX1y86MxaF
+* DGC   DQ1WiuWKwj8g5NYdq8PbzRaVFckm8TX7Sc
+* DOGE  DAQhTKVj592GrjbzYgogDyiBAHm6t6HpiQ 
+* FTC   6znenYP8Ry3sv1Mr7F2dgkuZmfvWwkgcss
+* LTC   LYAaCu2SuPA36QDZrjvYCK8HcVHXxYVmfu
+* MOON  2Pb3KvJ61vj9qcCkQj565owveAVuwctfdB
+* NVC   4ad6a9Uwim8RhLn9tX4ouLSNGxo5chu2g8
+* TIPS  EYKUTRAoum6f4rGxJZaGn8GnZdWs1amHwH
+* VTC   VvEZ7iUrZZR8bhFLCyCqA3LbPUiM15oDrj
+* WDC   WiCH7zuAwrS4EQ78dJrqrqLb8ESeEmgECc
+* YAC   Y2fgdMign7vvjZzztWRZsWzWkJqTHSDat9
 * happy emails : wikipoff@renzokuken.eu
 * angry emails : devnull@renzokuken.eu
 
