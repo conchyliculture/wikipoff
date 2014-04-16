@@ -24,7 +24,7 @@ This file is part of WikipOff.
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".ArticlenActivity" >
+    tools:context=".ArticleActivity" >
 
     <WebView
         android:id="@+id/article_webview"
