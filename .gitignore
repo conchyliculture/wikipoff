@@ -38,4 +38,4 @@ proguard-project.txt
 *.sqlite
 tools/lib/python2.7
 *.swp
-tools/*.log
+tools/log*
