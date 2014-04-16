@@ -51,11 +51,18 @@ This file is part of WikipOff.
             android:name="fr.renzo.wikipoff.ArticleActivity"
             android:label="articleactivity" >
         </activity>
+                <activity
+            android:name="fr.renzo.wikipoff.ManageDatabasesActivity"
+            android:label="managedatabasesactivity" >
+        </activity>
                 
         <activity
             android:name="fr.renzo.wikipoff.SettingsActivity"
             android:label="settingsactivity" >
         </activity>
+        <activity android:name="fr.renzo.wikipoff.TabCustomActivity" />
+        <activity android:name="fr.renzo.wikipoff.TabInstalledActivity" />
+        <activity android:name="fr.renzo.wikipoff.TabAvailableActivity" />
     </application>
 
 </manifest>

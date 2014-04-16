@@ -167,6 +167,10 @@ public class MainActivity extends Activity {
 			Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
 		    return true;
+		case R.id.action_manage_databases:
+			Intent i1 = new Intent(this, ManageDatabasesActivity.class);
+            startActivity(i1);
+		    return true;
 		  
 		 default:
 		 return super.onOptionsItemSelected(item);

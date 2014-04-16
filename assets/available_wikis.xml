@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <wiki>
+        <type>wikipedia</type>
+        <lang>fr</lang>
+        <url>https://renzokuken.eu/frwiki.sqlite</url>
+        <gendate>2014-04-15 00:00:00</gendate>
+        <version>2.5</version>
+    </wiki>
+    <wiki>
+        <type>wikipedia</type>
+        <lang>en</lang>
+        <url>https://renzokuken.eu/enwiki.sqlite</url>
+        <gendate>2014-04-15 00:00:00</gendate>
+        <version>2.5</version>
+    </wiki>
+</root>
