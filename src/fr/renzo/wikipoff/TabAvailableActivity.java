@@ -1,6 +1,7 @@
 package fr.renzo.wikipoff;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -10,22 +11,33 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-
-public class TabAvailableActivity extends Activity {
+public class TabAvailableActivity extends Activity implements OnItemClickListener {
 	private static final String TAG = "TabAvailableActivity";
 	private static final String available_db_xml_file="available_wikis.xml";
 	private ArrayList<Wiki> wikis=new ArrayList<Wiki>();
 	private ListView availablewikislistview;
+	private SharedPreferences config;
+
+	private Context context;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context=this.getApplicationContext();
+        config = PreferenceManager.getDefaultSharedPreferences(this);
+
+        
         setContentView(R.layout.activity_tab_available);
         try {
 			loadDB();
@@ -36,6 +48,7 @@ public class TabAvailableActivity extends Activity {
         availablewikislistview= (ListView) findViewById(R.id.availablewikislistview);
         ArrayAdapter<Wiki> adapter = new ArrayAdapter<Wiki>(this, android.R.layout.simple_list_item_1, this.wikis); 
         availablewikislistview.setAdapter(adapter);
+        availablewikislistview.setOnItemClickListener(this);
 
         
    }
@@ -44,7 +57,6 @@ public class TabAvailableActivity extends Activity {
 		try {
 		    reader = new BufferedReader(new InputStreamReader(getAssets().open(available_db_xml_file)));
 		    XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-          //  factory.setNamespaceAware(true);
             XmlPullParser parser = factory.newPullParser();
             parser.setInput(reader); 
             int eventType = parser.getEventType();
@@ -58,7 +70,7 @@ public class TabAvailableActivity extends Activity {
 					 //   Log.d(TAG,"Start document");
 					break;
 				case XmlPullParser.START_TAG:
-					Log.d(TAG,"Start tag "+parser.getName());
+//					Log.d(TAG,"Start tag "+parser.getName());
 	            	 String t=parser.getName();
 	            	 if (t.equalsIgnoreCase("wiki")){
 	            		 curwiki = new Wiki();
@@ -68,7 +80,7 @@ public class TabAvailableActivity extends Activity {
 					curtext = parser.getText();
 					break;
 				case XmlPullParser.END_TAG:
-					Log.d(TAG,"End tag"+parser.getName());
+//					Log.d(TAG,"End tag"+parser.getName());
 	            	String endt=parser.getName();
 
 					if (endt.equalsIgnoreCase("wiki")){
@@ -92,7 +104,7 @@ public class TabAvailableActivity extends Activity {
 
              eventType = parser.next();
             }
-            Log.d(TAG,"End document");
+//            Log.d(TAG,"End document");
 		    
 		} catch (XmlPullParserException e) {
 			Toast.makeText(this, "Problem parsing available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
@@ -105,60 +117,21 @@ public class TabAvailableActivity extends Activity {
 	}
 
 	
-	
-	public class Wiki {
-		private String type;
-		private String lang;
-		private String url;
-		private String gendate;
-		private String version;
-		public String getType() {
-			return type;
-		}
-		public String toString(){
-			return this.type+" "+this.lang+" "+this.gendate;
-		}
 
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		public String getLang() {
-			return lang;
-		}
-
-		public void setLang(String lang) {
-			this.lang = lang;
-		}
-
-		public String getUrl() {
-			return url;
-		}
-
-		public void setUrl(String url) {
-			this.url = url;
-		}
-
-		public String getGendate() {
-			return gendate;
-		}
-
-		public void setGendate(String gendate) {
-			this.gendate = gendate;
-		}
-
-		public String getVersion() {
-			return version;
-		}
-
-		public void setVersion(String version) {
-			this.version = version;
-		}
-
-		public Wiki () {
-			
-		}
-
-		
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		Wiki wiki = this.wikis.get(position);
+		Log.d(TAG,"Clicked on "+wiki.toString());
+		this.download(wiki);
 	}
+	private void download(Wiki wiki) {
+		// check already downloaded
+		File already_there = wiki.isAlreadyInstalled(context);
+		if (already_there == null) {
+			Log.d(TAG, "we need to dl !");
+		} else {
+			Toast.makeText(this, "The wiki is already installed "+ already_there, Toast.LENGTH_LONG).show();
+		}
+	}
+
 }
