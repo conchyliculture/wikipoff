@@ -4,14 +4,17 @@
         <type>wikipedia</type>
         <lang>fr</lang>
         <url>https://renzokuken.eu/frwiki.sqlite</url>
-        <gendate>2014-04-11 00:00:00</gendate>
+        <gendate>2014-04-15 00:00:00</gendate>
         <version>2.5</version>
+        <filename>frwiki.sqlite</filename>
+        
     </wiki>
     <wiki>
         <type>wikipedia</type>
         <lang>en</lang>
-        <url>https://renzokuken.eu/enwiki.sqlite</url>
+        <url>http://renzokuken.eu/enwiki.sqlite</url>
         <gendate>2014-04-15 00:00:00</gendate>
         <version>2.5</version>
+        <filename>enwiki.sqlite</filename>
     </wiki>
 </root>

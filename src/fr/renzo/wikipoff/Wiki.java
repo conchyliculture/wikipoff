@@ -13,14 +13,24 @@ public class Wiki {
 	private String type;
 	private String lang;
 	private String url;
+	private String filename;
 	private String gendate;
 	private String version;
 	private SQLiteDatabase sqlh;
+	private Context context;
 	public String getType() {
 		return type;
 	}
 	public String toString(){
 		return this.type+" "+this.lang+" "+this.gendate;
+	}
+	
+	public String getFilename(){
+		return this.filename;
+	}
+	public void setFilename(String filename) {
+		this.filename=filename;
+		
 	}
 
 	public void setType(String type) {
@@ -59,10 +69,10 @@ public class Wiki {
 		this.version = version;
 	}
 
-	public Wiki () {
-		
+	public Wiki (Context context) {
+		this.context=context;
 	}
-	public File isAlreadyInstalled(Context context) {
+	public File isAlreadyInstalled() {
 		File rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
 		for (File f : rootDbDir.listFiles()) {
     	//	String name = f.getName();
@@ -111,4 +121,5 @@ public class Wiki {
 		}
 		return null;
 	}
+
 }

@@ -11,10 +11,13 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,15 +31,11 @@ public class TabAvailableActivity extends Activity implements OnItemClickListene
 	private static final String available_db_xml_file="available_wikis.xml";
 	private ArrayList<Wiki> wikis=new ArrayList<Wiki>();
 	private ListView availablewikislistview;
-	private SharedPreferences config;
-
 	private Context context;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context=this.getApplicationContext();
-        config = PreferenceManager.getDefaultSharedPreferences(this);
-
         
         setContentView(R.layout.activity_tab_available);
         try {
@@ -48,10 +47,10 @@ public class TabAvailableActivity extends Activity implements OnItemClickListene
         availablewikislistview= (ListView) findViewById(R.id.availablewikislistview);
         ArrayAdapter<Wiki> adapter = new ArrayAdapter<Wiki>(this, android.R.layout.simple_list_item_1, this.wikis); 
         availablewikislistview.setAdapter(adapter);
-        availablewikislistview.setOnItemClickListener(this);
-
-        
+        availablewikislistview.setOnItemClickListener(this); 
    }
+    
+    
     private void loadDB() throws IOException {
 		BufferedReader reader = null;
 		try {
@@ -73,7 +72,7 @@ public class TabAvailableActivity extends Activity implements OnItemClickListene
 //					Log.d(TAG,"Start tag "+parser.getName());
 	            	 String t=parser.getName();
 	            	 if (t.equalsIgnoreCase("wiki")){
-	            		 curwiki = new Wiki();
+	            		 curwiki = new Wiki(context);
 					}
 	            	 break;
 				case XmlPullParser.TEXT:
@@ -96,6 +95,8 @@ public class TabAvailableActivity extends Activity implements OnItemClickListene
 						curwiki.setGendate(curtext);
 					} else if (endt.equalsIgnoreCase("version")) {
 						curwiki.setVersion(curtext);
+					}else if (endt.equalsIgnoreCase("filename")) {
+						curwiki.setFilename(curtext);
 					}
 					break;
 				default:
@@ -116,22 +117,52 @@ public class TabAvailableActivity extends Activity implements OnItemClickListene
 		}
 	}
 
-	
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Wiki wiki = this.wikis.get(position);
 		Log.d(TAG,"Clicked on "+wiki.toString());
-		this.download(wiki);
-	}
-	private void download(Wiki wiki) {
-		// check already downloaded
-		File already_there = wiki.isAlreadyInstalled(context);
+		File already_there = wiki.isAlreadyInstalled();
 		if (already_there == null) {
-			Log.d(TAG, "we need to dl !");
+			Log.d(TAG, "we need to dl "+wiki.getUrl());
+			this.download(wiki);
 		} else {
 			Toast.makeText(this, "The wiki is already installed "+ already_there, Toast.LENGTH_LONG).show();
 		}
+		
 	}
+	
+
+	private void download(Wiki wiki) {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		final String url=wiki.getUrl();
+		final String filename=wiki.getFilename();
+		if (wifi.isConnected()) {
+		    Log.d(TAG,"Using wifi!");
+		    Intent i = new Intent(getApplicationContext(), ManageDatabasesActivity.class);
+		    i.putExtra("filename",filename);
+		    i.putExtra("url",url);
+		    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		    startActivity(i);
+	   
+		}else {
+			new AlertDialog.Builder(this)
+		    .setTitle("No Wifi detected")
+		    .setMessage("Are you sure you want to download this huge file without WIFI?")
+		    .setNegativeButton("No", null)
+		    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+				    Intent i = new Intent(getApplicationContext(), ManageDatabasesActivity.class);
+				    i.putExtra("filename",filename);
+				    i.putExtra("url",url);
+				    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				    startActivity(i);
+				}
+			})
+		    .setIcon(android.R.drawable.ic_dialog_alert)
+		    .show();
+		}
+	}
+	
 
 }
