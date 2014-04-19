@@ -11,17 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 public class ManageDatabasesActivity extends ActionBarActivity {
     public static final String TAG = "ManageDatabasesActivity";
-
-	ViewPager mViewPager;
 	
 	private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		 @Override
@@ -162,27 +158,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	    bar.addTab(tabB);
 	    bar.addTab(tabC);
 
-		
-//		Intent intent1 = new Intent().setClass(this, TabInstalledActivity.class);
-//		TabSpec tabSpec1 = tabHost
-//		  .newTabSpec("Tab1")
-//		  .setIndicator("Installed Wikis")
-//		  .setContent(intent1);
-//		Intent intent2 = new Intent().setClass(this, TabAvailableActivity.class);
-//		TabSpec tabSpec2 = tabHost
-//		  .newTabSpec("Tab2")
-//		  .setIndicator("Available Wikis")
-//		  .setContent(intent2);
-//		Intent intent3 = new Intent().setClass(this, TabCustomActivity.class);
-//		TabSpec tabSpec3 = tabHost
-//		  .newTabSpec("Tab3")
-//		  .setIndicator("Custom Wikis")
-//		  .setContent(intent3);
-//		
-//		tabHost.addTab(tabSpec1);
-//		tabHost.addTab(tabSpec2);
-//		tabHost.addTab(tabSpec3); 
-//		tabHost.setCurrentTab(0);
 
 	}
 	@Override
