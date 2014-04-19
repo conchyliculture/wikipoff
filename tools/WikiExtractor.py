@@ -68,8 +68,7 @@ import sqlite3
 import wikitools
 import wikiglobals
 import pylzma
-import datetime
-
+from time import strftime
 
 #=========================================================================
 #
@@ -109,7 +108,7 @@ class OutputSqlite:
                                                                   title_from VARCHAR(255) NOT NULL,
                                                                   title_to VARCHAR(255))''')
         self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key VARCHAR(255), value VARCHAR(255));''')
-        self.set_gen_date(str(datetime.date.today()))
+        self.set_gen_date(strftime("%Y-%m-%d %H:%M:%S")
         self.set_version(version)
         self.conn.commit()
         self.curr_values=[]
@@ -240,7 +239,7 @@ def process_data(input, output):
                 wikiglobals.lang=base.split(".wikipedia.org")[0].split("/")[-1]
                 if wikiglobals.lang!="":
                     print("Autodetected language : %s."%wikiglobals.lang)
-                    print("Will apply corresponding conversion rules from lib/wiki%s.py"%wikiglobals.lang)
+                    print("Will apply corresponding conversion rules from lib/wiki%s.py, if this files exists"%wikiglobals.lang)
                     output.set_lang(wikiglobals.lang)
 
 ### CL INTERFACE ############################################################
