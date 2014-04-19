@@ -43,4 +43,4 @@ fi
 echo "Unbziping $WIKIBZ"
 bunzip2 "$WIKIBZ"
 
-$PYTHON WikiExtractor.py -x "$(WIKIBZ/.xml)" -d wiki.sqlite
+$PYTHON WikiExtractor.py -x "${WIKIBZ/.xml}" -d wiki.sqlite
