@@ -141,17 +141,17 @@ public class ManageDatabasesActivity extends TabActivity {
 		Intent intent1 = new Intent().setClass(this, TabInstalledActivity.class);
 		TabSpec tabSpec1 = tabHost
 		  .newTabSpec("Tab1")
-		  .setIndicator("Tab 1")
+		  .setIndicator("Installed Wikis")
 		  .setContent(intent1);
 		Intent intent2 = new Intent().setClass(this, TabAvailableActivity.class);
 		TabSpec tabSpec2 = tabHost
 		  .newTabSpec("Tab2")
-		  .setIndicator("Tab 2")
+		  .setIndicator("Available Wikis")
 		  .setContent(intent2);
 		Intent intent3 = new Intent().setClass(this, TabCustomActivity.class);
 		TabSpec tabSpec3 = tabHost
 		  .newTabSpec("Tab3")
-		  .setIndicator("Tab 3")
+		  .setIndicator("Custom Wikis")
 		  .setContent(intent3);
 		
 		tabHost.addTab(tabSpec1);
