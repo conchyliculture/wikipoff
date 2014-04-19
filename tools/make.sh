@@ -1,8 +1,11 @@
 #!/bin/bash
 # CHANGE ME
-WIKIDUMPURL="http://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2"
-WIKIBZ="frwiki-latest-pages-articles.xml.bz2"
-WIKILANG="fr"
+#WIKIDUMPURL="http://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2"
+#WIKIBZ="frwiki-latest-pages-articles.xml.bz2"
+#WIKILANG="fr"
+WIKIDUMPURL="http://dumps.wikimedia.org/euwiki/20140411/euwiki-20140411-pages-articles.xml.bz2"
+WIKIBZ="euwiki-20140411-pages-articles.xml.bz2"
+WIKILANG="eu"
 
 ######################
 
@@ -43,4 +46,4 @@ fi
 echo "Unbziping $WIKIBZ"
 bunzip2 "$WIKIBZ"
 
-$PYTHON WikiExtractor.py -x "$(WIKIBZ/.xml)" -d wiki.sqlite
+$PYTHON WikiExtractor.py -x "${WIKIBZ/.xml}" -d $WIKILANG.wiki.sqlite

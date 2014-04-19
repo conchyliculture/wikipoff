@@ -10,7 +10,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,43 +17,47 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class TabAvailableActivity extends Activity implements OnItemClickListener {
+public class TabAvailableFragment extends Fragment implements OnItemClickListener {
 	private static final String TAG = "TabAvailableActivity";
 	private static final String available_db_xml_file="available_wikis.xml";
 	private ArrayList<Wiki> wikis=new ArrayList<Wiki>();
 	private ListView availablewikislistview;
 	private Context context;
+	private View wholeview;
 
-    public void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context=this.getApplicationContext();
-        
-        setContentView(R.layout.activity_tab_available);
+        context=getActivity().getApplicationContext();
+        wholeview=inflater.inflate(R.layout.fragment_tab_available,null);
         try {
 			loadDB();
 		} catch (IOException e) {
-			Toast.makeText(this, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
-			this.finish();
+			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
 		}
-        availablewikislistview= (ListView) findViewById(R.id.availablewikislistview);
-        ArrayAdapter<Wiki> adapter = new ArrayAdapter<Wiki>(this, android.R.layout.simple_list_item_1, this.wikis); 
+        availablewikislistview= (ListView) wholeview.findViewById(R.id.availablewikislistview);
+        ArrayAdapter<Wiki> adapter = new ArrayAdapter<Wiki>(getActivity(), android.R.layout.simple_list_item_1, this.wikis); 
         availablewikislistview.setAdapter(adapter);
-        availablewikislistview.setOnItemClickListener(this); 
+        availablewikislistview.setOnItemClickListener(this);
+        return wholeview ;
    }
     
     
     private void loadDB() throws IOException {
+    	wikis.clear();
 		BufferedReader reader = null;
 		try {
-		    reader = new BufferedReader(new InputStreamReader(getAssets().open(available_db_xml_file)));
+		    reader = new BufferedReader(new InputStreamReader(context.getAssets().open(available_db_xml_file)));
 		    XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = factory.newPullParser();
             parser.setInput(reader); 
@@ -108,8 +111,7 @@ public class TabAvailableActivity extends Activity implements OnItemClickListene
 //            Log.d(TAG,"End document");
 		    
 		} catch (XmlPullParserException e) {
-			Toast.makeText(this, "Problem parsing available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
-			this.finish();
+			Toast.makeText(context, "Problem parsing available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
 		} finally {
 		    if (reader != null) {
 		        reader.close();
@@ -126,33 +128,33 @@ public class TabAvailableActivity extends Activity implements OnItemClickListene
 			Log.d(TAG, "we need to dl "+wiki.getUrl());
 			this.download(wiki);
 		} else {
-			Toast.makeText(this, "The wiki is already installed "+ already_there, Toast.LENGTH_LONG).show();
+			Toast.makeText(context, "The wiki is already installed "+ already_there, Toast.LENGTH_LONG).show();
 		}
 		
 	}
 	
 
 	private void download(Wiki wiki) {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		final String url=wiki.getUrl();
 		final String filename=wiki.getFilename();
 		if (wifi.isConnected()) {
 		    Log.d(TAG,"Using wifi!");
-		    Intent i = new Intent(getApplicationContext(), ManageDatabasesActivity.class);
+		    Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
 		    i.putExtra("filename",filename);
 		    i.putExtra("url",url);
 		    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		    startActivity(i);
 	   
 		}else {
-			new AlertDialog.Builder(this)
+			new AlertDialog.Builder(context)
 		    .setTitle("No Wifi detected")
 		    .setMessage("Are you sure you want to download this huge file without WIFI?")
 		    .setNegativeButton("No", null)
 		    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-				    Intent i = new Intent(getApplicationContext(), ManageDatabasesActivity.class);
+				    Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
 				    i.putExtra("filename",filename);
 				    i.putExtra("url",url);
 				    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

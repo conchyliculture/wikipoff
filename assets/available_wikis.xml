@@ -17,4 +17,12 @@
         <version>2.5</version>
         <filename>enwiki.sqlite</filename>
     </wiki>
+    <wiki>
+        <type>wikipedia</type>
+        <lang>eu</lang>
+        <url>http://renzokuken.eu/eu.wiki.sqlite</url>
+        <gendate>2014-04-19 00:00:00</gendate>
+        <version>2.5</version>
+        <filename>eu.wiki.sqlite</filename>
+    </wiki>
 </root>

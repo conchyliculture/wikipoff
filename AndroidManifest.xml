@@ -40,7 +40,8 @@ This file is part of WikipOff.
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:name="fr.renzo.wikipoff.WikipOff"
-        android:theme="@style/AppTheme" >
+        android:installLocation="preferExternal" 
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
         <activity
             android:name="fr.renzo.wikipoff.MainActivity"
             android:label="@string/app_name" >

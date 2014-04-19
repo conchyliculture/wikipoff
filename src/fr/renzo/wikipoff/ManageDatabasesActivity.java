@@ -1,7 +1,6 @@
 package fr.renzo.wikipoff;
 
 import android.app.DownloadManager;
-import android.app.TabActivity;
 import android.app.DownloadManager.Query;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,12 +9,20 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.TabHost;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.Tab;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.widget.Toast;
-import android.widget.TabHost.TabSpec;
 
-@SuppressWarnings("deprecation")
-public class ManageDatabasesActivity extends TabActivity {
+public class ManageDatabasesActivity extends ActionBarActivity {
+    public static final String TAG = "ManageDatabasesActivity";
+
+	ViewPager mViewPager;
+	
 	private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		 @Override
 		 public void onReceive(Context context, Intent intent) {
@@ -135,29 +142,47 @@ public class ManageDatabasesActivity extends TabActivity {
 		downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 
 		setContentView(R.layout.activity_manage_databases);
+
 		
-		TabHost tabHost = getTabHost(); 
+		ActionBar bar = getSupportActionBar();
+	    bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	    
+	    ActionBar.Tab tabA = bar.newTab().setText("A Tab");
+	    ActionBar.Tab tabB = bar.newTab().setText("B Tab");
+	    ActionBar.Tab tabC = bar.newTab().setText("C Tab");
+
+	    Fragment fragmentA = new TabInstalledFragment();
+	    Fragment fragmentB = new TabAvailableFragment();
+	    Fragment fragmentC = new TabCustomFragment();
+
+	    tabA.setTabListener(new MyTabsListener(fragmentA));
+	    tabB.setTabListener(new MyTabsListener(fragmentB));
+	    tabC.setTabListener(new MyTabsListener(fragmentC));
+	    bar.addTab(tabA);
+	    bar.addTab(tabB);
+	    bar.addTab(tabC);
+
 		
-		Intent intent1 = new Intent().setClass(this, TabInstalledActivity.class);
-		TabSpec tabSpec1 = tabHost
-		  .newTabSpec("Tab1")
-		  .setIndicator("Installed Wikis")
-		  .setContent(intent1);
-		Intent intent2 = new Intent().setClass(this, TabAvailableActivity.class);
-		TabSpec tabSpec2 = tabHost
-		  .newTabSpec("Tab2")
-		  .setIndicator("Available Wikis")
-		  .setContent(intent2);
-		Intent intent3 = new Intent().setClass(this, TabCustomActivity.class);
-		TabSpec tabSpec3 = tabHost
-		  .newTabSpec("Tab3")
-		  .setIndicator("Custom Wikis")
-		  .setContent(intent3);
-		
-		tabHost.addTab(tabSpec1);
-		tabHost.addTab(tabSpec2);
-		tabHost.addTab(tabSpec3); 
-		tabHost.setCurrentTab(0);
+//		Intent intent1 = new Intent().setClass(this, TabInstalledActivity.class);
+//		TabSpec tabSpec1 = tabHost
+//		  .newTabSpec("Tab1")
+//		  .setIndicator("Installed Wikis")
+//		  .setContent(intent1);
+//		Intent intent2 = new Intent().setClass(this, TabAvailableActivity.class);
+//		TabSpec tabSpec2 = tabHost
+//		  .newTabSpec("Tab2")
+//		  .setIndicator("Available Wikis")
+//		  .setContent(intent2);
+//		Intent intent3 = new Intent().setClass(this, TabCustomActivity.class);
+//		TabSpec tabSpec3 = tabHost
+//		  .newTabSpec("Tab3")
+//		  .setIndicator("Custom Wikis")
+//		  .setContent(intent3);
+//		
+//		tabHost.addTab(tabSpec1);
+//		tabHost.addTab(tabSpec2);
+//		tabHost.addTab(tabSpec3); 
+//		tabHost.setCurrentTab(0);
 
 	}
 	@Override
@@ -182,6 +207,28 @@ public class ManageDatabasesActivity extends TabActivity {
        if (extras != null) {
     	   do_download(extras.getString("filename"), extras.getString("url"));
     	}
+    }
+
+	
+    protected class MyTabsListener implements ActionBar.TabListener {
+
+        private Fragment fragment;
+
+        public MyTabsListener(Fragment fragment) {
+            this.fragment = fragment;
+        }
+
+        public void onTabReselected(Tab tab, FragmentTransaction ft) {
+        }
+
+        public void onTabSelected(Tab tab, FragmentTransaction ft) {
+            ft.add(R.id.fragment_container, fragment);
+        }
+
+        public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+            // some people needed this line as well to make it work: 
+            ft.remove(fragment);
+        }
     }
 }
 

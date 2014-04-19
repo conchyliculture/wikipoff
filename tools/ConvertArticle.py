@@ -200,7 +200,7 @@ def create_helper_db(input_xml,output_sql):
         curpos=inputstream.tell()
         percentdone=100*curpos/filesize
         if curpos%500==0:
-            print(u"\r%f %%"%(100.0*curpos/filesize),)
+            sys.stdout.write(u"\r%f %%"%(100.0*curpos/filesize))
 
 
 
