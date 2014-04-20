@@ -133,9 +133,9 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 				convertView = this.inflater.inflate(R.layout.installed_wiki, null);
 			}
 
-			TextView header = (TextView ) convertView.findViewById(R.id.text1);
+			TextView header = (TextView ) convertView.findViewById(R.id.installedwikiheader);
 			header.setText(w.getType()+" "+w.getLang());
-			TextView bot = (TextView ) convertView.findViewById(R.id.text2);
+			TextView bot = (TextView ) convertView.findViewById(R.id.installedwikifooter);
 			bot.setText(w.getFilename()+" "+w.getLocalizedGendate());
 			RadioButton rb = (RadioButton) convertView.findViewById(R.id.radio);
 			rb.setChecked(position == selectedPosition);

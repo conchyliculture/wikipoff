@@ -12,7 +12,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import fr.renzo.wikipoff.TabInstalledFragment.MyAdapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,10 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,9 +49,9 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 		availablewikislistview= (ListView) wholeview.findViewById(R.id.availablewikislistview);
-		MyAdapter adapter = new MyAdapter(getActivity(),  this.wikis); 
-		availablewikislistview.setAdapter(adapter);
 		availablewikislistview.setOnItemClickListener(this);
+		AvailableWikisListViewAdapter adapter = new AvailableWikisListViewAdapter(getActivity(),  this.wikis); 
+		availablewikislistview.setAdapter(adapter);
 		return wholeview ;
 	}
 
@@ -133,11 +130,10 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 					return w1.getLang().compareToIgnoreCase(w2.getLang());
 				}
 			}
-		}
-				);
+		});
 		return res;
 	}
-
+	
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Wiki wiki = this.wikis.get(position);
@@ -167,6 +163,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		if (wifi.isConnected()) {
 			Log.d(TAG,"Using wifi!");
 			Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
+			i.putExtra("command", "startdownload");
 			i.putExtra("filename",filename);
 			i.putExtra("url",url);
 			i.putExtra("size", size);
@@ -181,6 +178,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
+					i.putExtra("command", "startdownload");
 					i.putExtra("filename",filename);
 					i.putExtra("url",url);
 					i.putExtra("size", size);
@@ -192,10 +190,10 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			.show();
 		}
 	}
-	public class MyAdapter extends BaseAdapter {
+	public class AvailableWikisListViewAdapter extends BaseAdapter {
 		private LayoutInflater inflater;
 		private ArrayList<Wiki> data;
-		public MyAdapter(Context context, ArrayList<Wiki> data){
+		public AvailableWikisListViewAdapter(Context context, ArrayList<Wiki> data){
 			// Caches the LayoutInflater for quicker use
 			this.inflater = LayoutInflater.from(context);
 			// Sets the events data
@@ -223,13 +221,12 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			Wiki w = data.get(position);
-			if(convertView == null){ // If the View is not cached
-				// Inflates the Common View from XML file
+			if(convertView == null){ 
 				convertView = this.inflater.inflate(R.layout.available_wiki, null);
 			}
-			TextView header = (TextView ) convertView.findViewById(R.id.text1);
+			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
 			header.setText(w.getType()+" "+w.getLang());
-			TextView bot = (TextView ) convertView.findViewById(R.id.text2);
+			TextView bot = (TextView ) convertView.findViewById(R.id.availablewikifooter);
 			bot.setText(w.getFilename()+" "+w.getLocalizedGendate());
 
 			return convertView;

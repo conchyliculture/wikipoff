@@ -21,7 +21,7 @@
         android:mode="twoLine">
 
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/availablewikiheader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dip"
@@ -33,11 +33,11 @@
 			 />
 
         <TextView
-            android:id="@+id/text2"
+            android:id="@+id/availablewikifooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text1"
-    		android:layout_alignStart="@id/text1"
+            android:layout_below="@id/availablewikiheader"
+    		android:layout_alignStart="@id/availablewikiheader"
         	android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="lolilol"
             android:focusableInTouchMode="false"
@@ -47,7 +47,7 @@ android:focusable="false"
 	</LinearLayout>
 
     <ProgressBar
-        android:id="@+id/progressBar2"
+        android:id="@+id/downloadprogress"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

@@ -8,9 +8,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -22,18 +24,143 @@ import android.widget.Toast;
 public class ManageDatabasesActivity extends ActionBarActivity {
     public static final String TAG = "ManageDatabasesActivity";
 	
-	private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
-		 @Override
-		 public void onReceive(Context context, Intent intent) {
-			 checkDownloadStatus();}
-		 };
-		 
+	//private BroadcastReceiver downloadReceiver;
+
 	private DownloadManager downloadManager;
+
 	private long downloadid;
+		 
 	
-	private void checkDownloadStatus(){
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG,"created");
+		setTitle("Manage your 'Wikis'");
+		this.downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+//		this.downloadReceiver = new BroadcastReceiver() {
+//
+//			@Override
+//			public void onReceive(Context context, Intent intent) {
+//		    	
+//				String action = intent.getAction();
+//				Log.d(TAG,"Got intent with action: "+action+" "+context.getPackageName());
+//				if (DownloadManager.ACTION_NOTIFICATION_CLICKED.equals(action)) {
+//					Log.d(TAG,"trying to stop");
+//					Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
+//					i.putExtra("command", "stopdownload");
+//					context.startActivity(i);
+//				}
+//				checkDownloadStatus(context);
+//			}
+//			
+//		};
+
+		setContentView(R.layout.activity_manage_databases);
+		
+		ActionBar bar = getSupportActionBar();
+	    bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	    
+	    ActionBar.Tab tabA = bar.newTab().setText("Downloaded Wikis");
+	    ActionBar.Tab tabB = bar.newTab().setText("Available Wikis");
+
+	    Fragment fragmentA = new TabInstalledFragment();
+	    Fragment fragmentB = new TabAvailableFragment();
+
+	    tabA.setTabListener(new MyTabsListener(fragmentA));
+	    tabB.setTabListener(new MyTabsListener(fragmentB));
+
+	    bar.addTab(tabA);
+	    bar.addTab(tabB);
+
+	}
+	@Override
+	protected void onResume() {
+	 super.onResume();
+
+//	 checkDownloadStatus();
+//
+//	 IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+//	 registerReceiver(downloadReceiver, intentFilter);
+	 
+	}
+
+	
+	public void onReceive(Context context, Intent intent) {
+		String action = intent.getAction();
+		Log.d(TAG,"Got intent with action: "+action+" "+context.getPackageName());
+		if (DownloadManager.ACTION_NOTIFICATION_CLICKED.equals(action)) {
+			Log.d(TAG,"trying to stop");
+			Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
+			i.putExtra("command", "stopdownload");
+			context.startActivity(i);
+		}
+		checkDownloadStatus(context);
+	}
+//	@Override
+//	protected void onPause() {
+//	 super.onPause();
+//	 unregisterReceiver(downloadReceiver);
+//	}
+    @Override
+    protected void onNewIntent(Intent intent) {
+    	Bundle extras = intent.getExtras();
+    	if (extras != null) {
+    		final String filename = extras.getString("filename");
+    		final String url = extras.getString("url");
+    		final String size = extras.getString("size");
+    		new AlertDialog.Builder(this)
+    		.setTitle("Warning")
+    		.setMessage("Are you sure you want to download "+filename+" ("+size+")")
+    		.setNegativeButton("No", null)
+    		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    			@Override
+    			public void onClick(DialogInterface dialog, int which) {
+    				startDownload(filename, url);
+    			}
+    		})
+    		.setIcon(android.R.drawable.ic_dialog_alert)
+    		.show();
+    	}
+    }
+    
+    
+    protected class MyTabsListener implements ActionBar.TabListener {
+
+        private Fragment fragment;
+
+        public MyTabsListener(Fragment fragment) {
+            this.fragment = fragment;
+        }
+
+        public void onTabReselected(Tab tab, FragmentTransaction ft) {
+        }
+
+        public void onTabSelected(Tab tab, FragmentTransaction ft) {
+            ft.add(R.id.fragment_container, fragment);
+        }
+
+        public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+            ft.remove(fragment);
+        }
+    }
+    
+    public long do_download(String filename, String url){
+		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+		request.setDescription("Downloading from "+url);
+		request.setTitle(filename);
+		request.setDestinationInExternalPublicDir(this.getString(R.string.DBDir), filename);
+		request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+		this.downloadid = this.downloadManager.enqueue(request);
+		
+		Log.d(TAG,"pushed id "+this.downloadid);
+        Query q = new Query();
+        q.setFilterById(this.downloadid);
+        return this.downloadid;
+	}
+    private void checkDownloadStatus(Context context){
 		DownloadManager.Query query = new DownloadManager.Query();
-		query.setFilterById(downloadid);
+		query.setFilterById(this.downloadid);
+
 		Cursor cursor = downloadManager.query(query);
 		if(cursor.moveToFirst()){
 			int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
@@ -77,7 +204,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 					break;
 				}
 				Log.d(TAG,"FAILED: " + failedReason);
-				Toast.makeText(this,
+				Toast.makeText(context,
 						"FAILED: " + failedReason,
 						Toast.LENGTH_LONG).show();
 				break;
@@ -99,7 +226,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 					break;
 				}
 				Log.d(TAG,"PAUSED: " + pausedReason);
-				Toast.makeText(this,
+				Toast.makeText(context,
 						"PAUSED: " + pausedReason,
 						Toast.LENGTH_LONG).show();
 				break;
@@ -108,127 +235,35 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 //						"PENDING",
 //						Toast.LENGTH_LONG).show();
 				Log.d(TAG,"Download started");
-				Toast.makeText(this,
+				Toast.makeText(context,
 						"Download started",
 						Toast.LENGTH_LONG).show();
 				break;
 			case DownloadManager.STATUS_RUNNING:
 				Log.d(TAG,"Download running");
-				Toast.makeText(this,
+				Toast.makeText(context,
 						"RUNNING",
 						Toast.LENGTH_LONG).show();
 				break;
 			case DownloadManager.STATUS_SUCCESSFUL:
 				Log.d(TAG,"Download done");
-				Toast.makeText(this,
+				Toast.makeText(context,
 						"SUCCESSFUL",
 						Toast.LENGTH_LONG).show();
 				break;
 			default:
 				Log.d(TAG,"WTF "+status);
-				Toast.makeText(this,
+				Toast.makeText(context,
 						"WTF"+status,
 						Toast.LENGTH_LONG).show();
 				break;
 			}
 		}
 	}
-
-	private void do_download(String filename, String url){
-		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-		request.setDescription("Downloading from "+url);
-		request.setTitle(filename);
-		request.setDestinationInExternalPublicDir(this.getString(R.string.DBDir), filename);
-		request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-		// get download service and enqueue file
-		this.downloadid = downloadManager.enqueue(request);
-        Query q = new Query();
-        q.setFilterById(this.downloadid);
+	private void startDownload(String filename, String url) {
+		long dlid = do_download(filename,url);	
+		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(this);
+		config.edit().putLong(this.getString(R.string.config_key_downloadid),dlid ).commit();
 	}
-	
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setTitle("Manage your 'Wikis'");
-		downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-
-		setContentView(R.layout.activity_manage_databases);
-		
-		ActionBar bar = getSupportActionBar();
-	    bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-	    
-	    ActionBar.Tab tabA = bar.newTab().setText("Downloaded Wikis");
-	    ActionBar.Tab tabB = bar.newTab().setText("Available Wikis");
-
-	    Fragment fragmentA = new TabInstalledFragment();
-	    Fragment fragmentB = new TabAvailableFragment();
-
-	    tabA.setTabListener(new MyTabsListener(fragmentA));
-	    tabB.setTabListener(new MyTabsListener(fragmentB));
-
-	    bar.addTab(tabA);
-	    bar.addTab(tabB);
-
-	}
-	@Override
-	protected void onResume() {
-	 super.onResume();
-
-	 checkDownloadStatus();
-
-	 IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-	 registerReceiver(downloadReceiver, intentFilter);
-	 
-	}
-
-	@Override
-	protected void onPause() {
-	 super.onPause();
-	 unregisterReceiver(downloadReceiver);
-	}
-    @Override
-    protected void onNewIntent(Intent intent) {
-       Bundle extras = intent.getExtras();
-       if (extras != null) {
-    	   final String filename = extras.getString("filename");
-    	   final String url = extras.getString("url");
-    	   final String size = extras.getString("size");
-       new AlertDialog.Builder(this)
-	    .setTitle("Warning")
-	    .setMessage("Are you sure you want to download "+filename+" ("+size+")")
-	    .setNegativeButton("No", null)
-	    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				do_download(filename,url);
-				
-			}
-		})
-	    .setIcon(android.R.drawable.ic_dialog_alert)
-	    .show();
-    	}
-    }
-
-	
-    protected class MyTabsListener implements ActionBar.TabListener {
-
-        private Fragment fragment;
-
-        public MyTabsListener(Fragment fragment) {
-            this.fragment = fragment;
-        }
-
-        public void onTabReselected(Tab tab, FragmentTransaction ft) {
-        }
-
-        public void onTabSelected(Tab tab, FragmentTransaction ft) {
-            ft.add(R.id.fragment_container, fragment);
-        }
-
-        public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-            // some people needed this line as well to make it work: 
-            ft.remove(fragment);
-        }
-    }
-    
 }
 

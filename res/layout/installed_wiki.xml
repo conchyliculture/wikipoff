@@ -22,28 +22,28 @@
          >
 
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/installedwikiheader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dip"
         	android:textAppearance="?android:attr/textAppearanceListItem"
 			android:text="lolilol"
 			android:focusableInTouchMode="false"
-android:clickable="false"
-android:focusable="false"
+			android:clickable="false"
+			android:focusable="false"
 			 />
 
         <TextView
-            android:id="@+id/text2"
+            android:id="@+id/installedwikifooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/text1"
-    		android:layout_alignStart="@id/text1"
+            android:layout_below="@id/installedwikiheader"
+    		android:layout_alignStart="@id/installedwikiheader"
         	android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="lolilol"
             android:focusableInTouchMode="false"
-android:clickable="false"
-android:focusable="false"
+			android:clickable="false"
+			android:focusable="false"
              />
     </LinearLayout>
 <RadioButton

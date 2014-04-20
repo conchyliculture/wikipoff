@@ -43,6 +43,7 @@ This file is part of WikipOff.
     <string name="config_key_use_mathjax">usermathjax</string>
     <string name="config_key_available_database">config_key_available_database</string>
     <string name="config_key_nb_list_random">config_key_nb_list_random</string>
+    <string name="config_key_downloadid">config_key_downloadid</string>
     
     <!--  Text strings in GUI -->
     <!--       menus       -->
