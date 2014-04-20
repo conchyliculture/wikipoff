@@ -22,7 +22,7 @@ This file is part of WikipOff.
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/installedwikisfragment">
+    android:id="@+id/installedwikisfragment"> 
 
     <ListView
         android:id="@+id/installedwikislistview"

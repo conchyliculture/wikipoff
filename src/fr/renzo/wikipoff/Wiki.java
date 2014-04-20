@@ -7,12 +7,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseCorruptException;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class Wiki {
 	private static final String TAG = "WIKI";
@@ -84,7 +85,6 @@ public class Wiki {
 		try {
 			this.gendate = sdf.parse(gendate);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -196,7 +196,10 @@ public class Wiki {
 		return null;
 	}
 	public boolean isSelected() {
-		if (context.getString(R.string.config_key_selecteddbfile).equals(getFilename())) {
+		String key =context.getString(R.string.config_key_selecteddbfile);
+		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
+		String sel_db=config.getString(key, "");
+		if (sel_db.equals(getFilename())) {
 			return true;
 		} else {
 			return false;

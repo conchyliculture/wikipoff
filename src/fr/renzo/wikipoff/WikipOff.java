@@ -33,14 +33,12 @@ public class WikipOff extends Application {
 
     private static final String TAG = "WikipOff";
     public static SharedPreferences config;
-    private Context context ;
 	public File DBDir;
 	public Database dbHandler;
 	
     public void onCreate(){
     	super.onCreate();
     	
-    	context=getApplicationContext();
     	DBDir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
     	config = PreferenceManager.getDefaultSharedPreferences(this);  	
     	createEnv();

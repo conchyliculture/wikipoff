@@ -3,11 +3,9 @@ package fr.renzo.wikipoff;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,11 +21,7 @@ import android.widget.Toast;
 
 public class ManageDatabasesActivity extends ActionBarActivity {
     public static final String TAG = "ManageDatabasesActivity";
-	
-	//private BroadcastReceiver downloadReceiver;
-
 	private DownloadManager downloadManager;
-
 	private long downloadid;
 		 
 	
@@ -36,23 +30,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		Log.d(TAG,"created");
 		setTitle("Manage your 'Wikis'");
 		this.downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-//		this.downloadReceiver = new BroadcastReceiver() {
-//
-//			@Override
-//			public void onReceive(Context context, Intent intent) {
-//		    	
-//				String action = intent.getAction();
-//				Log.d(TAG,"Got intent with action: "+action+" "+context.getPackageName());
-//				if (DownloadManager.ACTION_NOTIFICATION_CLICKED.equals(action)) {
-//					Log.d(TAG,"trying to stop");
-//					Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
-//					i.putExtra("command", "stopdownload");
-//					context.startActivity(i);
-//				}
-//				checkDownloadStatus(context);
-//			}
-//			
-//		};
 
 		setContentView(R.layout.activity_manage_databases);
 		
@@ -74,13 +51,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	}
 	@Override
 	protected void onResume() {
-	 super.onResume();
-
-//	 checkDownloadStatus();
-//
-//	 IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-//	 registerReceiver(downloadReceiver, intentFilter);
-	 
+	 super.onResume();	 
 	}
 
 	
@@ -95,11 +66,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		}
 		checkDownloadStatus(context);
 	}
-//	@Override
-//	protected void onPause() {
-//	 super.onPause();
-//	 unregisterReceiver(downloadReceiver);
-//	}
+
     @Override
     protected void onNewIntent(Intent intent) {
     	Bundle extras = intent.getExtras();
@@ -121,7 +88,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
     		.show();
     	}
     }
-    
     
     protected class MyTabsListener implements ActionBar.TabListener {
 

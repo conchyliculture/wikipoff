@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
@@ -22,6 +23,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -103,7 +106,6 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			return data.size();
 		}
 
-
 		@Override
 		public Object getItem(int position) {
 			return data.get(position);
@@ -138,18 +140,32 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			TextView bot = (TextView ) convertView.findViewById(R.id.installedwikifooter);
 			bot.setText(w.getFilename()+" "+w.getLocalizedGendate());
 			RadioButton rb = (RadioButton) convertView.findViewById(R.id.radio);
-			rb.setChecked(position == selectedPosition);
+			rb.setChecked(w.isSelected());
 			rb.setTag(position);
 			rb.setOnClickListener(this);
 			return convertView;
 		}
 	}
 
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Wiki wiki = wikis.get(position);
 		Log.d(TAG,"Clicked on "+wiki.toString());
 		config.edit().putString(context.getString(R.string.config_key_selecteddbfile),wiki.getFilename() ).commit();
+		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
+		rb.setSelected(true);
+		for (int i = 0; i < wikis.size(); i++) {
+			View ll = (View) installedwikislistview.getChildAt(i);
+			RadioButton rbb =(RadioButton) ll.findViewById(R.id.radio);
+			if (i!=position) {
+				rbb.setChecked(false);
+			} else {
+				rbb.setChecked(true);
+
+			}
+		}
+
+
+		
 	}
 }

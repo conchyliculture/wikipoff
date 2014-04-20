@@ -28,9 +28,9 @@ This file is part of WikipOff.
         android:title="@string/pref_mathjax"
         android:summary="@string/pref_mathjax_summ"
         android:defaultValue="false" />
-        <ListPreference
+        <!--  ListPreference
         android:id="@+id/action_set_database"
         android:key="@string/config_key_selecteddbfile"
-        android:title="@string/action_set_database"/>
+        android:title="@string/action_set_database"/-->
 
 </PreferenceScreen>
