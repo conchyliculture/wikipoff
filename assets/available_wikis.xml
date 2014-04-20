@@ -7,7 +7,7 @@
         <gendate>2014-04-15 00:00:00</gendate>
         <version>2.5</version>
         <filename>frwiki.sqlite</filename>
-        
+        <size>2500000000</size>
     </wiki>
     <wiki>
         <type>wikipedia</type>
@@ -16,13 +16,15 @@
         <gendate>2014-04-15 00:00:00</gendate>
         <version>2.5</version>
         <filename>enwiki.sqlite</filename>
+        <size>0</size>
     </wiki>
     <wiki>
         <type>wikipedia</type>
         <lang>eu</lang>
-        <url>http://renzokuken.eu/eu.wiki.sqlite</url>
+        <url>http://10.0.3.35/eu.wiki.sqlite</url>
         <gendate>2014-04-19 00:00:00</gendate>
         <version>2.5</version>
         <filename>eu.wiki.sqlite</filename>
+        <size>0</size>
     </wiki>
 </root>

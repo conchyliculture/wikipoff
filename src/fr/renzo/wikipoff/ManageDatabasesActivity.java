@@ -1,9 +1,11 @@
 package fr.renzo.wikipoff;
 
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -14,6 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 public class ManageDatabasesActivity extends ActionBarActivity {
@@ -73,7 +76,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 					failedReason = "ERROR_UNKNOWN";
 					break;
 				}
-
+				Log.d(TAG,"FAILED: " + failedReason);
 				Toast.makeText(this,
 						"FAILED: " + failedReason,
 						Toast.LENGTH_LONG).show();
@@ -95,25 +98,36 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 					pausedReason = "PAUSED_WAITING_TO_RETRY";
 					break;
 				}
-
+				Log.d(TAG,"PAUSED: " + pausedReason);
 				Toast.makeText(this,
 						"PAUSED: " + pausedReason,
 						Toast.LENGTH_LONG).show();
 				break;
 			case DownloadManager.STATUS_PENDING:
+//				Toast.makeText(this,
+//						"PENDING",
+//						Toast.LENGTH_LONG).show();
+				Log.d(TAG,"Download started");
 				Toast.makeText(this,
-						"PENDING",
+						"Download started",
 						Toast.LENGTH_LONG).show();
 				break;
 			case DownloadManager.STATUS_RUNNING:
+				Log.d(TAG,"Download running");
 				Toast.makeText(this,
 						"RUNNING",
 						Toast.LENGTH_LONG).show();
 				break;
 			case DownloadManager.STATUS_SUCCESSFUL:
-
+				Log.d(TAG,"Download done");
 				Toast.makeText(this,
 						"SUCCESSFUL",
+						Toast.LENGTH_LONG).show();
+				break;
+			default:
+				Log.d(TAG,"WTF "+status);
+				Toast.makeText(this,
+						"WTF"+status,
 						Toast.LENGTH_LONG).show();
 				break;
 			}
@@ -122,8 +136,8 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 	private void do_download(String filename, String url){
 		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-		request.setDescription("Some descrition");
-		request.setTitle("Some title");
+		request.setDescription("Downloading from "+url);
+		request.setTitle(filename);
 		request.setDestinationInExternalPublicDir(this.getString(R.string.DBDir), filename);
 		request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 		// get download service and enqueue file
@@ -133,31 +147,26 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	}
 	
 	protected void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState);
+		setTitle("Manage your 'Wikis'");
 		downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
 
 		setContentView(R.layout.activity_manage_databases);
-
 		
 		ActionBar bar = getSupportActionBar();
 	    bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 	    
-	    ActionBar.Tab tabA = bar.newTab().setText("A Tab");
-	    ActionBar.Tab tabB = bar.newTab().setText("B Tab");
-	    ActionBar.Tab tabC = bar.newTab().setText("C Tab");
+	    ActionBar.Tab tabA = bar.newTab().setText("Downloaded Wikis");
+	    ActionBar.Tab tabB = bar.newTab().setText("Available Wikis");
 
 	    Fragment fragmentA = new TabInstalledFragment();
 	    Fragment fragmentB = new TabAvailableFragment();
-	    Fragment fragmentC = new TabCustomFragment();
 
 	    tabA.setTabListener(new MyTabsListener(fragmentA));
 	    tabB.setTabListener(new MyTabsListener(fragmentB));
-	    tabC.setTabListener(new MyTabsListener(fragmentC));
+
 	    bar.addTab(tabA);
 	    bar.addTab(tabB);
-	    bar.addTab(tabC);
-
 
 	}
 	@Override
@@ -166,9 +175,9 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 	 checkDownloadStatus();
 
-	 IntentFilter intentFilter
-	  = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+	 IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
 	 registerReceiver(downloadReceiver, intentFilter);
+	 
 	}
 
 	@Override
@@ -180,7 +189,22 @@ public class ManageDatabasesActivity extends ActionBarActivity {
     protected void onNewIntent(Intent intent) {
        Bundle extras = intent.getExtras();
        if (extras != null) {
-    	   do_download(extras.getString("filename"), extras.getString("url"));
+    	   final String filename = extras.getString("filename");
+    	   final String url = extras.getString("url");
+    	   final String size = extras.getString("size");
+       new AlertDialog.Builder(this)
+	    .setTitle("Warning")
+	    .setMessage("Are you sure you want to download "+filename+" ("+size+")")
+	    .setNegativeButton("No", null)
+	    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				do_download(filename,url);
+				
+			}
+		})
+	    .setIcon(android.R.drawable.ic_dialog_alert)
+	    .show();
     	}
     }
 
@@ -205,5 +229,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
             ft.remove(fragment);
         }
     }
+    
 }
 

@@ -40,7 +40,6 @@ This file is part of WikipOff.
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:name="fr.renzo.wikipoff.WikipOff"
-        android:installLocation="preferExternal" 
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
         <activity
             android:name="fr.renzo.wikipoff.MainActivity"
@@ -54,7 +53,7 @@ This file is part of WikipOff.
             android:name="fr.renzo.wikipoff.ArticleActivity"
             android:label="articleactivity" >
         </activity>
-                <activity
+         <activity
             android:name="fr.renzo.wikipoff.ManageDatabasesActivity"
             android:label="managedatabasesactivity" >
         </activity>
@@ -63,9 +62,13 @@ This file is part of WikipOff.
             android:name="fr.renzo.wikipoff.SettingsActivity"
             android:label="settingsactivity" >
         </activity>
-        <activity android:name="fr.renzo.wikipoff.TabCustomActivity" />
-        <activity android:name="fr.renzo.wikipoff.TabInstalledActivity" />
-        <activity android:name="fr.renzo.wikipoff.TabAvailableActivity" />
+        <!-- receiver android:name="fr.renzo.wikipoff.Pute">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"></action>
+            </intent-filter>
+        </receiver-->
+
     </application>
 
 </manifest>

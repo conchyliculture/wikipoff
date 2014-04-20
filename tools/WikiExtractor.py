@@ -110,6 +110,7 @@ class OutputSqlite:
                                                                   title_to VARCHAR(255))''')
         self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key VARCHAR(255), value VARCHAR(255));''')
         self.set_gen_date(strftime("%Y-%m-%d %H:%M:%S"))
+        self.set_type("wikipedia")
         self.set_version(version)
         self.conn.commit()
         self.curr_values=[]
@@ -126,6 +127,9 @@ class OutputSqlite:
 
     def set_version(self,version):
         self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('version',?)",(version,))
+
+    def set_type(self,stype):
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('type',?)",(stype,))
 
     def reserve(self,size):
         pass

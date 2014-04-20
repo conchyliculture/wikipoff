@@ -23,7 +23,7 @@ This file is part of WikipOff.
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/availablewikisfragment" >
-
+	
     <ListView
         android:id="@+id/availablewikislistview"
         android:layout_width="match_parent"
