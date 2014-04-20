@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,11 +18,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CheckedTextView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -165,7 +159,5 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			}
 		}
 
-
-		
-	}
+	}	
 }
