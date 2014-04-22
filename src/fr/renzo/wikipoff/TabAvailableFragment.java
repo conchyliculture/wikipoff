@@ -28,12 +28,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class TabAvailableFragment extends Fragment implements OnItemClickListener {
 	private static final String TAG = "TabAvailableActivity";
-	private static final String available_db_xml_file="available_wikis.xml";
+	private static final String available_db_xml_file="available_wikis.xml"; // TODO : move in xml
 	private ArrayList<Wiki> wikis=new ArrayList<Wiki>();
 	private ListView availablewikislistview;
 	private Context context;
@@ -41,6 +42,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		context=getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,null);
 		try {
@@ -55,6 +57,18 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		return wholeview ;
 	}
 
+	private void enableProgressBar(View v){
+		ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
+		pb.setVisibility(View.VISIBLE);
+	}
+
+	public  void disableAllProgressBar(){
+		for (int i = 0; i < availablewikislistview.getChildCount(); i++) {
+			View v = availablewikislistview.getChildAt(i);
+			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
+			pb.setVisibility(View.INVISIBLE);
+		}
+	}
 
 	private ArrayList<Wiki> loadInstalledDB() throws IOException {
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
@@ -133,10 +147,11 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		});
 		return res;
 	}
-	
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Wiki wiki = this.wikis.get(position);
+		final int index = position;
+		Wiki wiki = this.wikis.get(index);
 		Log.d(TAG,"Clicked on "+wiki.toString());
 		File already_there;
 		try {
@@ -144,7 +159,8 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 			if (already_there == null) {
 				Log.d(TAG, "we need to dl "+wiki.getUrl());
-				this.download(wiki);
+				this.download(index);
+
 			} else {
 				Toast.makeText(context, "The wiki is already installed "+ already_there, Toast.LENGTH_LONG).show();
 			}
@@ -153,50 +169,60 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		}
 	}
 
+	private Intent makeWikiIntent(Wiki wiki) {
+		Intent i = new Intent(context, ManageDatabasesActivity.class);
+		i.putExtra("command", "startdownload");
+		i.putExtra("wiki", wiki);
+		i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		return i;
+	}
 
-	private void download(Wiki wiki) {
+	private void do_download(int position) {
+		Wiki wiki = wikis.get(position);
+		View view = availablewikislistview.getChildAt(position);
+		enableProgressBar(view);
+		Intent i = makeWikiIntent(wiki);
+		startActivity(i);
+	}
+
+	private void download(final int position) {
+		Wiki wiki = this.wikis.get(position);
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-		final String url=wiki.getUrl();
-		final String filename=wiki.getFilename();
-		final String size=wiki.getSizeReadable(true);
 		if (wifi.isConnected()) {
 			Log.d(TAG,"Using wifi!");
-			Intent i = new Intent(context, ManageDatabasesActivity.class);
-			i.putExtra("command", "startdownload");
-			i.putExtra("filename",filename);
-			i.putExtra("url",url);
-			i.putExtra("size", size);
-			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			startActivity(i);
-
+			new AlertDialog.Builder(context)
+			.setTitle("Warning")
+			.setMessage("Are you sure you want to download "+wiki.getFilename()+" ("+wiki.getSizeReadable(true)+")")
+			.setNegativeButton("No", null)
+			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					do_download(position);
+				}
+			})
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.show();
 		} else {
 			new AlertDialog.Builder(context)
 			.setTitle("No Wifi detected")
-			.setMessage("Are you sure you want to download this huge file ("+size+"Kb) without WIFI?")
+			.setMessage("Are you sure you want to download this huge file ("+wiki.getSizeReadable(true)+"Kb) without WIFI?")
 			.setNegativeButton("No", null)
 			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					Intent i = new Intent(context, ManageDatabasesActivity.class);
-					i.putExtra("command", "startdownload");
-					i.putExtra("filename",filename);
-					i.putExtra("url",url);
-					i.putExtra("size", size);
-					i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-					startActivity(i);
+					do_download(position);
 				}
 			})
 			.setIcon(android.R.drawable.ic_dialog_alert)
 			.show();
 		}
 	}
+
 	public class AvailableWikisListViewAdapter extends BaseAdapter {
 		private LayoutInflater inflater;
 		private ArrayList<Wiki> data;
 		public AvailableWikisListViewAdapter(Context context, ArrayList<Wiki> data){
-			// Caches the LayoutInflater for quicker use
 			this.inflater = LayoutInflater.from(context);
-			// Sets the events data
 			this.data= data;
 		}
 		@Override
@@ -232,5 +258,4 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			return convertView;
 		}
 	}
-
 }
