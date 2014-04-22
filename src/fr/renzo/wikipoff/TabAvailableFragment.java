@@ -41,7 +41,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context=getActivity().getApplicationContext();
+		context=getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,null);
 		try {
 			this.wikis=loadInstalledDB();
@@ -162,7 +162,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		final String size=wiki.getSizeReadable(true);
 		if (wifi.isConnected()) {
 			Log.d(TAG,"Using wifi!");
-			Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
+			Intent i = new Intent(context, ManageDatabasesActivity.class);
 			i.putExtra("command", "startdownload");
 			i.putExtra("filename",filename);
 			i.putExtra("url",url);
@@ -177,7 +177,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			.setNegativeButton("No", null)
 			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					Intent i = new Intent(context.getApplicationContext(), ManageDatabasesActivity.class);
+					Intent i = new Intent(context, ManageDatabasesActivity.class);
 					i.putExtra("command", "startdownload");
 					i.putExtra("filename",filename);
 					i.putExtra("url",url);
