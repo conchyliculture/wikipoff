@@ -1,6 +1,7 @@
 package fr.renzo.wikipoff;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,16 +16,18 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class Wiki {
+public class Wiki implements Serializable {
+
+	private static final long serialVersionUID = -4809830901675667519L;
 	private static final String TAG = "WIKI";
 	private String type;
 	private String lang;
 	private String url;
 	private String filename;
-	private Date gendate;
+	private String date;
 	private String version;
 	private long size;
-	private Context context;
+	private transient Context context; 
 	
 	public long getSize() {
 		return size;
@@ -46,9 +49,13 @@ public class Wiki {
 		return type;
 	}
 	public String toString(){
-		return this.type+" "+this.lang+" "+this.gendate;
+		return this.type+" "+this.lang+" "+this.getDateAsString();
 	}
 	
+	public String getDateAsString() {
+		return this.date.toString();
+	}
+
 	public String getFilename(){
 		return this.filename;
 	}
@@ -76,17 +83,23 @@ public class Wiki {
 		this.url = url;
 	}
 
-	public Date getGendate() {
-		return gendate;
+	public String getGendate() {
+		return this.date;
 	}
 
-	public void setGendate(String gendate) {
+	public Date getDate() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
-			this.gendate = sdf.parse(gendate);
+			return sdf.parse(this.date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+	
+	public void setGendate(String date) {
+		this.date = date;
+		
 	}
 
 	public String getVersion() {
@@ -117,7 +130,6 @@ public class Wiki {
 	            do {
 	                String k = c.getString(0);
 	                String v = c.getString(1);
-	                Log.d(TAG,k+":"+v);
 	                if (k.equals("lang")) {
 	                	setLang(v);
 	                } else if (k.equals("type")) {
@@ -154,7 +166,6 @@ public class Wiki {
 		            do {
 		                String k = c.getString(0);
 		                String v = c.getString(1);
-		                Log.d(TAG,k+":"+v);
 		                if (k.equals("lang")) {
 		                	if (! v.equals(this.lang)){
 		                		Log.d(TAG,"Not okay: "+sqlitefilename);
@@ -170,9 +181,9 @@ public class Wiki {
 		                	}
 		                }
 		                if (k.equals("date")) {
-		                	if (! v.equals(this.gendate)){
+		                	if (! v.equals(this.date)){
 		                		Log.d(TAG,"Not okay: "+sqlitefilename);
-			                	Log.d(TAG,"date:"+v+"should be: "+this.gendate);
+			                	Log.d(TAG,"date:"+v+"should be: "+this.date);
 			                	break;
 		                	}
 		                }
@@ -207,7 +218,7 @@ public class Wiki {
 	}
 	public String getLocalizedGendate() {
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		return dateFormat.format(this.getGendate());
+		return dateFormat.format(getDate());
 	}
 
 }
