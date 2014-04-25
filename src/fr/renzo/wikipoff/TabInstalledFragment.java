@@ -47,7 +47,6 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
 
 		installedwikislistview= (ListView) wholeview.findViewById(R.id.installedwikislistview);
-		installedwikislistview.removeAllViewsInLayout();
 		installedwikislistview.setAdapter(adapter);
 		installedwikislistview.setOnItemClickListener(this);
 
