@@ -28,7 +28,7 @@ import android.widget.Toast;
 public class TabInstalledFragment extends Fragment implements OnItemClickListener {
 	private SharedPreferences config;
 	private File rootDbDir;
-	private ArrayList<Wiki> wikis=new ArrayList<Wiki>();
+	private ArrayList<Wiki> installedwikis=new ArrayList<Wiki>();
 	private ListView installedwikislistview;
 	private Context context;
 	private View wholeview;
@@ -42,13 +42,12 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
 
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,null);
+		this.installedwikis=loadInstalledDb();
 
-		this.wikis=loadInstalledDb();
-		Log.d(TAG,"Size:"+this.wikis.size());
-
-		MyAdapter adapter = new MyAdapter(getActivity(),  this.wikis); 
+		InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
 
 		installedwikislistview= (ListView) wholeview.findViewById(R.id.installedwikislistview);
+		installedwikislistview.removeAllViewsInLayout();
 		installedwikislistview.setAdapter(adapter);
 		installedwikislistview.setOnItemClickListener(this);
 
@@ -57,6 +56,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	}
 
 	private ArrayList<Wiki> loadInstalledDb() {
+		
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		for (File f : rootDbDir.listFiles()) {
 			String name = f.getName();
@@ -85,11 +85,11 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	}
 
 
-	public class MyAdapter extends BaseAdapter implements OnClickListener {
+	public class InstalledWikisListViewAdapter extends BaseAdapter implements OnClickListener {
 		private LayoutInflater inflater;
 		private ArrayList<Wiki> data;
 		private int selectedPosition = 0;
-		public MyAdapter(Context context, ArrayList<Wiki> data){
+		public InstalledWikisListViewAdapter(Context context, ArrayList<Wiki> data){
 			// Caches the LayoutInflater for quicker use
 			this.inflater = LayoutInflater.from(context);
 			// Sets the events data
@@ -128,7 +128,6 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 				// Inflates the Common View from XML file
 				convertView = this.inflater.inflate(R.layout.installed_wiki, null);
 			}
-
 			TextView header = (TextView ) convertView.findViewById(R.id.installedwikiheader);
 			header.setText(w.getType()+" "+w.getLanglocal());
 			TextView bot = (TextView ) convertView.findViewById(R.id.installedwikifooter);
@@ -143,12 +142,12 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Wiki wiki = wikis.get(position);
+		Wiki wiki = installedwikis.get(position);
 		Log.d(TAG,"Clicked on "+wiki.toString());
 		config.edit().putString(context.getString(R.string.config_key_selecteddbfile),wiki.getFilename() ).commit();
 		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
 		rb.setSelected(true);
-		for (int i = 0; i < wikis.size(); i++) {
+		for (int i = 0; i < installedwikis.size(); i++) {
 			View ll = (View) installedwikislistview.getChildAt(i);
 			RadioButton rbb =(RadioButton) ll.findViewById(R.id.radio);
 			if (i!=position) {
