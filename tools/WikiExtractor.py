@@ -69,6 +69,7 @@ import wikitools
 import wikiglobals
 import pylzma
 from time import strftime
+import datetime
 
 
 #=========================================================================
@@ -88,14 +89,17 @@ from time import strftime
 # Program version
 version = '2.5'
 dbversion = "0.0.0.1"
+languagedb="languages.sqlite"
 
 ##### Main function ###########################################################
 
 inputsize = 0
 
 class OutputSqlite:
-    def __init__(self, sqlite_file):
+    def __init__(self, sqlite_file,sqlite_lang):
         global dbversion
+        self.sqlite_lang=sqlite_lang
+        self.connlang = sqlite3.connect(sqlite_lang)
         self.sqlite_file=sqlite_file
         self.conn = sqlite3.connect(sqlite_file)
         self.conn.isolation_level="EXCLUSIVE"
@@ -120,7 +124,21 @@ class OutputSqlite:
         self.curs.execute("INSERT INTO redirects VALUES (NULL,?,?)",(from_,to_))
 
     def set_lang(self,lang):
-        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang',?)",(lang,))
+        if (self.curslang == None):
+            self.curslang = self.connlang.cursor()
+
+        self.curslang.execute("SELECT english,local FROM languages WHERE code LIKE '?'",lang)
+        e,l = self.curslang.fetchone()
+        self.curslang.close()
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-code',?)",(lang,))
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-local',?)",(l,))
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-english',?)",(e,))
+
+    def set_langlocal(self,lang):
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-local',?)",(lang,))
+
+    def set_langenglish(self,lang):
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-english',?)",(lang,))
 
     def set_gen_date(self,sdate):
         self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('date',?)",(sdate,))
@@ -297,6 +315,10 @@ def main():
 
     if os.path.isfile(output_file):
         print("%s already exists. Won't overwrite it."%output_file)
+        sys.exit(1)
+
+    if not os.path.isfile(languagedb):
+        print("%s doesn't exists. Please create it."%languagedb)
         sys.exit(1)
 
     input = open(input_file,"r")
