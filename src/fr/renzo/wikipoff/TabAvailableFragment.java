@@ -35,7 +35,7 @@ import android.widget.Toast;
 public class TabAvailableFragment extends Fragment implements OnItemClickListener {
 	private static final String TAG = "TabAvailableActivity";
 	private static final String available_db_xml_file="available_wikis.xml"; // TODO : move in xml
-	private ArrayList<Wiki> wikis=new ArrayList<Wiki>();
+	private ArrayList<Wiki> availablewikis=new ArrayList<Wiki>();
 	private ListView availablewikislistview;
 	private Context context;
 	private View wholeview;
@@ -46,13 +46,13 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		context=getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,null);
 		try {
-			this.wikis=loadInstalledDB();
+			this.availablewikis=loadAvailableDB();
 		} catch (IOException e) {
 			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 		availablewikislistview= (ListView) wholeview.findViewById(R.id.availablewikislistview);
 		availablewikislistview.setOnItemClickListener(this);
-		AvailableWikisListViewAdapter adapter = new AvailableWikisListViewAdapter(getActivity(),  this.wikis); 
+		AvailableWikisListViewAdapter adapter = new AvailableWikisListViewAdapter(getActivity(),  this.availablewikis); 
 		availablewikislistview.setAdapter(adapter);
 		return wholeview ;
 	}
@@ -72,7 +72,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		}
 	}
 
-	private ArrayList<Wiki> loadInstalledDB() throws IOException {
+	private ArrayList<Wiki> loadAvailableDB() throws IOException {
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		BufferedReader reader = null;
 		try {
@@ -157,7 +157,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		final int index = position;
-		Wiki wiki = this.wikis.get(index);
+		Wiki wiki = this.availablewikis.get(index);
 		Log.d(TAG,"Clicked on "+wiki.toString());
 		File already_there;
 		try {
@@ -184,7 +184,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	}
 
 	private void do_download(int position) {
-		Wiki wiki = wikis.get(position);
+		Wiki wiki = availablewikis.get(position);
 		View view = availablewikislistview.getChildAt(position);
 		enableProgressBar(view);
 		Intent i = makeWikiIntent(wiki);
@@ -192,7 +192,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	}
 
 	private void download(final int position) {
-		Wiki wiki = this.wikis.get(position);
+		Wiki wiki = this.availablewikis.get(position);
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		if (wifi.isConnected()) {
