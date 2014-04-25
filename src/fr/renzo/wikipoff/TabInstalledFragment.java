@@ -43,7 +43,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,null);
 
-		this.wikis=loadAvailableDb();
+		this.wikis=loadInstalledDb();
 		Log.d(TAG,"Size:"+this.wikis.size());
 
 		MyAdapter adapter = new MyAdapter(getActivity(),  this.wikis); 
@@ -56,7 +56,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 	}
 
-	private ArrayList<Wiki> loadAvailableDb() {
+	private ArrayList<Wiki> loadInstalledDb() {
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		for (File f : rootDbDir.listFiles()) {
 			String name = f.getName();
@@ -72,10 +72,10 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		}
 		Collections.sort(res, new Comparator<Wiki>() {
 			public int compare(Wiki w1, Wiki w2) {
-				if (w1.getLang().equals(w2.getLang())) {
+				if (w1.getLangcode().equals(w2.getLangcode())) {
 					return w1.getGendate().compareTo(w2.getGendate());
 				} else {
-					return w1.getLang().compareToIgnoreCase(w2.getLang());
+					return w1.getLangcode().compareToIgnoreCase(w2.getLangcode());
 				}
 			}
 		}
@@ -130,7 +130,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			}
 
 			TextView header = (TextView ) convertView.findViewById(R.id.installedwikiheader);
-			header.setText(w.getType()+" "+w.getLang());
+			header.setText(w.getType()+" "+w.getLanglocal());
 			TextView bot = (TextView ) convertView.findViewById(R.id.installedwikifooter);
 			bot.setText(w.getFilename()+" "+w.getLocalizedGendate());
 			RadioButton rb = (RadioButton) convertView.findViewById(R.id.radio);
