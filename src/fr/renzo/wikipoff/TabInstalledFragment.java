@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -49,7 +51,20 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		installedwikislistview= (ListView) wholeview.findViewById(R.id.installedwikislistview);
 		installedwikislistview.setAdapter(adapter);
 		installedwikislistview.setOnItemClickListener(this);
+		installedwikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
 
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				Wiki wiki = installedwikis.get(position);
+				Log.d(TAG,"Clicked on "+wiki.toString());
+				
+				
+				Intent outputintent = new Intent(context, DeleteDatabaseActivity.class);
+				outputintent.putExtra("dbtodelete", wiki.getFilename());
+				startActivity(outputintent);
+				return true;
+			}
+		});
 		return wholeview;
 
 	}
@@ -156,6 +171,11 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 			}
 		}
+	}
 
-	}	
+	
+	
+
+
+
 }
