@@ -21,7 +21,10 @@ public class Wiki implements Serializable {
 	private static final long serialVersionUID = -4809830901675667519L;
 	private static final String TAG = "WIKI";
 	private String type;
-	private String lang;
+	private String langcode;
+	private String langenglish;
+	
+	private String langlocal;
 	private String url;
 	private String filename;
 	private String date;
@@ -49,7 +52,7 @@ public class Wiki implements Serializable {
 		return type;
 	}
 	public String toString(){
-		return this.type+" "+this.lang+" "+this.getDateAsString();
+		return this.type+" "+this.langlocal+" "+this.getDateAsString();
 	}
 	
 	public String getDateAsString() {
@@ -67,12 +70,24 @@ public class Wiki implements Serializable {
 		this.type = type;
 	}
 
-	public String getLang() {
-		return lang;
+	public String getLangcode() {
+		return langcode;
 	}
 
-	public void setLang(String lang) {
-		this.lang = lang;
+	public void setLangcode(String langcode) {
+		this.langcode= langcode;
+	}
+	public String getLangenglish() {
+		return langenglish;
+	}
+	public void setLangenglish(String langenglish) {
+		this.langenglish = langenglish;
+	}
+	public String getLanglocal() {
+		return langlocal;
+	}
+	public void setLanglocal(String langlocal) {
+		this.langlocal = langlocal;
 	}
 
 	public String getUrl() {
@@ -131,9 +146,13 @@ public class Wiki implements Serializable {
 	                String k = c.getString(0);
 	                String v = c.getString(1);
 	                if (k.equals("lang")) {
-	                	setLang(v);
+	                	setLangcode(v);
 	                } else if (k.equals("type")) {
 						setType(v);
+					} else if (k.equals("lang-local")) {
+						setLanglocal(v);
+					} else if (k.equals("lang-english")) {
+						setLangenglish(v);
 					} else if (k.equals("date")) {
 						setGendate(v);
 					} else if (k.equals("version")) {
@@ -167,9 +186,9 @@ public class Wiki implements Serializable {
 		                String k = c.getString(0);
 		                String v = c.getString(1);
 		                if (k.equals("lang")) {
-		                	if (! v.equals(this.lang)){
+		                	if (! v.equals(this.langcode)){
 		                		Log.d(TAG,"Not okay: "+sqlitefilename);
-			                	Log.d(TAG,"lang: "+v+"should be: "+this.lang);
+			                	Log.d(TAG,"lang: "+v+"should be: "+this.langcode);
 			                	break;
 		                	}
 		                }
