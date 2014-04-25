@@ -171,7 +171,6 @@ public class ArticleActivity extends Activity {
 		int len=300;
 		if (data.length()<300)
 			len=data.length();
-		Log.d(TAG,data.substring(0,len));
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html; charset=UTF-8",null,null);
 	}
 	

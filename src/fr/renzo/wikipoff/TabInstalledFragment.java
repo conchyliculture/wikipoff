@@ -56,9 +56,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				Wiki wiki = installedwikis.get(position);
-				Log.d(TAG,"Clicked on "+wiki.toString());
-				
-				
+
 				Intent outputintent = new Intent(context, DeleteDatabaseActivity.class);
 				outputintent.putExtra("dbtodelete", wiki.getFilename());
 				startActivity(outputintent);
@@ -70,7 +68,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	}
 
 	private ArrayList<Wiki> loadInstalledDb() {
-		
+
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		for (File f : rootDbDir.listFiles()) {
 			String name = f.getName();
@@ -157,7 +155,6 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Wiki wiki = installedwikis.get(position);
-		Log.d(TAG,"Clicked on "+wiki.toString());
 		config.edit().putString(context.getString(R.string.config_key_selecteddbfile),wiki.getFilename() ).commit();
 		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
 		rb.setSelected(true);
@@ -173,8 +170,8 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		}
 	}
 
-	
-	
+
+
 
 
 

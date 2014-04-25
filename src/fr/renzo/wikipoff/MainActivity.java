@@ -98,7 +98,6 @@ public class MainActivity extends Activity {
 		private void gogogo(CharSequence q){
 			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 			myIntent.putExtra("article_title",q );
-			Log.d(TAG,"coincoin "+q.getClass());
 			MainActivity.this.startActivity(myIntent);
 		}
 

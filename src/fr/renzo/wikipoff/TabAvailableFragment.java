@@ -158,20 +158,18 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		final int index = position;
 		Wiki wiki = this.availablewikis.get(index);
-		Log.d(TAG,"Clicked on "+wiki.toString());
 		File already_there;
 		try {
 			already_there = wiki.isAlreadyInstalled();
 
 			if (already_there == null) {
-				Log.d(TAG, "we need to dl "+wiki.getUrl());
 				this.download(index);
 
 			} else {
 				Toast.makeText(context, "The wiki is already installed "+ already_there, Toast.LENGTH_LONG).show();
 			}
 		} catch (WikiException e) {
-			Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+			//Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -196,7 +194,6 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		if (wifi.isConnected()) {
-			Log.d(TAG,"Using wifi!");
 			new AlertDialog.Builder(context)
 			.setTitle("Warning")
 			.setMessage("Are you sure you want to download "+wiki.getFilename()+" ("+wiki.getSizeReadable(true)+")")

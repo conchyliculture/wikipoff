@@ -94,9 +94,9 @@ public class Database   {
 	}
 	
 	public Cursor myRawQuery(String query, String[] objects ) throws DatabaseException {
-		Log.d(TAG,"SQL: "+query);
+		//Log.d(TAG,"SQL: "+query);
 		for (int i = 0; i < objects.length; i++) {
-			Log.d(TAG,"SQL: "+objects[i]);
+			//Log.d(TAG,"SQL: "+objects[i]);
 		}
 		Cursor c=null;
 		try {
@@ -193,7 +193,7 @@ public class Database   {
 				// *sigh* maybe there's a redirect
 				String redirtitle = getRedirectArticleTitle(title);
         		if (redirtitle!=null) {
-        			Log.d(TAG, "ah, we found a redirect => "+redirtitle);
+        			//Log.d(TAG, "ah, we found a redirect => "+redirtitle);
         			res=getArticleFromTitle(Html.fromHtml(redirtitle).toString());
         		}
         		if (res==null) {

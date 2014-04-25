@@ -19,7 +19,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(TAG,"created");
 		setTitle("Manage your 'Wikis'");
 
 		setContentView(R.layout.activity_manage_databases);
@@ -52,8 +51,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 				final Wiki wiki =(Wiki) extras.getSerializable("wiki");
 				do_download(wiki);
 			} else if (command.equals("stopdownloads")) {
-				//TabAvailableFragment fragment = (TabAvailableFragment) getSupportFragmentManager().findFragmentById(R.id.availablewikisfragment);
-				Log.d(TAG,"allez");
 				availableFragment.disableAllProgressBar();
 			}else {
 				Log.d(TAG,"Unkown command : "+ command);
