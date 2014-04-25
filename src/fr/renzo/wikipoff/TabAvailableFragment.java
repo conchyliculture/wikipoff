@@ -63,10 +63,12 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	}
 
 	public  void disableAllProgressBar(){
-		for (int i = 0; i < availablewikislistview.getChildCount(); i++) {
-			View v = availablewikislistview.getChildAt(i);
-			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
-			pb.setVisibility(View.INVISIBLE);
+		if (availablewikislistview!=null) {
+			for (int i = 0; i < availablewikislistview.getChildCount(); i++) {
+				View v = availablewikislistview.getChildAt(i);
+				ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
+				pb.setVisibility(View.INVISIBLE);
+			}
 		}
 	}
 
@@ -107,8 +109,12 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 						curwiki=null;
 					} else if (endt.equalsIgnoreCase("type")) {
 						curwiki.setType(curtext);
-					} else if (endt.equalsIgnoreCase("lang")) {
-						curwiki.setLang(curtext);
+					} else if (endt.equalsIgnoreCase("lang-code")) {
+						curwiki.setLangcode(curtext);
+					} else if (endt.equalsIgnoreCase("lang-english")) {
+						curwiki.setLangenglish(curtext);
+					} else if (endt.equalsIgnoreCase("lang-local")) {
+						curwiki.setLanglocal(curtext);
 					} else if (endt.equalsIgnoreCase("url")) {
 						curwiki.setUrl(curtext);
 					} else if (endt.equalsIgnoreCase("gendate")) {
@@ -138,10 +144,10 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		}
 		Collections.sort(res, new Comparator<Wiki>() {
 			public int compare(Wiki w1, Wiki w2) {
-				if (w1.getLang().equals(w2.getLang())) {
+				if (w1.getLangcode().equals(w2.getLangcode())) {
 					return w1.getGendate().compareTo(w2.getGendate());
 				} else {
-					return w1.getLang().compareToIgnoreCase(w2.getLang());
+					return w1.getLangcode().compareToIgnoreCase(w2.getLangcode());
 				}
 			}
 		});
@@ -251,7 +257,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 				convertView = this.inflater.inflate(R.layout.available_wiki, null);
 			}
 			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
-			header.setText(w.getType()+" "+w.getLang());
+			header.setText(w.getType()+" "+w.getLanglocal());
 			TextView bot = (TextView ) convertView.findViewById(R.id.availablewikifooter);
 			bot.setText(w.getFilename()+" "+w.getLocalizedGendate());
 
