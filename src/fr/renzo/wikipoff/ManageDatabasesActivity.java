@@ -1,9 +1,6 @@
 package fr.renzo.wikipoff;
 
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,25 +16,20 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setTitle("Manage your 'Wikis'");
-
+		ActionBar bar = getSupportActionBar();
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		setContentView(R.layout.activity_manage_databases);
-		if (savedInstanceState==null) {
-			ActionBar bar = getSupportActionBar();
-			bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		
-			Tab installedTab = bar.newTab().setText("Downloaded Wikis");
-			Tab availableTab = bar.newTab().setText("Available Wikis");
+		installedFragment = new TabInstalledFragment();
+		availableFragment = new TabAvailableFragment();
+		Tab installedTab = bar.newTab().setText("Downloaded Wikis");
+		Tab availableTab = bar.newTab().setText("Available Wikis");
+		installedTab.setTabListener(new MyTabsListener(installedFragment));
+		availableTab.setTabListener(new MyTabsListener(availableFragment));
 
-			installedFragment = new TabInstalledFragment();
-			availableFragment = new TabAvailableFragment();
-
-			installedTab.setTabListener(new MyTabsListener(installedFragment));
-			availableTab.setTabListener(new MyTabsListener(availableFragment));
-
-			bar.addTab(installedTab);
-			bar.addTab(availableTab);
-		}
+		bar.addTab(installedTab);
+		bar.addTab(availableTab);
 	}
 
 	@Override
@@ -47,11 +39,11 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 			String command = extras.getString("command");
 			if (command == null) {
 				Log.d(TAG,"Need a command");
-			} else if (command.equals("startdownload")) {
-				final Wiki wiki =(Wiki) extras.getSerializable("wiki");
-				do_download(wiki);
-			} else if (command.equals("stopdownloads")) {
-				availableFragment.disableAllProgressBar();
+			
+			} else if (command.equals("stopdownload")) {
+				int pos = extras.getInt("position");
+				availableFragment.stopAsync(pos);
+				
 			}else {
 				Log.d(TAG,"Unkown command : "+ command);
 			}
@@ -76,20 +68,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 			ft.remove(fragment);
 		}
-	}
-
-	public void do_download(Wiki wiki){
-		String url = wiki.getUrl();
-		String filename = wiki.getFilename();
-		DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-		request.setDescription("Downloading from "+url);
-		request.setTitle(filename);
-		request.setDestinationInExternalPublicDir(this.getString(R.string.DBDir), filename);
-		request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-		long dlid = ((DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request);
-		Log.d(TAG,"pushed id "+dlid);
-		//		Query q = new Query();
-		//		q.setFilterById(dlid);
 	}
 }
 

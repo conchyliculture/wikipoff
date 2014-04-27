@@ -72,13 +72,7 @@ This file is part of WikipOff.
             android:theme="@android:style/Theme.Dialog"
             android:label="deletedatabaseactivity" >
         </activity>
-        <receiver android:name="fr.renzo.wikipoff.BroadcastReceiverDownloadManager">
-            <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"></action>
-            </intent-filter>
-        </receiver>
-
+        
     </application>
 
 </manifest>

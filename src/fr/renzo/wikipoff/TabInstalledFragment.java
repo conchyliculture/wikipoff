@@ -39,11 +39,13 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		context= getActivity();
 		config = PreferenceManager.getDefaultSharedPreferences(context);
 		rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
-
+		
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,null);
+		if (savedInstanceState==null) {
 		this.installedwikis=loadInstalledDb();
 
 		InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
@@ -63,6 +65,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 				return true;
 			}
 		});
+		}
 		return wholeview;
 
 	}
@@ -78,7 +81,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 					w = new Wiki(context,f);
 					res.add(w);
 				} catch (WikiException e) {
-					Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+				//	Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 				}
 			}
 		}
