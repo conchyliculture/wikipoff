@@ -22,10 +22,10 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		setTitle("Manage your 'Wikis'");
 
 		setContentView(R.layout.activity_manage_databases);
-
-		ActionBar bar = getSupportActionBar();
-		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		if (savedInstanceState==null) {
+			ActionBar bar = getSupportActionBar();
+			bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
 			Tab installedTab = bar.newTab().setText("Downloaded Wikis");
 			Tab availableTab = bar.newTab().setText("Available Wikis");
 
