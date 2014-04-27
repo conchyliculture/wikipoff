@@ -165,14 +165,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 				rbb.setChecked(false);
 			} else {
 				rbb.setChecked(true);
-
 			}
 		}
 	}
-
-
-
-
-
-
 }
