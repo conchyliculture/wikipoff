@@ -24,7 +24,6 @@ package fr.renzo.wikipoff;
 import java.io.File;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
