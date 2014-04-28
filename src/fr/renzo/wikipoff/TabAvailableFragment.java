@@ -56,32 +56,32 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		context=getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,null);
 		if (savedInstanceState==null) {
-		try {
-			this.availablewikis=loadAvailableDB();
-		} catch (IOException e) {
-			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
-		}
-		availablewikislistview= (ListView) wholeview.findViewById(R.id.availablewikislistview);
-		availablewikislistview.setOnItemClickListener(this);
-		availablewikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				if (currentdownloads.contains(Integer.valueOf(position))) {
-				
-				Intent outputintent = new Intent(context, StopDownloadActivity.class);
-				outputintent.putExtra("position", position);
-				startActivity(outputintent);
-				}
-				return true;
+			try {
+				this.availablewikis=loadAvailableDB();
+			} catch (IOException e) {
+				Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
 			}
-		});
-		AvailableWikisListViewAdapter adapter = new AvailableWikisListViewAdapter(getActivity(),  this.availablewikis); 
-		availablewikislistview.setAdapter(adapter);
+			availablewikislistview= (ListView) wholeview.findViewById(R.id.availablewikislistview);
+			availablewikislistview.setOnItemClickListener(this);
+			availablewikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+					if (currentdownloads.contains(Integer.valueOf(position))) {
+
+						Intent outputintent = new Intent(context, StopDownloadActivity.class);
+						outputintent.putExtra("position", position);
+						startActivity(outputintent);
+					}
+					return true;
+				}
+			});
+			AvailableWikisListViewAdapter adapter = new AvailableWikisListViewAdapter(getActivity(),  this.availablewikis); 
+			availablewikislistview.setAdapter(adapter);
 		}
 		return wholeview ;
 	}
@@ -89,13 +89,12 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	private void updateProgressBar(int position, int progress){
 		View v = availablewikislistview.getChildAt(position);
 		if (v!=null) {
-		ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
-		pb.setVisibility(ProgressBar.VISIBLE);
-		pb.setProgress(progress);
-		if (progress != testprogr) {
-		Log.d(TAG,"progress : "+progress+" position: "+position);
-			testprogr=progress;
-		}
+			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
+			pb.setProgress(progress);
+			if (progress != testprogr) {
+				Log.d(TAG,"progress : "+progress+" position: "+position);
+				testprogr=progress;
+			}
 		}
 	}
 
@@ -187,11 +186,11 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		Wiki wiki = this.availablewikis.get(index);
 		File already_there=null;
 		if (! currentdownloads.contains((Integer) position)) {
-		try {
-			already_there = wiki.isAlreadyInstalled();
-		} catch (WikiException e) {
-			//Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-		}
+			try {
+				already_there = wiki.isAlreadyInstalled();
+			} catch (WikiException e) {
+				//Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+			}
 			if (already_there == null) {
 				this.download(index);
 
@@ -205,45 +204,49 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	private void do_download(int position) {
 		Wiki wiki = availablewikis.get(position);
+		View v = availablewikislistview.getChildAt(position);
+		if (v!=null) {
+			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
+			pb.setVisibility(ProgressBar.VISIBLE);
+		}
 		this.downloadFile = new DownloadFile();
 		downloadFile.execute(wiki,Integer.valueOf(position));
 	}
-	
 
 	private void download(final int position) {
 		if (currentdownloads.contains(position)) {
 			Toast.makeText(context, "Download already running", Toast.LENGTH_LONG).show();
 		} else {
 			this.currentdownloads.add((Integer)position);
-		Wiki wiki = this.availablewikis.get(position);
-		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-		if (wifi.isConnected()) {
-			new AlertDialog.Builder(context)
-			.setTitle("Warning")
-			.setMessage("Are you sure you want to download "+wiki.getFilename()+" ("+wiki.getSizeReadable(true)+")")
-			.setNegativeButton("No", null)
-			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					do_download(position);
-				}
-			})
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.show();
-		} else {
-			new AlertDialog.Builder(context)
-			.setTitle("No Wifi detected")
-			.setMessage("Are you sure you want to download this huge file ("+wiki.getSizeReadable(true)+"Kb) without WIFI?")
-			.setNegativeButton("No", null)
-			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					do_download(position);
-				}
-			})
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.show();
-		}
+			Wiki wiki = this.availablewikis.get(position);
+			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			if (wifi.isConnected()) {
+				new AlertDialog.Builder(context)
+				.setTitle("Warning")
+				.setMessage("Are you sure you want to download "+wiki.getFilename()+" ("+wiki.getSizeReadable(true)+")")
+				.setNegativeButton("No", null)
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						do_download(position);
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
+			} else {
+				new AlertDialog.Builder(context)
+				.setTitle("No Wifi detected")
+				.setMessage("Are you sure you want to download this huge file ("+wiki.getSizeReadable(true)+"Kb) without WIFI?")
+				.setNegativeButton("No", null)
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						do_download(position);
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
+			}
 		}
 	}
 
@@ -287,56 +290,52 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			return convertView;
 		}
 	}
-	
+
 	class DownloadFile extends AsyncTask<Object, Integer, String> {
-	    
-	    private Integer position;
+
+		private Integer position;
 
 		protected String doInBackground(Object... params) {
 			String result="";
-	    	try {
-	    		Wiki w = (Wiki)params[0];
-	    		this.position = (Integer) params[1];
-	            URL url = new URL(w.getUrl());
+			try {
+				Wiki w = (Wiki)params[0];
+				this.position = (Integer) params[1];
+				URL url = new URL(w.getUrl());
 
-	            URLConnection connection = url.openConnection();
-	            connection.connect();
-	            long fileLength = connection.getContentLength();
+				URLConnection connection = url.openConnection();
+				connection.connect();
+				long fileLength = connection.getContentLength();
 
-	            URLConnection con = url.openConnection();
-	            con.setConnectTimeout(3000);
-	            con.setReadTimeout(3000);
-	            con.setDoOutput(true);
-	            InputStream input = new BufferedInputStream(con.getInputStream());
-	            File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
+				URLConnection con = url.openConnection();
+				con.setConnectTimeout(3000);
+				con.setReadTimeout(3000);
+				con.setDoOutput(true);
+				InputStream input = new BufferedInputStream(con.getInputStream());
+				File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
 
-	            OutputStream output = new FileOutputStream(new File(outputdir,w.getFilename()));
-	            Log.d(TAG, "Lenght of file: " + fileLength);
-	            byte data[] = new byte[8192];
-	            long total = 0;
-	            int count;
-	            while ((count = input.read(data)) != -1) {
-	            	total += count;
-	            	publishProgress((int) (total * 100 / fileLength));
-	            	output.write(data, 0, count);
-	            	if(isCancelled()){
-	            		Log.d(TAG,"Detected stop");
-	            		result="stopped";
-	            		break;
-	            	}
-	            }
-	            Log.d(TAG,"Finished");
-	            output.flush();
-	            output.close();
-	            input.close();
-	    	} catch (SocketTimeoutException e) {
-	    		Log.d(TAG,"Timeout...");
-	    		result="failed";
-	    		stopDownload(position,true);
+				OutputStream output = new FileOutputStream(new File(outputdir,w.getFilename()));
+				byte data[] = new byte[8192];
+				long total = 0;
+				int count;
+				while ((count = input.read(data)) != -1) {
+					total += count;
+					publishProgress((int) (total * 100 / fileLength));
+					output.write(data, 0, count);
+					if(isCancelled()){
+						result="stopped";
+						break;
+					}
+				}
+				output.flush();
+				output.close();
+				input.close();
+			} catch (SocketTimeoutException e) {
+				Log.d(TAG,"Timeout...");
+				result="failed";
 				e.printStackTrace();
-	    	} catch (MalformedURLException e) {
-	    		Log.d(TAG,"MalformedURLException");
-	    		result="failed";
+			} catch (MalformedURLException e) {
+				Log.d(TAG,"MalformedURLException");
+				result="failed";
 				e.printStackTrace();
 			} catch (IOException e) {
 				Log.d(TAG,"IOException");
@@ -344,54 +343,49 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 				result="failed";
 				e.printStackTrace();
 			}
-	        return result;
-	    }
-	    @Override
-	    protected void onPreExecute() {
-	        super.onPreExecute();
-	        Log.d(TAG,"Starting new download");
-	    }
-	    @Override
-	    protected void onPostExecute(String result) {
-	        super.onPostExecute(result);
-	        Log.d(TAG,"postexec");
-	        if (result.equals("stopped")) {
-	        	stopDownload(position, true);
-	        }else if (result.equals("failed")) {
-	        	stopDownload(position, true);
+			return result;
+		}
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			if (result.equals("stopped")) {
+				stopDownload(position, true);
+			}else if (result.equals("failed")) {
+				stopDownload(position, true);
+			} else {
+				stopDownload(position,false);
 			}
-	    }
+		}
 
-	    @Override
-	    protected void onProgressUpdate(Integer... progress) {
-	        super.onProgressUpdate(progress);
-	       updateProgressBar(position,progress[0]);
-	    }
+		@Override
+		protected void onProgressUpdate(Integer... progress) {
+			super.onProgressUpdate(progress);
+			updateProgressBar(position,progress[0]);
+		}
 
 	}
 	public void stopDownload(int position,boolean delete) {
-        File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
-        Wiki wiki = availablewikis.get(position);
-        currentdownloads.remove((Integer)position);
-        View v = availablewikislistview.getChildAt(position);
+		File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
+		Wiki wiki = availablewikis.get(position);
+		currentdownloads.remove((Integer)position);
+		View v = availablewikislistview.getChildAt(position);
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
-		TextView t = (TextView) v.findViewById(R.id.availablewikiheader);
-		pb.clearAnimation();
-		pb.setVisibility(View.INVISIBLE);
-		pb.clearAnimation();
-		Log.d(TAG,"Stop Dl, bar invisible lol"+pb.getVisibility()+" "+t.getText());
-        if (delete) {
-        File db=new File(outputdir,wiki.getFilename());
-		if (db.exists()) {
-			db.delete();
+		pb.setVisibility(View.GONE);
+		if (delete) {
+			File db=new File(outputdir,wiki.getFilename());
+			if (db.exists()) {
+				db.delete();
+			}
 		}
-        }
 	}
 	public void stopAsync(int pos) {
 		if (currentdownloads.contains(Integer.valueOf(pos))) {
-		this.downloadFile.cancel(true);
-		stopDownload(pos, true);
-		Log.d(TAG,"stoping");
+			this.downloadFile.cancel(true);
+			stopDownload(pos, true);
 		}
 	}
 }
