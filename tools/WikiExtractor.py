@@ -69,6 +69,7 @@ import wikitools
 import wikiglobals
 import pylzma
 from time import strftime
+import datetime
 
 #=========================================================================
 #
@@ -87,14 +88,17 @@ from time import strftime
 # Program version
 version = '2.5'
 dbversion = "0.0.0.1"
+languagedb="languages.sqlite"
 
 ##### Main function ###########################################################
 
 inputsize = 0
 
 class OutputSqlite:
-    def __init__(self, sqlite_file):
+    def __init__(self, sqlite_file,sqlite_lang):
         global dbversion
+        self.sqlite_lang=sqlite_lang
+        self.connlang = sqlite3.connect(sqlite_lang)
         self.sqlite_file=sqlite_file
         self.conn = sqlite3.connect(sqlite_file)
         self.conn.isolation_level="EXCLUSIVE"
@@ -108,7 +112,8 @@ class OutputSqlite:
                                                                   title_from VARCHAR(255) NOT NULL,
                                                                   title_to VARCHAR(255))''')
         self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key VARCHAR(255), value VARCHAR(255));''')
-        self.set_gen_date(strftime("%Y-%m-%d %H:%M:%S")
+        self.set_gen_date(strftime("%Y-%m-%d %H:%M:%S"))
+        self.set_type("wikipedia")
         self.set_version(version)
         self.conn.commit()
         self.curr_values=[]
@@ -118,13 +123,30 @@ class OutputSqlite:
         self.curs.execute("INSERT INTO redirects VALUES (NULL,?,?)",(from_,to_))
 
     def set_lang(self,lang):
-        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang',?)",(lang,))
+        if (self.curslang == None):
+            self.curslang = self.connlang.cursor()
+
+        self.curslang.execute("SELECT english,local FROM languages WHERE code LIKE '?'",lang)
+        e,l = self.curslang.fetchone()
+        self.curslang.close()
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-code',?)",(lang,))
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-local',?)",(l,))
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-english',?)",(e,))
+
+    def set_langlocal(self,lang):
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-local',?)",(lang,))
+
+    def set_langenglish(self,lang):
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-english',?)",(lang,))
 
     def set_gen_date(self,sdate):
         self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('date',?)",(sdate,))
 
     def set_version(self,version):
         self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('version',?)",(version,))
+
+    def set_type(self,stype):
+        self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('type',?)",(stype,))
 
     def reserve(self,size):
         pass
@@ -292,6 +314,10 @@ def main():
 
     if os.path.isfile(output_file):
         print("%s already exists. Won't overwrite it."%output_file)
+        sys.exit(1)
+
+    if not os.path.isfile(languagedb):
+        print("%s doesn't exists. Please create it."%languagedb)
         sys.exit(1)
 
     input = open(input_file,"r")

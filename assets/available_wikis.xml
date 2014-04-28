@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <wiki>
+        <type>wikipedia</type>
+        <lang-code>fr</lang-code>
+        <lang-english>French</lang-english>
+        <lang-local>Français</lang-local>
+        <url>http://wikipoff.renzokuken.eu/databases/fr.wiki.sqlite</url>
+        <gendate>2014-04-15 00:00:00</gendate>
+        <version>2.5</version>
+        <filename>fr.wiki.sqlite</filename>
+        <size>2657162240</size>
+    </wiki>
+    <wiki>
+        <type>wikipedia</type>
+        <lang-code>eu</lang-code>
+        <lang-english>Basque</lang-english>
+        <lang-local>Euskara</lang-local>
+        <url>http://wikipoff.renzokuken.eu/databases/eu.wiki.sqlite</url>
+        <gendate>2014-04-19 00:00:00</gendate>
+        <version>2.5</version>
+        <filename>eu.wiki.sqlite</filename>
+        <size>180439040</size>
+    </wiki>
+    <wiki>
+        <type>wikipedia</type>
+        <lang-code>fur</lang-code>
+        <lang-english>Friulian</lang-english>
+        <lang-local>Furlan</lang-local>
+        <url>http://wikipoff.renzokuken.eu/databases/fur.wiki.sqlite</url>
+        <gendate>2014-04-25 14:38:24</gendate>
+        <version>2.5</version>
+        <filename>fur.wiki.sqlite</filename>
+        <size>2720768</size>
+    </wiki>
+</root>

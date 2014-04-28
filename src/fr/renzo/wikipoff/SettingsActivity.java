@@ -48,37 +48,37 @@ public class SettingsActivity extends PreferenceActivity {
         rootDbDir= new File(Environment.getExternalStorageDirectory(),s(R.string.DBDir));
         addPreferencesFromResource(R.xml.preferences);
         config = PreferenceManager.getDefaultSharedPreferences(this);
-		 ListPreference lp =(ListPreference) findPreference(s(R.string.config_key_selecteddbfile));
-		 String[] avDB = getAvailableDb();
-		 if (avDB.length ==0) {
-			 String[] msg = {"Please install some .sqlite files in"+rootDbDir.getAbsolutePath()};
-			 avDB= msg;
-		 }
-		 lp.setEntries(avDB);
-		 lp.setEntryValues(avDB);
-		 lp.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				String clicked= (String) ((ListPreference)preference).getValue();
-				config.edit().putString(s(R.string.config_key_selecteddbfile),clicked ).commit();
-				return true;
-			}
-		});	 
+//		 ListPreference lp =(ListPreference) findPreference(s(R.string.config_key_selecteddbfile));
+//		 String[] avDB = getAvailableDb();
+//		 if (avDB.length ==0) {
+//			 String[] msg = {"Please install some .sqlite files in"+rootDbDir.getAbsolutePath()};
+//			 avDB= msg;
+//		 }
+//		 lp.setEntries(avDB);
+//		 lp.setEntryValues(avDB);
+//		 lp.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+//			
+//			@Override
+//			public boolean onPreferenceClick(Preference preference) {
+//				String clicked= (String) ((ListPreference)preference).getValue();
+//				config.edit().putString(s(R.string.config_key_selecteddbfile),clicked ).commit();
+//				return true;
+//			}
+//		});	 
     }
    
-    private String[] getAvailableDb() {
-    	HashSet<String> set = (HashSet<String>) config.getStringSet(s(R.string.config_key_available_database), new HashSet<String>());
-    	if (set.size()==0) {
-	    	for (File f : rootDbDir.listFiles()) {
-	    		String name = f.getName();
-	    		if (name.endsWith(".sqlite"))
-	    			set.add(f.getName());
-			}		
-    	}
-		return (String[]) set.toArray(new String[set.size()]);
-	}
-
+//    private String[] getAvailableDb() {
+//    	HashSet<String> set = (HashSet<String>) config.getStringSet(s(R.string.config_key_available_database), new HashSet<String>());
+//    	if (set.size()==0) {
+//	    	for (File f : rootDbDir.listFiles()) {
+//	    		String name = f.getName();
+//	    		if (name.endsWith(".sqlite"))
+//	    			set.add(f.getName());
+//			}		
+//    	}
+//		return (String[]) set.toArray(new String[set.size()]);
+//	}
+//
 	private  String s(int i) {
 		return context.getString(i);
 	}

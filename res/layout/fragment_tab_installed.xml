@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
-
 Copyright 2014 "Renzokuken" (pseudonym, first committer of WikipOff project) at
 https://github.com/conchyliculture/wikipoff
 
@@ -18,19 +16,18 @@ This file is part of WikipOff.
 
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/installedwikisfragment"> 
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Settings">
-        <CheckBoxPreference
-        android:key="@string/config_key_use_mathjax"
-        android:title="@string/pref_mathjax"
-        android:summary="@string/pref_mathjax_summ"
-        android:defaultValue="true" />
-        <!--  ListPreference
-        android:id="@+id/action_set_database"
-        android:key="@string/config_key_selecteddbfile"
-        android:title="@string/action_set_database"/-->
+    <ListView
+        android:id="@+id/installedwikislistview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
 
-</PreferenceScreen>
+</LinearLayout>

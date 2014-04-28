@@ -98,6 +98,10 @@ public class ArticleActivity extends Activity {
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.action_manage_databases:
+			Intent ami = new Intent(this, ManageDatabasesActivity.class);
+            startActivity(ami);
+		    return true;
 		case R.id.action_settings:
 			Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
@@ -167,7 +171,6 @@ public class ArticleActivity extends Activity {
 		int len=300;
 		if (data.length()<300)
 			len=data.length();
-		Log.d(TAG,data.substring(0,len));
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html; charset=UTF-8",null,null);
 	}
 	

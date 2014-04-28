@@ -98,7 +98,6 @@ public class MainActivity extends Activity {
 		private void gogogo(CharSequence q){
 			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 			myIntent.putExtra("article_title",q );
-			Log.d(TAG,"coincoin "+q.getClass());
 			MainActivity.this.startActivity(myIntent);
 		}
 
@@ -166,6 +165,10 @@ public class MainActivity extends Activity {
 		case R.id.action_settings:
 			Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
+		    return true;
+		case R.id.action_manage_databases:
+			Intent i1 = new Intent(this, ManageDatabasesActivity.class);
+            startActivity(i1);
 		    return true;
 		  
 		 default:
