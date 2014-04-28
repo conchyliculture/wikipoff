@@ -12,41 +12,37 @@
     android:paddingRight="8dip"
     android:paddingTop="2dip" >
 
-        <TextView
-            android:id="@+id/availablewikiheader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dip"
-        	android:textAppearance="?android:attr/textAppearanceListItem"
-			android:text="lolilol"
-			android:focusableInTouchMode="false"
-			android:clickable="false"
-			android:focusable="false"
-			 />
+    <TextView
+        android:id="@+id/availablewikiheader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dip"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="lolilol"
+        android:textAppearance="?android:attr/textAppearanceListItem" />
 
-        <TextView
-            android:id="@+id/availablewikifooter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/availablewikiheader"
-    		android:layout_alignStart="@id/availablewikiheader"
-        	android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="lolilol"
-            android:focusableInTouchMode="false"
-android:clickable="false"
-android:focusable="false"
-             />
+    <TextView
+        android:id="@+id/availablewikifooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/availablewikiheader"
+        android:layout_below="@id/availablewikiheader"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="lolilol"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
-         <ProgressBar
-             android:id="@+id/downloadprogress"
-             android:layout_width="match_parent"
-             android:layout_height="0dip"
-             android:layout_gravity="right"
-             android:layout_weight="1.47"
-             style="?android:attr/progressBarStyleHorizontal"
-             android:max="100"
-             android:visibility="invisible" />
+    <ProgressBar
+        android:id="@+id/downloadprogress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_gravity="right"
+        android:layout_weight="1.47"
+        android:max="100"
+        android:visibility="invisible" />
 
-   
-	
 </LinearLayout>
