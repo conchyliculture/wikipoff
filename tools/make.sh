@@ -4,9 +4,9 @@
 #WIKIDUMPURL="http://dumps.wikimedia.org/frwiki/latest/frwiki-latest-pages-articles.xml.bz2"
 #WIKIBZ="frwiki-latest-pages-articles.xml.bz2"
 #WIKILANG="fr"
-WIKIDUMPURL="http://dumps.wikimedia.org/euwiki/20140411/euwiki-20140411-pages-articles.xml.bz2"
-WIKIBZ="euwiki-20140411-pages-articles.xml.bz2"
-WIKILANG="eu"
+WIKIDUMPURL="http://dumps.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2"
+WIKIBZ="enwiki-latest-pages-articles.xml.bz2"
+WIKILANG="en"
 
 ######################
 
@@ -47,4 +47,4 @@ fi
 echo "Unbziping $WIKIBZ"
 bunzip2 "$WIKIBZ"
 
-$PYTHON WikiExtractor.py -x "${WIKIBZ/.xml}" -d $WIKILANG.wiki.sqlite
+$PYTHON WikiExtractor.py -x "${WIKIBZ/.bz2}" -d $WIKILANG.wiki.sqlite
