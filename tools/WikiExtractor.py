@@ -154,11 +154,10 @@ class OutputSqlite:
             self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?,?)",self.curr_values)
             self.conn.commit()
             self.curr_values=[]
-        else:
-            c=pylzma.compressfile(StringIO(text),dictionary=23)
-            result=c.read(5)
-            result+=struct.pack('<Q', len(text))
-            self.curr_values.append((article_id,title,buffer(result+c.read())))
+        c=pylzma.compressfile(StringIO(text),dictionary=23)
+        result=c.read(5)
+        result+=struct.pack('<Q', len(text))
+        self.curr_values.append((article_id,title,buffer(result+c.read())))
             
     def close(self):
         if (len(self.curr_values)>0):
