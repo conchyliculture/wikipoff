@@ -27,6 +27,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class WikipOff extends Application {
 
@@ -48,8 +49,12 @@ public class WikipOff extends Application {
 	}
 	
 	private void createDir(File f) {
+		boolean res;
 		if (!f.exists()) {
-			f.mkdirs();
+			res= f.mkdirs();
+			if (!res) 
+				Toast.makeText(this, "Problem creating directory: "+f.getAbsolutePath(), Toast.LENGTH_LONG).show(); // TODO
 		}
+		
 	}
 }
