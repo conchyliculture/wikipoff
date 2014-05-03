@@ -99,6 +99,7 @@ class OutputSqlite:
         global dbversion
         self.sqlite_lang=sqlite_lang
         self.connlang = sqlite3.connect(sqlite_lang)
+        self.curslang = self.connlang.cursor()
         self.sqlite_file=sqlite_file
         self.conn = sqlite3.connect(sqlite_file)
         self.conn.isolation_level="EXCLUSIVE"
@@ -123,10 +124,7 @@ class OutputSqlite:
         self.curs.execute("INSERT INTO redirects VALUES (NULL,?,?)",(from_,to_))
 
     def set_lang(self,lang):
-        if (self.curslang == None):
-            self.curslang = self.connlang.cursor()
-
-        self.curslang.execute("SELECT english,local FROM languages WHERE code LIKE '?'",lang)
+        self.curslang.execute("SELECT english,local FROM languages WHERE code LIKE ?",(lang,))
         e,l = self.curslang.fetchone()
         self.curslang.close()
         self.curs.execute("INSERT OR REPLACE INTO metadata VALUES ('lang-code',?)",(lang,))
@@ -322,7 +320,7 @@ def main():
 
     input = open(input_file,"r")
     print("Converting xml dump %s to database %s. This may take eons..."%(input_file,output_file))
-    worker = OutputSqlite(output_file)
+    worker = OutputSqlite(output_file,languagedb)
 
     process_data(input, worker)
     worker.close()
