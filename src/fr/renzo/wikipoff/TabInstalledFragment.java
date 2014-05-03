@@ -10,9 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,7 +22,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class TabInstalledFragment extends Fragment implements OnItemClickListener {
@@ -41,9 +38,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		super.onCreate(savedInstanceState);
 		
 		context= getActivity();
-		config = PreferenceManager.getDefaultSharedPreferences(context);
 		rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
-		
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,null);
 		if (savedInstanceState==null) {
 		this.installedwikis=loadInstalledDb();
