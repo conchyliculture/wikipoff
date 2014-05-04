@@ -1,12 +1,8 @@
 package fr.renzo.wikipoff;
 
 import android.app.Activity;
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,6 +10,7 @@ import android.widget.TextView;
 
 public class StopDownloadActivity extends Activity {
 	
+	@SuppressWarnings("unused")
 	private static final String TAG = "StopDownloadActivity";
 	
 	protected void onCreate(Bundle savedInstanceState) {

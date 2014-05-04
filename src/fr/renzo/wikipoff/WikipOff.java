@@ -31,7 +31,8 @@ import android.widget.Toast;
 
 public class WikipOff extends Application {
 
-    private static final String TAG = "WikipOff";
+    @SuppressWarnings("unused")
+	private static final String TAG = "WikipOff";
     public static SharedPreferences config;
 	public File DBDir;
 	public Database dbHandler;

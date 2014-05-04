@@ -26,8 +26,8 @@ This script will try to
 
 def main():
     try:
-        long_opts = ['size=', "db="]
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 's:d:', long_opts)
+        long_opts = ['size=', "db=","lang="]
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 's:d:l:', long_opts)
     except getopt.GetoptError:
         show_usage()
         sys.exit(1)
@@ -37,6 +37,12 @@ def main():
             desired_size=float(arg)
         if opt in ('-d', '--db'):
             sqlite_file=arg
+        if opt in ('-l', '--lang'):
+            lang=arg
+
+    if not 'lang' in locals():
+        print("If you don't specify a language with -l, you're gonna have a bad time")
+        sys.exit()
 
     if not 'sqlite_file' in locals():
         print("Please give me a sqlite file to split with -d or --db")
@@ -83,6 +89,7 @@ def main():
     row_count=curs_input.execute("SELECT count(*) from articles").fetchone()[0]
     curr_output_sqlitefile=root_name+"-%d.sqlite"%curr_index
     curr_output = OutputSqlite(curr_output_sqlitefile,languagedb,max_output_page_count)
+    curr_output.set_lang(lang)
     while offset < row_count:
         res=curs_input.execute("SELECT article_id,title,text FROM articles LIMIT %d OFFSET %d "%(nb_select,offset))
         for i,t,tt in res:

@@ -29,37 +29,45 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MergeCursor;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.os.Environment;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
 public class Database   {
 	private static final String TAG = "Database";
-	public File seldatabasefile;
+	public ArrayList<String> seldatabasefilespaths=new ArrayList<String>();
 	private Context context;
-	public SQLiteDatabase sqlh;
+	public ArrayList<SQLiteDatabase> sqlh=new ArrayList<SQLiteDatabase>();
 	public String lang;
 	private long maxId;
 	
-	public Database(Context context, File databasefile) throws DatabaseException {
-	        this.context=context;
-	        this.seldatabasefile = databasefile;
-	        String error=checkDatabaseHealth();
-	        if ( !error.equals("")) {
-	        	Log.e(TAG,"Error: "+error);
-	        	throw (new DatabaseException(error));
-	        }
+	public Database(Context context, ArrayList<String> databasefilespaths) throws DatabaseException {
+		this.context=context;
+		File rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
+		for (String filename : databasefilespaths) {
+			this.seldatabasefilespaths.add(new File(rootDbDir,filename).getAbsolutePath());
+		}
+		String error=checkDatabaseHealth();
+		if ( !error.equals("")) {
+			Log.e(TAG,"Error: "+error);
+			throw (new DatabaseException(error));
+		} 
+		for (String dbfile : this.seldatabasefilespaths) {
 			try {
-				SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(this.seldatabasefile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS );
-				this.sqlh=sqlh;
-			} catch (SQLiteCantOpenDatabaseException e) {
-    			Toast.makeText(context, "Problem opening database '"+databasefile+"'"+e.getMessage(), Toast.LENGTH_LONG).show();
+				SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(dbfile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS );
+				this.sqlh.add(sqlh);
+			}
+			catch (SQLiteCantOpenDatabaseException e) {
+				Toast.makeText(context, "Problem opening database '"+dbfile+"'"+e.getMessage(), Toast.LENGTH_LONG).show();
 			} 
-			this.maxId=getMaxId();
-			this.lang=getDbLang();
+		}
+		this.maxId=getMaxId();
+		this.lang=getDbLang();
 	}
 	
 	private String getDbLang() throws DatabaseException {
@@ -73,16 +81,15 @@ public class Database   {
 
 	public String checkDatabaseHealth(){
 		String error="";
-		String p = seldatabasefile.getAbsolutePath();
-		if (seldatabasefile==null) {
-			return "I need a database file....";
+		for (String p : seldatabasefilespaths) {
+			File dbfile = new File(p);
+			if (!dbfile.exists()) {
+				return "Unable to find '"+p+"'";
+			}
+			if (dbfile.length()==0) {
+				return "Database file '"+p+"' is an empty file";
+			} 
 		}
-		if (!seldatabasefile.exists()) {
-			return "Unable to find '"+p+"'";
-		}
-		if (seldatabasefile.length()==0) {
-			return "Database file '"+p+"' is an empty file";
-		} 
 		return error;
 	}
 	
@@ -98,17 +105,22 @@ public class Database   {
 		for (int i = 0; i < objects.length; i++) {
 			//Log.d(TAG,"SQL: "+objects[i]);
 		}
-		Cursor c=null;
-		try {
-			c = this.sqlh.rawQuery(query, objects);		
-			
-		} catch (SQLiteException e) {
-			if (c!= null){
-				c.close();
+		Cursor[] arraycursors = new Cursor[this.sqlh.size()];
+		int i=0;
+		for (SQLiteDatabase sh : this.sqlh) {
+			Cursor c=null;
+			try {
+				c = sh.rawQuery(query, objects);		
+				arraycursors[i]=c;
+				i+=1;
+			} catch (SQLiteException e) {
+				if (c!= null){
+					c.close();
+				}
+				throw new DatabaseException(e.getMessage());
 			}
-			throw new DatabaseException(e.getMessage());
 		}
-		return c;
+		return (Cursor) new MergeCursor(arraycursors);
 	}
 	
 	public int getMaxId() throws DatabaseException{
@@ -157,9 +169,7 @@ public class Database   {
                 res.add(t);
             } while (c.moveToNext());
             
-        } else {
-        	Log.d(TAG,"What");
-        }
+        } 
 		c.close();
 		return res;
 	}

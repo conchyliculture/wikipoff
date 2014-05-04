@@ -21,8 +21,9 @@ This file is part of WikipOff.
 */
 package fr.renzo.wikipoff;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
@@ -43,13 +44,13 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import fr.renzo.wikipoff.Database.DatabaseException;
 
@@ -61,7 +62,7 @@ public class MainActivity extends Activity {
     private ListView randomlistview;
 	private Context context=this;
 	private SharedPreferences config;
-	private String seldb;
+	private Set<String> seldb;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
 	
@@ -178,10 +179,9 @@ public class MainActivity extends Activity {
 	
 	private void newDatabaseSelected() {
 		try {
-			this.seldb = config.getString(s(R.string.config_key_selecteddbfile),null );
+			this.seldb = config.getStringSet(s(R.string.config_key_selecteddbfiles),null );
 			if (this.seldb!=null) {
-				File dbfile = new File(app.DBDir,this.seldb);
-				app.dbHandler = new Database(context,dbfile);
+				app.dbHandler = new Database(context,new ArrayList<String>(this.seldb));
 				showViews();
 				toggleAllViews(true);
 				Log.d(TAG,"We selected db '"+seldb+"'");

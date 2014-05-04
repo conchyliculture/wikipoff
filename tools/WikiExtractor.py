@@ -115,7 +115,7 @@ class OutputSqlite:
         self.curs.execute('''CREATE TABLE IF NOT EXISTS redirects (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
                                                                   title_from VARCHAR(255) NOT NULL,
                                                                   title_to VARCHAR(255))''')
-        self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key VARCHAR(255), value VARCHAR(255));''')
+        self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key TEXT, value TEXT);''')
         self.set_gen_date(strftime("%Y-%m-%d %H:%M:%S"))
         self.set_type("wikipedia")
         self.set_version(version)
