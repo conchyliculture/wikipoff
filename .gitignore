@@ -39,3 +39,8 @@ proguard-project.txt
 tools/lib/python2.7
 *.swp
 tools/log*
+tools/*.xml
+TODO
+srsly_google
+tools/managedb.py
+tools/*journal

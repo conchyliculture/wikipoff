@@ -5,32 +5,63 @@
         <lang-code>fr</lang-code>
         <lang-english>French</lang-english>
         <lang-local>Français</lang-local>
-        <url>http://wikipoff.renzokuken.eu/databases/fr.wiki.sqlite</url>
-        <gendate>2014-04-15 00:00:00</gendate>
+        <dbfiles>
+        	<dbfile
+        	    url="http://wikipoff.renzokuken.eu/databases/fr.wiki.sqlite"
+       			filename="fr.wiki.sqlite"
+        		size="2657162240"
+        		gendate="2014-04-15 00:00:00"></dbfile>
+        </dbfiles>
         <version>2.5</version>
-        <filename>fr.wiki.sqlite</filename>
-        <size>2657162240</size>
+        
     </wiki>
     <wiki>
         <type>wikipedia</type>
         <lang-code>eu</lang-code>
         <lang-english>Basque</lang-english>
         <lang-local>Euskara</lang-local>
-        <url>http://wikipoff.renzokuken.eu/databases/eu.wiki.sqlite</url>
-        <gendate>2014-04-19 00:00:00</gendate>
+        <dbfiles>
+            <dbfile
+                filename="eu.wiki.sqlite"
+                gendate="2014-04-19 00:00:00"
+                size="180439040"
+                url="http://wikipoff.renzokuken.eu/databases/eu.wiki.sqlite" ></dbfile>
+        </dbfiles>
         <version>2.5</version>
-        <filename>eu.wiki.sqlite</filename>
-        <size>180439040</size>
+
     </wiki>
     <wiki>
         <type>wikipedia</type>
         <lang-code>fur</lang-code>
         <lang-english>Friulian</lang-english>
         <lang-local>Furlan</lang-local>
-        <url>http://wikipoff.renzokuken.eu/databases/fur.wiki.sqlite</url>
-        <gendate>2014-04-25 14:38:24</gendate>
+         <dbfiles>
+            <dbfile
+                filename="fur.wiki.sqlite"
+                gendate="2014-04-25 14:38:24"
+                size="2720768"
+                url="http://wikipoff.renzokuken.eu/databases/fur.wiki.sqlite" ></dbfile>
+        </dbfiles>
         <version>2.5</version>
-        <filename>fur.wiki.sqlite</filename>
-        <size>2720768</size>
     </wiki>
+        <wiki>
+        <type>wikipedia</type>
+        <lang-code>fur</lang-code>
+        <lang-english>Friulian-test</lang-english>
+        <lang-local>Furlan-test</lang-local>
+         <dbfiles>
+            <dbfile
+                filename="fur.wiki-1.sqlite"
+                gendate="2014-04-25 14:38:24"
+                size="1878016"
+                url="http://wikipoff.renzokuken.eu/databases/fur.wiki-1.sqlite" ></dbfile>
+            <dbfile
+                filename="fur.wiki-2.sqlite"
+                gendate="2014-04-25 14:38:24"
+                size="859136"
+                url="http://wikipoff.renzokuken.eu/databases/fur.wiki-2.sqlite" ></dbfile>
+        </dbfiles>
+        <version>2.5</version>
+    </wiki>
+    
 </root>

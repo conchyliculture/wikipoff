@@ -22,7 +22,9 @@ This file is part of WikipOff.
 package fr.renzo.wikipoff;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
@@ -33,6 +35,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,13 +46,13 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import fr.renzo.wikipoff.Database.DatabaseException;
 
@@ -61,9 +64,10 @@ public class MainActivity extends Activity {
     private ListView randomlistview;
 	private Context context=this;
 	private SharedPreferences config;
-	private String seldb;
+	private Set<String> seldb;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
+	private File dbdir;
 	
 	public class ClearSearchClickListener implements OnClickListener {
 		@Override
@@ -120,10 +124,33 @@ public class MainActivity extends Activity {
 			} catch (DatabaseException e) {e.alertUser(context);}
 		}
 	}
-
+	private void createEnv() {
+		createDir(dbdir);
+	}
+	
+	private void createDir(File f) {
+		boolean res;
+		if (!f.exists()) {
+			res= f.mkdirs();
+			if (!res) {
+				Toast.makeText(this, "Problem creating directory: "+f.getAbsolutePath(), Toast.LENGTH_LONG).show(); // TODO
+				finish();          
+	            moveTaskToBack(true);
+			}
+			}
+		
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (savedInstanceState==null) {
+			dbdir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
+//			if (dbdir == null) {
+//				Toast.makeText(this, "", Toast.LENGTH_LONG);
+//			}
+			createEnv();
+			
+		}
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
@@ -178,10 +205,9 @@ public class MainActivity extends Activity {
 	
 	private void newDatabaseSelected() {
 		try {
-			this.seldb = config.getString(s(R.string.config_key_selecteddbfile),null );
+			this.seldb = config.getStringSet(s(R.string.config_key_selecteddbfiles),null );
 			if (this.seldb!=null) {
-				File dbfile = new File(app.DBDir,this.seldb);
-				app.dbHandler = new Database(context,dbfile);
+				app.dbHandler = new Database(context,new ArrayList<String>(this.seldb));
 				showViews();
 				toggleAllViews(true);
 				Log.d(TAG,"We selected db '"+seldb+"'");

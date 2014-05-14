@@ -21,6 +21,8 @@ This file is part of WikipOff.
 */
 package fr.renzo.wikipoff;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -34,14 +36,19 @@ import fr.renzo.wikipoff.Database.DatabaseException;
 
 public class SearchCursorAdapter extends CursorAdapter {
 	private LayoutInflater inflater;
-	private Database dbh;
+	private Database[] dbhs;
 	private Context context;
 
-	@SuppressWarnings("deprecation")
+	
 	public SearchCursorAdapter(Context context, Cursor c, Database dbh) {
+		this(context,c, new Database[]{dbh} );
+		
+	}
+	@SuppressWarnings("deprecation")
+	public SearchCursorAdapter(Context context, Cursor c, Database[] dbhs) {
 		super(context, c);
 		this.context=context;
-		this.dbh=dbh;
+		this.dbhs=dbhs;
 	}
 
 	@Override
@@ -66,11 +73,24 @@ public class SearchCursorAdapter extends CursorAdapter {
 		if (constraint == null)
 			return null;
 		try {
-			Cursor c = dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY length(title), title limit 500 ", (String) constraint);
+			ArrayList<Cursor> cursors = new ArrayList<Cursor>();
+			for (int i = 0; i < this.dbhs.length; i++) {
+				Database dbh=dbhs[i];
+			
+				Cursor c = dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY length(title), title limit 500 ", (String) constraint);
+				cursors.add(c);
+			}
 			MatrixCursor extras = new MatrixCursor(new String[] { "_id", "title" });
 			extras.addRow(new String[] { "-1", (String) constraint });
-			Cursor[] cursors = { extras, c };
-			return (Cursor) new MergeCursor(cursors);
+			
+			Cursor[] arraycursors = new Cursor[cursors.size()+1];
+
+			for (int i = 0; i < cursors.size(); i++) {
+				arraycursors[i] = cursors.get(i);
+			}
+			arraycursors[cursors.size()] = extras;
+			
+			return (Cursor) new MergeCursor(arraycursors);
 		} catch (DatabaseException e) {
 			 e.alertUser(context);
 		}

@@ -30,7 +30,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +42,7 @@ import android.widget.SearchView.OnQueryTextListener;
 
 public class ArticleActivity extends Activity {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "ArticleActivity";
 	private WikipOff app;
 	private WebView webview;
@@ -168,9 +168,6 @@ public class ArticleActivity extends Activity {
 			data +="<h1>No article '"+wanted_title+"' found =( </h1>";
 		}
 		data+="</body></html>";
-		int len=300;
-		if (data.length()<300)
-			len=data.length();
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html; charset=UTF-8",null,null);
 	}
 	

@@ -4,12 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class TabInstalledFragment extends Fragment implements OnItemClickListener {
@@ -31,17 +34,22 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	private ListView installedwikislistview;
 	private Context context;
 	private View wholeview;
-
+	@SuppressWarnings("unused")
 	private static final String TAG = "TabInstalledFragment";
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		context= getActivity();
+		config = PreferenceManager.getDefaultSharedPreferences(context);
 		rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,null);
 		if (savedInstanceState==null) {
-		this.installedwikis=loadInstalledDb();
+		try {
+			this.installedwikis=loadInstalledDb();
+		} catch (WikiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
 
@@ -55,7 +63,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 				Wiki wiki = installedwikis.get(position);
 
 				Intent outputintent = new Intent(context, DeleteDatabaseActivity.class);
-				outputintent.putExtra("dbtodelete", wiki.getFilename());
+				outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
 				startActivity(outputintent);
 				return true;
 			}
@@ -65,21 +73,34 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 	}
 
-	private ArrayList<Wiki> loadInstalledDb() {
-
+	private ArrayList<Wiki> loadInstalledDb() throws WikiException {
+		HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		for (File f : rootDbDir.listFiles()) {
 			String name = f.getName();
-			if (name.endsWith(".sqlite")) {
+			if (name.indexOf("-")>0) {
+				String root_wiki=name.substring(0, name.indexOf("-"));
+				if (multiwikis.containsKey(root_wiki)){
+					Wiki w = multiwikis.get(root_wiki);
+					w.addDBFile(f);
+				} else {
+					Wiki w = new Wiki(context, f);
+					multiwikis.put(root_wiki,w);
+				}
+			} else {
 				Wiki w;
 				try {
 					w = new Wiki(context,f);
 					res.add(w);
 				} catch (WikiException e) {
-				//	Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+					Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 				}
 			}
 		}
+		for (Wiki w : multiwikis.values()) {
+			res.add(w);
+		}
+		
 		Collections.sort(res, new Comparator<Wiki>() {
 			public int compare(Wiki w1, Wiki w2) {
 				if (w1.getLangcode().equals(w2.getLangcode())) {
@@ -98,6 +119,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	public class InstalledWikisListViewAdapter extends BaseAdapter implements OnClickListener {
 		private LayoutInflater inflater;
 		private ArrayList<Wiki> data;
+		@SuppressWarnings("unused")
 		private int selectedPosition = 0;
 		public InstalledWikisListViewAdapter(Context context, ArrayList<Wiki> data){
 			// Caches the LayoutInflater for quicker use
@@ -141,7 +163,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			TextView header = (TextView ) convertView.findViewById(R.id.installedwikiheader);
 			header.setText(w.getType()+" "+w.getLanglocal());
 			TextView bot = (TextView ) convertView.findViewById(R.id.installedwikifooter);
-			bot.setText(w.getFilename()+" "+w.getLocalizedGendate());
+			bot.setText(w.getFilenamesAsString()+" "+w.getLocalizedGendate());
 			RadioButton rb = (RadioButton) convertView.findViewById(R.id.radio);
 			rb.setChecked(w.isSelected());
 			rb.setTag(position);
@@ -153,7 +175,8 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Wiki wiki = installedwikis.get(position);
-		config.edit().putString(context.getString(R.string.config_key_selecteddbfile),wiki.getFilename() ).commit();
+		String key = context.getString(R.string.config_key_selecteddbfiles);
+		config.edit().putStringSet(key ,wiki.getDBFilesnamesAsSet()).commit();
 		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
 		rb.setSelected(true);
 		for (int i = 0; i < installedwikis.size(); i++) {

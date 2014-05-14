@@ -95,7 +95,7 @@ languagedb="languages.sqlite"
 inputsize = 0
 
 class OutputSqlite:
-    def __init__(self, sqlite_file,sqlite_lang):
+    def __init__(self, sqlite_file,sqlite_lang,max_page_count=None):
         global dbversion
         self.sqlite_lang=sqlite_lang
         self.connlang = sqlite3.connect(sqlite_lang)
@@ -105,6 +105,9 @@ class OutputSqlite:
         self.conn.isolation_level="EXCLUSIVE"
         self.curs = self.conn.cursor()
         self.curs.execute("PRAGMA synchronous=NORMAL")
+        if (max_page_count!=None):
+            self.set_max_page_count(max_page_count)
+
         self.curs.execute('''CREATE TABLE IF NOT EXISTS articles (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
                                                                   article_id INTEGER UNIQUE NOT NULL,
                                                                   title VARCHAR(255) NOT NULL,
@@ -112,7 +115,7 @@ class OutputSqlite:
         self.curs.execute('''CREATE TABLE IF NOT EXISTS redirects (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
                                                                   title_from VARCHAR(255) NOT NULL,
                                                                   title_to VARCHAR(255))''')
-        self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key VARCHAR(255), value VARCHAR(255));''')
+        self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key TEXT, value TEXT);''')
         self.set_gen_date(strftime("%Y-%m-%d %H:%M:%S"))
         self.set_type("wikipedia")
         self.set_version(version)
@@ -120,6 +123,8 @@ class OutputSqlite:
         self.curr_values=[]
         self.max_inserts=100
 
+    def set_max_page_count(self,max_page_count):
+        self.curs.execute("PRAGMA max_page_count=%d"%max_page_count)
     def insert_redirect(self,from_,to_):
         self.curs.execute("INSERT INTO redirects VALUES (NULL,?,?)",(from_,to_))
 
@@ -149,15 +154,18 @@ class OutputSqlite:
     def reserve(self,size):
         pass
 
-    def write(self,article_id,title,text):
+    def write(self,article_id,title,text,raw=False):
         if (len(self.curr_values)==self.max_inserts):
             self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?,?)",self.curr_values)
             self.conn.commit()
             self.curr_values=[]
-        c=pylzma.compressfile(StringIO(text),dictionary=23)
-        result=c.read(5)
-        result+=struct.pack('<Q', len(text))
-        self.curr_values.append((article_id,title,buffer(result+c.read())))
+        if raw:
+            self.curr_values.append((article_id,title,text))
+        else:
+            c=pylzma.compressfile(StringIO(text),dictionary=23)
+            result=c.read(5)
+            result+=struct.pack('<Q', len(text))
+            self.curr_values.append((article_id,title,buffer(result+c.read())))
             
     def close(self):
         if (len(self.curr_values)>0):
@@ -174,7 +182,7 @@ class OutputSqlite:
         self.curs.execute("VACUUM")
         self.curs.close()
         self.conn.close()
-        sys.exit(0)
+
 
 
 ### READER ###################################################################

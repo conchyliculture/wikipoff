@@ -31,7 +31,8 @@ import android.widget.Toast;
 
 public class WikipOff extends Application {
 
-    private static final String TAG = "WikipOff";
+    @SuppressWarnings("unused")
+	private static final String TAG = "WikipOff";
     public static SharedPreferences config;
 	public File DBDir;
 	public Database dbHandler;
@@ -39,22 +40,9 @@ public class WikipOff extends Application {
     public void onCreate(){
     	super.onCreate();
     	
-    	DBDir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
+    	
     	config = PreferenceManager.getDefaultSharedPreferences(this);  	
-    	createEnv();
     }
     
-	private void createEnv() {
-		createDir(DBDir);
-	}
 	
-	private void createDir(File f) {
-		boolean res;
-		if (!f.exists()) {
-			res= f.mkdirs();
-			if (!res) 
-				Toast.makeText(this, "Problem creating directory: "+f.getAbsolutePath(), Toast.LENGTH_LONG).show(); // TODO
-		}
-		
-	}
 }

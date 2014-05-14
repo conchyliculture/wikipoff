@@ -22,7 +22,7 @@ curlang={}
 
 status=""
 res=Net::HTTP.get(URI.parse(url))
-res.each_line do  |l|
+res.force_encoding("utf-8").each_line do  |l|
     case l
     when /<th>Comment<\/th>/
         status="start"
