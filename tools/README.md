@@ -23,9 +23,9 @@ Example use:
 How to fix: `Error: database or disk is full (for example after the VACUUM command)`
 SQlite will use PRAGMA temp_store_directory; for its temporary work. It defaults to /tmp.
 If your /tmp is lacking some space, you can do:
-`sqlite> PRAGMA temp_store_directory = '<some place with disk space>';
-sqlite> PRAGMA temp_store =1;
-sqlite> vacuum:`
+    sqlite> PRAGMA temp_store_directory = '<some place with disk space>';
+    sqlite> PRAGMA temp_store =1;
+    sqlite> vacuum;
 
 ## WikiConvert.py
 
