@@ -34,13 +34,15 @@ libs/
 lint.xml
 proguard-project.txt
 
+tools/*.xml
 *.pyc
 *.sqlite
+!languages.sqlite
 tools/lib/python2.7
 *.swp
 tools/log*
-tools/*.xml
 TODO
 srsly_google
+*journal
 tools/managedb.py
-tools/*journal
+tools/*.rb
