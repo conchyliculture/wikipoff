@@ -32,12 +32,13 @@ If your /tmp is lacking some space, you can do:
 
 This scripts helps tracking converting issues. It's able to parse the raw xml file and, with the use of a helper database (which contains locations of articles in the XML file), displays outputs of the wikicode to HTML conversion.
 
-Example:
-* Show the HTML conversion output of an article with title `Algorithme` :
-* 
+Examples:
+Show the HTML conversion output of an article with title `Algorithme` :
+
     python ConvertArticle.py  -d helper.sqlite -f /raid/incoming/tests_wiki/frwiki-latest-pages-articles.xml -l fr -t Algorithme
-* Show the raw wikicode article with title `Algorithme` :
-* 
+
+Show the raw wikicode article with title `Algorithme` :
+
     python ConvertArticle.py  -d helper.sqlite -f /raid/incoming/tests_wiki/frwiki-latest-pages-articles.xml -l fr -t Algorithme -r
 
 ## split_db.py
