@@ -15,7 +15,8 @@ It will:
 It's been tested on French, Basque, Friulian, and English dumps.
 
 Example use:
-`python WikiExtractor.py -x enwiki-latest-pages-articles.xml -d en.wiki.sqlite`
+
+    python WikiExtractor.py -x enwiki-latest-pages-articles.xml -d en.wiki.sqlite
 
 ### Troubleshooting
 
@@ -32,13 +33,16 @@ This scripts helps tracking converting issues. It's able to parse the raw xml fi
 
 Example:
 * Show the HTML conversion output of an article with title `Algorithme` :
-`python ConvertArticle.py  -d helper.sqlite -f /raid/incoming/tests_wiki/frwiki-latest-pages-articles.xml -l fr -t Algorithme`
+* 
+    python ConvertArticle.py  -d helper.sqlite -f /raid/incoming/tests_wiki/frwiki-latest-pages-articles.xml -l fr -t Algorithme
 * Show the raw wikicode article with title `Algorithme` :
-`python ConvertArticle.py  -d helper.sqlite -f /raid/incoming/tests_wiki/frwiki-latest-pages-articles.xml -l fr -t Algorithme -r`
+* 
+    python ConvertArticle.py  -d helper.sqlite -f /raid/incoming/tests_wiki/frwiki-latest-pages-articles.xml -l fr -t Algorithme -r
 
 ## split_db.py
 
 This scripts helps spliting huge (read: bigger than FAT32 max file size) sqlite databases into 2
 
 Example:
-`python split_db.py -l en -d en.wiki.sqlite`
+
+    python split_db.py -l en -d en.wiki.sqlite
