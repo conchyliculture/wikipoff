@@ -21,6 +21,7 @@ This file is part of WikipOff.
 */
 package fr.renzo.wikipoff;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -65,6 +67,7 @@ public class MainActivity extends Activity {
 	private Set<String> seldb;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
+	private File dbdir;
 	
 	public class ClearSearchClickListener implements OnClickListener {
 		@Override
@@ -121,10 +124,33 @@ public class MainActivity extends Activity {
 			} catch (DatabaseException e) {e.alertUser(context);}
 		}
 	}
-
+	private void createEnv() {
+		createDir(dbdir);
+	}
+	
+	private void createDir(File f) {
+		boolean res;
+		if (!f.exists()) {
+			res= f.mkdirs();
+			if (!res) {
+				Toast.makeText(this, "Problem creating directory: "+f.getAbsolutePath(), Toast.LENGTH_LONG).show(); // TODO
+				finish();          
+	            moveTaskToBack(true);
+			}
+			}
+		
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (savedInstanceState==null) {
+			dbdir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
+//			if (dbdir == null) {
+//				Toast.makeText(this, "", Toast.LENGTH_LONG);
+//			}
+			createEnv();
+			
+		}
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
