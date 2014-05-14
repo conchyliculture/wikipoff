@@ -4,7 +4,6 @@
 This app is an offline [Wikipedia](https://www.wikipedia.org/) reader. It helps any one with a few Gb of space on their android storage to be always right in arguments, whether or not they have a dataplan.
 
 # WARNING
-The whole app and DB building process is **heavily** french wiki oriented. Your mileage may vary.
 
 I am not:
 - an android developer
