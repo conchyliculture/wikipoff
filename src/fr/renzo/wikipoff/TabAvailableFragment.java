@@ -2,6 +2,8 @@ package fr.renzo.wikipoff;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +18,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -37,7 +40,7 @@ import android.widget.Toast;
 
 public class TabAvailableFragment extends Fragment implements OnItemClickListener {
 	private static final String TAG = "TabAvailableActivity";
-	private static final String available_db_xml_file="available_wikis.xml"; // TODO : move in xml
+	//private static final String available_db_xml_file="available_wikis.xml"; // TODO : move in xml
 	private ArrayList<Wiki> availablewikis=new ArrayList<Wiki>();
 	private ListView availablewikislistview;
 	private Context context;
@@ -45,7 +48,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	private ArrayList<Integer> currentdownloads=new ArrayList<Integer>();
 	private View wholeview;
 	private DownloadFile downloadFile;
-	
+
 	private static int ERROR_URL_NOT_FOUND=0;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,7 +84,32 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	}
 
 	private ArrayList<Wiki> loadAvailableDB() throws IOException {
-		return WikiXMLParser.loadAvailableDBFromXML(context,context.getAssets().open(available_db_xml_file));
+		InputStream xml = copyXML(context.getString(R.string.available_xml_file));
+		return WikiXMLParser.loadAvailableDBFromXML(context,xml);
+	}
+
+	private InputStream copyXML(String xml) throws IOException {
+		AssetManager am = context.getAssets();
+		try {
+			InputStream in = am.open(xml);
+			File outFile = new File(Environment.getExternalStorageDirectory(),context.getString(R.string.available_xml_file_external_path));
+			if (!outFile.exists()) {
+				FileOutputStream out = new FileOutputStream(outFile);
+
+				byte[] buffer = new byte[1024];
+				int read;
+				while((read = in.read(buffer)) != -1){
+					out.write(buffer, 0, read);
+				}
+				in.close();
+				out.flush();
+				out.close();
+			}
+			return new FileInputStream(outFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return am.open(xml);
+		}
 	}
 
 	private void updateProgressBar(int position, int progress){
@@ -96,7 +124,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		}
 	}
 
-	
+
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -168,8 +196,6 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		}
 	}
 
-//	
-	
 	public class AvailableWikisListViewAdapter extends BaseAdapter {
 		private LayoutInflater inflater;
 		private ArrayList<Wiki> data;
@@ -216,17 +242,17 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		private Integer position;
 
 		protected String doInBackground(Object... params) {
-			
+
 			String result="";
 
 			Wiki w = (Wiki)params[0];
 			this.position = (Integer) params[1];
 			File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
 			try {
-			for(WikiDBFile wdbf : w.getDBFiles()) {
-				URL url = new URL(wdbf.getUrl());
-				download(url,new File(outputdir,wdbf.getFilename()));
-			}
+				for(WikiDBFile wdbf : w.getDBFiles()) {
+					URL url = new URL(wdbf.getUrl());
+					download(url,new File(outputdir,wdbf.getFilename()));
+				}
 			} catch (SocketTimeoutException e) {
 				Log.d(TAG,"Timeout...");
 				result="failed";
@@ -244,7 +270,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			}
 			return result;
 		}
-		
+
 		private String download(URL url,File file) throws IOException {
 			String result="";
 			URLConnection connection = url.openConnection();
@@ -256,7 +282,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			con.setReadTimeout(3000);
 			con.setDoOutput(true);
 			InputStream input = new BufferedInputStream(con.getInputStream());
-			
+
 
 			OutputStream output = new FileOutputStream(file);
 			byte data[] = new byte[8192];
@@ -274,10 +300,10 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			output.flush();
 			output.close();
 			input.close();
-	
+
 			return result;
 		}
-		
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
