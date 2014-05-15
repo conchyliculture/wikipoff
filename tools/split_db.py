@@ -7,6 +7,7 @@ import os.path
 import base64
 import sqlite3
 import getopt
+import datetime
 from WikiExtractor import OutputSqlite 
 languagedb="languages.sqlite"
 
@@ -82,6 +83,7 @@ def main():
     page_size=curs_input.execute("PRAGMA page_size").fetchone()[0]
     default_max_page_count=curs_input.execute("PRAGMA max_page_count").fetchone()[0]
     
+    st = datetime.datetime.now() 
     max_output_page_count = max_main_table_size/page_size
 
     curr_index=1
@@ -106,7 +108,10 @@ def main():
                     curr_output_sqlitefile=root_name+"-%d.sqlite"%curr_index
                     print "Opening new DB : %s"%curr_output_sqlitefile
                     curr_output = OutputSqlite(curr_output_sqlitefile,languagedb,max_output_page_count)
-        sys.stdout.write("Inserted %d / %d = %d\r"%(offset,row_count,offset*100/row_count))
+        percent = offset*100.0/row_count
+        delta=((100-percent)*(datetime.datetime.now()-st).total_seconds())/percent
+        status_s= "%.02f%% ETA=%s\r"%(percent, str(datetime.timedelta(seconds=delta)))
+        sys.stdout.write(status_s)
     curr_output.close()
 
 
