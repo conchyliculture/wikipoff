@@ -71,7 +71,7 @@ public class Database   {
 	}
 	
 	private String getDbLang() throws DatabaseException {
-		Cursor c= myRawQuery("SELECT value FROM metadata WHERE key ='lang'");
+		Cursor c= myRawQuery("SELECT value FROM metadata WHERE key ='lang-code'");
 		if (c.moveToFirst()){
 			return c.getString(0);
 		}
