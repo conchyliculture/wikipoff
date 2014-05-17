@@ -106,12 +106,6 @@ public class Wiki implements Serializable {
 			try {
 				c = sqlh.rawQuery("SELECT * FROM metadata", new String[0]);
 				String[] names = c.getColumnNames();
-
-				for (String name : names) {
-					String cmd = "select typeof (" + name + ") from metadata";
-					Cursor typeCursor = sqlh.rawQuery(cmd,null);
-					typeCursor.moveToFirst();
-				}
 				if (c.moveToFirst()) {
 					do {
 						k = c.getString(0);
