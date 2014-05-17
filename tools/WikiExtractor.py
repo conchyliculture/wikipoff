@@ -271,19 +271,23 @@ def process_data(input, output):
 
 ### CL INTERFACE ############################################################
 
-def show_help():
-    print >> sys.stdout, __doc__,
+def show_usage():
+    print """Usage: python WikiExtractor.py  [options] -x wikipedia.xml
+Converts a wikipedia XML dump file into sqlite databases to be used in WikipOff
 
-def show_usage(script_name):
-    print >> sys.stderr, 'Usage: %s [options]' % script_name
+Options:
+        -l, --lang      Set database language
+        -d, --db        Output database file (default : 'wiki.sqlite') 
+        -h, --help      Print this help
+"""
 
 def main():
     global prefix,inputsize
     script_name = os.path.basename(sys.argv[0])
 
     try:
-        long_opts = ['help', 'basename=', 'ns=', "db=", "xml="]
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 'hn:B:L:x:d:', long_opts)
+        long_opts = ['help', 'lang=', "db=", "xml="]
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 'hl:x:d:', long_opts)
     except getopt.GetoptError:
         show_usage(script_name)
         sys.exit(1)
@@ -293,16 +297,10 @@ def main():
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            show_help()
+            show_usage()
             sys.exit()
-        elif opt in ('-L'):
+        elif opt in ('-l','--lang'):
             wikiglobals.lang = arg
-        elif opt in ('-s', '--sections'):
-            wikiglobals.keepSections = True
-        elif opt in ('-B', '--base'):
-            prefix = arg
-        elif opt in ('-n', '--ns'):
-            wikiglobals.acceptedNamespaces = set(arg.split(','))
         elif opt in ('-d', '--db'):
             output_file = arg
         elif opt in ('-x','--xml'):
