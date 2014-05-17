@@ -18,7 +18,7 @@ This file is part of WikipOff.
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
-*/
+ */
 package fr.renzo.wikipoff;
 
 import java.io.File;
@@ -60,28 +60,28 @@ public class MainActivity extends Activity {
 
 	private static final String TAG = "MainActivity";
 	private WikipOff app;
-    private AutoCompleteTextView searchtextview;
-    private ListView randomlistview;
+	private AutoCompleteTextView searchtextview;
+	private ListView randomlistview;
 	private Context context=this;
 	private SharedPreferences config;
 	private Set<String> seldb;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
 	private File dbdir;
-	
+
 	public class ClearSearchClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
 			searchtextview.setText("");
 		}
 	}
-	
+
 	@Override
-	public void onRestart(){
-		super.onRestart();	
+	public void onResume(){
+		super.onResume();	
 		newDatabaseSelected();
 	}
-	
+
 	public class RandomItemClickListener implements OnItemClickListener {
 
 		@Override
@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
 			Cursor c = (Cursor) parent.getItemAtPosition(position);
 			gogogo(c.getString(1));
 		}
-		
+
 		private void gogogo(CharSequence q){
 			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 			myIntent.putExtra("article_title",q );
@@ -111,7 +111,7 @@ public class MainActivity extends Activity {
 			return true;
 		}
 	}
-	
+
 	public class ShowRandomClickListener implements OnClickListener {
 		@Override
 		public void onClick(View arg0) {
@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
 	private void createEnv() {
 		createDir(dbdir);
 	}
-	
+
 	private void createDir(File f) {
 		boolean res;
 		if (!f.exists()) {
@@ -135,26 +135,22 @@ public class MainActivity extends Activity {
 			if (!res) {
 				Toast.makeText(this, "Problem creating directory: "+f.getAbsolutePath(), Toast.LENGTH_LONG).show(); // TODO
 				finish();          
-	            moveTaskToBack(true);
+				moveTaskToBack(true);
 			}
-			}
-		
+		}
+
 	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (savedInstanceState==null) {
 			dbdir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
-//			if (dbdir == null) {
-//				Toast.makeText(this, "", Toast.LENGTH_LONG);
-//			}
 			createEnv();
-			
 		}
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
-		
+
 		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
 		randomlistview= (ListView) findViewById(R.id.randomView);
 		rndbutton = (Button) findViewById(R.id.buttonRandom);
@@ -165,7 +161,7 @@ public class MainActivity extends Activity {
 		showViews();
 
 	}
-	
+
 	public void showViews(){
 		if (this.seldb != null) {
 			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
@@ -191,31 +187,37 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.action_settings:
 			Intent i = new Intent(this, SettingsActivity.class);
-            startActivity(i);
-		    return true;
+			startActivity(i);
+			return true;
 		case R.id.action_manage_databases:
 			Intent i1 = new Intent(this, ManageDatabasesActivity.class);
-            startActivity(i1);
-		    return true;
-		  
-		 default:
-		 return super.onOptionsItemSelected(item);
+			startActivity(i1);
+			return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void newDatabaseSelected() {
 		try {
 			this.seldb = config.getStringSet(s(R.string.config_key_selecteddbfiles),null );
+			boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
+
 			if (this.seldb!=null) {
-				app.dbHandler = new Database(context,new ArrayList<String>(this.seldb));
-				showViews();
-				toggleAllViews(true);
-				Log.d(TAG,"We selected db '"+seldb+"'");
+				if ((app.dbHandler == null ) || (new_db)){
+					app.dbHandler = new Database(context,new ArrayList<String>(this.seldb));
+					config.edit().remove(s(R.string.config_key_should_update_db));
+					showViews();
+					toggleAllViews(true);
+					Log.d(TAG,"We selected db '"+seldb+"'");
+				}
 			} else {
 				Toast.makeText(getApplicationContext(), "You need to select a database", 
-						   Toast.LENGTH_LONG).show();
+						Toast.LENGTH_LONG).show();
 				toggleAllViews(false);
 			}		
+
 		} catch (DatabaseException e) {
 			Builder b = e.alertUser(context);
 			b.setCancelable(false);
@@ -227,7 +229,7 @@ public class MainActivity extends Activity {
 			}); //setOnCancelListener
 		} // try
 	}
-	
+
 	private void toggleAllViews(boolean state) {
 		this.clearSearchButton.setEnabled(state);
 		this.randomlistview.setEnabled(state);
@@ -236,12 +238,12 @@ public class MainActivity extends Activity {
 	}
 
 	private  String s(int i) {
-	    return context.getString(i);
+		return context.getString(i);
 	}
-	
-	
+
+
 	private void hideSoftKeyboard() {
-	    InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-	    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+		InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 	}
 }
