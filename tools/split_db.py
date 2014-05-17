@@ -71,7 +71,7 @@ def main():
 
 
     input_db_size=os.stat(sqlite_file).st_size
-    max_main_table_size=desired_size*80/100 # We need space for indexes and FTS table
+    max_main_table_size=desired_size*90/100 # We need space for indexes and FTS table
     final_db_count=math.ceil(input_db_size/max_main_table_size)
     if final_db_count==1:
         print "no need to split"
