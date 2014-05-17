@@ -18,11 +18,12 @@ This file is part of WikipOff.
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
-*/
+ */
 package fr.renzo.wikipoff;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -50,7 +51,7 @@ public class ArticleActivity extends Activity {
 	private String wanted_title;
 	private SharedPreferences config;
 	private MenuItem searchItem;
-	
+
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +60,10 @@ public class ArticleActivity extends Activity {
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);;
 
 		setContentView(R.layout.activity_article);
-		
+
 		this.webview= (WebView) findViewById(R.id.article_webview);
-	    this.webview.getSettings().setJavaScriptEnabled(true);
-		
+		this.webview.getSettings().setJavaScriptEnabled(true);
+
 		Intent source_intent = getIntent();
 		wanted_title = source_intent.getStringExtra("article_title");
 		this.article = app.dbHandler.searchArticleFromTitle(wanted_title);
@@ -75,51 +76,51 @@ public class ArticleActivity extends Activity {
 		myIntent.putExtra("article_title", title);
 		startActivity(myIntent);
 	}
-	
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_manage_databases:
 			Intent ami = new Intent(this, ManageDatabasesActivity.class);
-            startActivity(ami);
-		    return true;
+			startActivity(ami);
+			return true;
 		case R.id.action_settings:
 			Intent i = new Intent(this, SettingsActivity.class);
-            startActivity(i);
-		    return true;
+			startActivity(i);
+			return true;
 		case R.id.action_webbrowser:
-	        Intent webIntent = new Intent( Intent.ACTION_VIEW );
-	        webIntent.setData( Uri.parse("http://"+app.dbHandler.lang+".wikipedia.org/wiki/"+this.article.title) );
-	        this.startActivity( webIntent );
-		
-		 default:
-		 return super.onOptionsItemSelected(item);
+			Intent webIntent = new Intent( Intent.ACTION_VIEW );
+			webIntent.setData( Uri.parse("http://"+app.dbHandler.lang+".wikipedia.org/wiki/"+this.article.title) );
+			this.startActivity( webIntent );
+
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.articlemenu, menu);
 		searchItem = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextFocusChangeListener(new OnFocusChangeListener() {
-			
+		SearchView searchView = (SearchView) searchItem.getActionView();
+
+		searchView.setOnQueryTextFocusChangeListener(new OnFocusChangeListener() {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
-		        if (!hasFocus) {
-		            searchItem.collapseActionView();
-		        }
-				
+				if (!hasFocus) {
+					searchItem.collapseActionView();
+				}				
 			}
-		} );
-        searchView.setOnQueryTextListener(new OnQueryTextListener() {
-			
+		});
+
+		searchView.setOnQueryTextListener(new OnQueryTextListener() {
+
 			@Override
 			public boolean onQueryTextSubmit(String query) {
 				webview.findNext(true);
 				return true;
 			}
-			
+
+			@SuppressWarnings("deprecation") // Because we want to work with API 14
 			@Override
 			public boolean onQueryTextChange(String newText) {
 				webview.findAll(newText);
@@ -129,14 +130,12 @@ public class ArticleActivity extends Activity {
 
 		return true;
 	}
-	
+
 	private void showHTML() {
 		this.webview.setWebViewClient(new WebViewClient(){
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				String article_title=url;
-				if (url.startsWith("data:text/html")) {
-					
-				}else if (url.startsWith("file:///")) {
+				if (url.startsWith("file:///")) {
 					article_title=url.substring(8);					
 				}
 				try {
@@ -144,10 +143,10 @@ public class ArticleActivity extends Activity {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-		    	return true;  
-		    } 
+				return true;  
+			} 
 		});
-		
+
 		String data ="<html><head>\n";
 		if (this.article != null) {
 			setTitle(this.article.title);
@@ -159,15 +158,14 @@ public class ArticleActivity extends Activity {
 			data+="<body>";
 			data +="<h1>"+this.article.title+"</h1>";
 			data += this.article.text;
-					
+
 		} else {
 			data +="<h1>No article '"+wanted_title+"' found =( </h1>";
 		}
 		data+="</body></html>";
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html","UTF-8",null);
-
 	}
-	
+
 	private  String s(int i) {
 		return this.getString(i);
 	}
