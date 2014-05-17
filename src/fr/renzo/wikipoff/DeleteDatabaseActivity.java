@@ -53,14 +53,14 @@ public class DeleteDatabaseActivity extends Activity {
 		});
 
 	}
-	private void byebye(){
-		this.finish();
-	}
 
 	public void deleteDb(String dbtodelete) {
 		File db=new File(Environment.getExternalStoragePublicDirectory(this.getString(R.string.DBDir)),dbtodelete);
 		if (db.exists()) {
 			db.delete();
 		}
+	}
+	private void byebye(){
+		this.finish();
 	}
 }
