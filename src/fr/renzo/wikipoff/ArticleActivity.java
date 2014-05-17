@@ -66,8 +66,8 @@ public class ArticleActivity extends Activity {
 		Intent source_intent = getIntent();
 		wanted_title = source_intent.getStringExtra("article_title");
 		this.article = app.dbHandler.searchArticleFromTitle(wanted_title);
-				
-		showHTML();		
+
+		showHTML();
 		
 		this.webview.setWebViewClient(new WebViewClient(){
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -168,7 +168,8 @@ public class ArticleActivity extends Activity {
 			data +="<h1>No article '"+wanted_title+"' found =( </h1>";
 		}
 		data+="</body></html>";
-		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html; charset=UTF-8",null,null);
+		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html","UTF-8",null);
+
 	}
 	
 	private  String s(int i) {
