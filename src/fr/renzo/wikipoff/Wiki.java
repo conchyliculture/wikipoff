@@ -105,7 +105,6 @@ public class Wiki implements Serializable {
 			String v="";
 			try {
 				c = sqlh.rawQuery("SELECT * FROM metadata", new String[0]);
-				String[] names = c.getColumnNames();
 				if (c.moveToFirst()) {
 					do {
 						k = c.getString(0);

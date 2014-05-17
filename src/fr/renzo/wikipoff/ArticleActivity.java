@@ -23,7 +23,7 @@ package fr.renzo.wikipoff;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,6 +51,7 @@ public class ArticleActivity extends Activity {
 	private SharedPreferences config;
 	private MenuItem searchItem;
 	
+	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,7 +61,6 @@ public class ArticleActivity extends Activity {
 		setContentView(R.layout.activity_article);
 		
 		this.webview= (WebView) findViewById(R.id.article_webview);
-	    //this.webview.getSettings().setBuiltInZoomControls(true);
 	    this.webview.getSettings().setJavaScriptEnabled(true);
 		
 		Intent source_intent = getIntent();
@@ -69,25 +69,7 @@ public class ArticleActivity extends Activity {
 
 		showHTML();
 		
-		this.webview.setWebViewClient(new WebViewClient(){
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				// Catch clicks on links
-//				Log.d(TAG,"Overriding"+ url);
-				String article_title=url;
-				if (url.startsWith("data:text/html")) {
-					
-				}else if (url.startsWith("file:///")) {
-					article_title=url.substring(8);					
-				}
-				try {
-					startArticleActivity(URLDecoder.decode(article_title, "UTF-8"));
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    	return true;  
-		    } // method
-		});// setWebViewClient
+		
 	} // onCreate
 
 	private void startArticleActivity(String title) {
@@ -151,7 +133,23 @@ public class ArticleActivity extends Activity {
 	}
 	
 	private void showHTML() {
-//		Log.d(TAG, html.substring(0,10));
+		this.webview.setWebViewClient(new WebViewClient(){
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				String article_title=url;
+				if (url.startsWith("data:text/html")) {
+					
+				}else if (url.startsWith("file:///")) {
+					article_title=url.substring(8);					
+				}
+				try {
+					startArticleActivity(URLDecoder.decode(article_title, "UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+		    	return true;  
+		    } 
+		});
+		
 		String data ="<html><head>\n";
 		if (this.article != null) {
 			setTitle(this.article.title);
