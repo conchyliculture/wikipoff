@@ -68,11 +68,9 @@ public class ArticleActivity extends Activity {
 		this.article = app.dbHandler.searchArticleFromTitle(wanted_title);
 
 		showHTML();
-		
-		
-	} // onCreate
+	}
 
-	private void startArticleActivity(String title) {
+	private void displayNewArticle(String title) {
 		Intent myIntent = new Intent(this, ArticleActivity.class);
 		myIntent.putExtra("article_title", title);
 		startActivity(myIntent);
@@ -142,7 +140,7 @@ public class ArticleActivity extends Activity {
 					article_title=url.substring(8);					
 				}
 				try {
-					startArticleActivity(URLDecoder.decode(article_title, "UTF-8"));
+					displayNewArticle(URLDecoder.decode(article_title, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
