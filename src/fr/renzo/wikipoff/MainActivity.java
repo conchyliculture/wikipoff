@@ -207,13 +207,13 @@ public class MainActivity extends Activity {
 			if (this.seldb!=null) {
 				if ((app.dbHandler == null ) || (new_db)){
 					app.dbHandler = new Database(context,new ArrayList<String>(this.seldb));
-					config.edit().remove(s(R.string.config_key_should_update_db));
+					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
 					showViews();
 					toggleAllViews(true);
 					Log.d(TAG,"We selected db '"+seldb+"'");
 				}
 			} else {
-				Toast.makeText(getApplicationContext(), "You need to select a database", 
+				Toast.makeText(getApplicationContext(), "No selected database", 
 						Toast.LENGTH_LONG).show();
 				toggleAllViews(false);
 			}		

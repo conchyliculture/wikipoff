@@ -179,7 +179,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		config.edit().putStringSet(key ,wiki.getDBFilesnamesAsSet()).commit();
 		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
 		String key2 = context.getString(R.string.config_key_should_update_db);
-		config.edit().putBoolean(key2, true);
+		config.edit().putBoolean(key2, true).commit();
 		rb.setSelected(true);
 		for (int i = 0; i < installedwikis.size(); i++) {
 			View ll = (View) installedwikislistview.getChildAt(i);
