@@ -18,7 +18,7 @@ This file is part of WikipOff.
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
-*/
+ */
 package fr.renzo.wikipoff;
 
 import java.io.File;
@@ -45,18 +45,21 @@ public class Database   {
 	public ArrayList<SQLiteDatabase> sqlh=new ArrayList<SQLiteDatabase>();
 	public String lang;
 	private long maxId;
-	
+
 	public Database(Context context, ArrayList<String> databasefilespaths) throws DatabaseException {
 		this.context=context;
+
 		File rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
 		for (String filename : databasefilespaths) {
 			this.seldatabasefilespaths.add(new File(rootDbDir,filename).getAbsolutePath());
 		}
+
 		String error=checkDatabaseHealth();
 		if ( !error.equals("")) {
 			Log.e(TAG,"Error: "+error);
 			throw (new DatabaseException(error));
 		} 
+		
 		for (String dbfile : this.seldatabasefilespaths) {
 			try {
 				SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(dbfile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS );
@@ -64,47 +67,22 @@ public class Database   {
 			}
 			catch (SQLiteCantOpenDatabaseException e) {
 				Toast.makeText(context, "Problem opening database '"+dbfile+"'"+e.getMessage(), Toast.LENGTH_LONG).show();
+				Log.d(TAG,"Problem opening database '"+dbfile+"'"+e.getMessage());
 			} 
 		}
 		this.maxId=getMaxId();
 		this.lang=getDbLang();
 	}
-	
-	private String getDbLang() throws DatabaseException {
-		Cursor c= myRawQuery("SELECT value FROM metadata WHERE key ='lang-code'");
-		if (c.moveToFirst()){
-			return c.getString(0);
-		}
-		c.close();
-		return "";
-	}
 
-	public String checkDatabaseHealth(){
-		String error="";
-		for (String p : seldatabasefilespaths) {
-			File dbfile = new File(p);
-			if (!dbfile.exists()) {
-				return "Unable to find '"+p+"'";
-			}
-			if (dbfile.length()==0) {
-				return "Database file '"+p+"' is an empty file";
-			} 
-		}
-		return error;
-	}
-	
 	public Cursor myRawQuery(String query) throws DatabaseException {
 		return myRawQuery(query,new String[0]);
 	}
+
 	public Cursor myRawQuery(String query, String param1) throws DatabaseException {
 		return myRawQuery(query,new String[]{param1});
 	}
-	
+
 	public Cursor myRawQuery(String query, String[] objects ) throws DatabaseException {
-		//Log.d(TAG,"SQL: "+query);
-		for (int i = 0; i < objects.length; i++) {
-			//Log.d(TAG,"SQL: "+objects[i]);
-		}
 		Cursor[] arraycursors = new Cursor[this.sqlh.size()];
 		int i=0;
 		for (SQLiteDatabase sh : this.sqlh) {
@@ -122,7 +100,31 @@ public class Database   {
 		}
 		return (Cursor) new MergeCursor(arraycursors);
 	}
-	
+
+	private String getDbLang() throws DatabaseException {
+		String res="";
+		Cursor c = myRawQuery("SELECT value FROM metadata WHERE key ='lang-code'");
+		if (c.moveToFirst()){
+			res= c.getString(0);
+		}
+		c.close();
+		return res;
+	}
+
+	public String checkDatabaseHealth(){
+		String error="";
+		for (String p : seldatabasefilespaths) {
+			File dbfile = new File(p);
+			if (!dbfile.exists()) {
+				return "Unable to find '"+p+"'";
+			}
+			if (dbfile.length()==0) {
+				return "Database file '"+p+"' is an empty file";
+			} 
+		}
+		return error;
+	}
+
 	public int getMaxId() throws DatabaseException{
 		Cursor c= myRawQuery("SELECT MAX(_id) FROM articles");
 		if (c.moveToFirst()){
@@ -131,14 +133,14 @@ public class Database   {
 		c.close();
 		return 0;
 	}
-	
+
 	public List<String> getRandomTitles(int nb) throws DatabaseException {
 		long[] rnd_ids = new long[nb];
 		for (int i = 0; i < rnd_ids.length; i++) {
 			rnd_ids[i]=0;
 		}
 		long max = this.maxId;
-		
+
 		int idx=0;
 		while (rnd_ids[nb-1]==0) {
 			boolean found=false;
@@ -154,22 +156,22 @@ public class Database   {
 				idx+=1;
 			}
 		}
-		
+
 		ArrayList<String> res = new ArrayList<String>();
 		String q="("+rnd_ids[0];
 		for (int i = 1; i < rnd_ids.length; i++) {
 			q = q+", "+String.valueOf(rnd_ids[i]);
 		}
 		q = q +" )";
-		
+
 		Cursor c = myRawQuery("SELECT title FROM articles WHERE _id IN "+q);
 		if (c.moveToFirst()) {
-            do {
-                String t = c.getString(0);
-                res.add(t);
-            } while (c.moveToNext());
-            
-        } 
+			do {
+				String t = c.getString(0);
+				res.add(t);
+			} while (c.moveToNext());
+
+		} 
 		c.close();
 		return res;
 	}
@@ -178,23 +180,21 @@ public class Database   {
 		int nb=context.getResources().getInteger(R.integer.def_random_list_nb);
 		return getRandomTitles(nb);
 	}
-	
-	// This gets an existing article from an existing titne and won't try weird stuff
+
+	// This gets an existing article from an existing title and won't try weird stuff
 	public Article getArticleFromTitle(String title) throws DatabaseException {
 		Cursor c;
 		Article res=null;
 		String uppertitle=title.substring(0, 1).toUpperCase() + title.substring(1);
 		c = myRawQuery("SELECT _id,text FROM articles WHERE title= ? or title =?",new String[]{title,uppertitle});
 		if (c.moveToFirst()) {
-            res = new Article(c.getInt(0),title,c.getBlob(1));
-        }
+			res = new Article(c.getInt(0),title,c.getBlob(1));
+		}
 		return res;
 	}
-	
-	
+
+
 	public Article searchArticleFromTitle(String title) {
-		//Log.d(TAG,"getarticlefromtitle '"+title+"' "+redirect);
-		
 		Article res=null;
 		try {
 			// First, let's try the easy way
@@ -202,23 +202,22 @@ public class Database   {
 			if (res==null) {
 				// *sigh* maybe there's a redirect
 				String redirtitle = getRedirectArticleTitle(title);
-        		if (redirtitle!=null) {
-        			//Log.d(TAG, "ah, we found a redirect => "+redirtitle);
-        			res=getArticleFromTitle(Html.fromHtml(redirtitle).toString());
-        		}
-        		if (res==null) {
-        			// WTF who failed that much?
-        			// Maybe just a case-sensitivity issue
-        			Cursor c;
-        			c=myRawQuery("SELECT title FROM searchTitles WHERE title match ?",title);
+				if (redirtitle!=null) {
+					res=getArticleFromTitle(Html.fromHtml(redirtitle).toString());
+				}
+				if (res==null) {
+					// WTF who failed that much?
+					// Maybe just a case-sensitivity issue
+					Cursor c;
+					c = myRawQuery("SELECT title FROM searchTitles WHERE title match ?",title);
 					if (c.moveToFirst()) {
-						res= getArticleFromTitle(c.getString(0));
+						res = getArticleFromTitle(c.getString(0));
 					} else {
 						Log.d(TAG, "allezzzzz");
 					}
 					c.close();
-        		}
-    		} 
+				}
+			} 
 		} catch (DatabaseException e) {
 			e.alertUser(context);
 		}
@@ -231,21 +230,20 @@ public class Database   {
 	public String getRedirectArticleTitle(String title) {
 		String uppertitle=title.substring(0, 1).toUpperCase() + title.substring(1);
 		Cursor c;
+		String res="";
 		try {
 			c = myRawQuery("SELECT title_to FROM redirects WHERE title_from= ? or title_from =?", new String[]{title, uppertitle});
 			if (c.moveToFirst()) {
-	            String res=c.getString(0);
-	            return res;
-	        } else {
-	        	Log.d(TAG,"No redirect found for title '"+title+"'");
-	        }
+				res = c.getString(0);
+			} else {
+				Log.d(TAG,"No redirect found for title '"+title+"'");
+			}
 			c.close();
 		} catch (DatabaseException e) {
 			e.alertUser(context);
 		}
-		return null;
+		return res;
 	}
-
 
 	public class DatabaseException extends Exception {
 
@@ -253,14 +251,14 @@ public class Database   {
 		public DatabaseException(String message) {
 			super(message);
 		}
-		
-	    public Builder alertUser(Context context){
-	        AlertDialog.Builder dialog = new AlertDialog.Builder(context); 
-	        dialog.setTitle("Database Error:");
-	        dialog.setMessage(this.toString());
-	        dialog.setNeutralButton("Ok", null);
-	        dialog.create().show();
-	        return dialog;
-	    }
+
+		public Builder alertUser(Context context){
+			AlertDialog.Builder dialog = new AlertDialog.Builder(context); 
+			dialog.setTitle("Database Error:");
+			dialog.setMessage(this.toString());
+			dialog.setNeutralButton("Ok", null);
+			dialog.create().show();
+			return dialog;
+		}
 	}
 }
