@@ -33,11 +33,6 @@ public class Article {
 	public int id_;
 	public String text;
 
-	public  Article(int id_, String title, String text) {
-		this.id_ = id_;
-		this.title = title;
-		this.text = text;
-	}
 	public  Article(int id_, String title, byte[] coded) {
 		this.id_ = id_;
 		this.title = title;
