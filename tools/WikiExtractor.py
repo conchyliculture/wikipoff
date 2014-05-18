@@ -242,7 +242,7 @@ def process_data(input, output):
         elif tag == '/page':
             colon = title.find(':')
             past_rev=False
-            if (colon < 0 or title[:colon] in wikiglobals.acceptedNamespaces): 
+            if (colon < 0 or title[:colon] in wikiglobals.acceptedNamespaces or title[colon-1:colon+2]==" : "):
                 if redirect:
                     output.insert_redirect(title,redir_title)
                 else:
