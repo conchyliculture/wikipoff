@@ -432,7 +432,9 @@ class WikiFRTests(unittest.TestCase):
     def testJaponais(self):
         tests=[
                 [u"{{Japonais|'''Happa-tai'''|はっぱ隊||Brigade des feuilles}}",u"'''Happa-tai''' (はっぱ隊, , Brigade des feuilles)"],
+                [u"{{Japonais|'''Lolicon'''|ロリータ・コンプレックス|''rorīta konpurekkusu''}}, ou {{japonais|'''Rorikon'''|ロリコン}}",u"'''Lolicon''' (ロリータ・コンプレックス, ''rorīta konpurekkusu''), ou '''Rorikon''' (ロリコン)"],
             ]
+
         for t in tests:
             self.assertEqual(self.sfrt.fr_saveJaponaisTemplates(t[0]), t[1])
 
