@@ -240,21 +240,19 @@ def process_data(input, output):
         elif inText:
             page.append(line)
         elif tag == '/page':
-            colon = title.find(':')
             past_rev=False
-            if (colon < 0 or title[:colon] in wikiglobals.acceptedNamespaces or title[colon-1:colon+2]==" : "):
-                if redirect:
-                    output.insert_redirect(title,redir_title)
-                else:
-                #    print(id, title.encode('utf-8'))
-                    sys.stdout.flush()
-                    wikitools.WikiDocumentSQL(output, article_id, title, ''.join(page))
-                    i+=1
-                    if i%eta_every == 0:
-                        percent =  (100.0 * input.tell()) / inputsize
-                        delta=((100-percent)*(datetime.datetime.now()-st).total_seconds())/percent
-                        status_s= "%.02f%% ETA=%s\r"%(percent, str(datetime.timedelta(seconds=delta)))
-                        sys.stdout.write(status_s)
+            if redirect:
+                output.insert_redirect(title,redir_title)
+            else:
+            #    print(id, title.encode('utf-8'))
+                sys.stdout.flush()
+                wikitools.WikiDocumentSQL(output, article_id, title, ''.join(page))
+                i+=1
+                if i%eta_every == 0:
+                    percent =  (100.0 * input.tell()) / inputsize
+                    delta=((100-percent)*(datetime.datetime.now()-st).total_seconds())/percent
+                    status_s= "%.02f%% ETA=%s\r"%(percent, str(datetime.timedelta(seconds=delta)))
+                    sys.stdout.write(status_s)
             id = None
             page = []
         elif tag == 'base':

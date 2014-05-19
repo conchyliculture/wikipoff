@@ -21,14 +21,6 @@ prefix = None # Lost?
 keepSections = True
 
 ##
-# Recognize only these namespaces
-# w: Internal links to the Wikipedia
-# wiktionary: Wiki dictionry
-# wikt: shortcut for Wikctionry
-#
-acceptedNamespaces = set(['w', 'wiktionary', 'wikt'])
-
-##
 # Drop these elements from article text
 #
 discardElements = set([
