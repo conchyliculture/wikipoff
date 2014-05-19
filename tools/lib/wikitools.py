@@ -22,43 +22,6 @@ def WikiDocumentSQL(out, article_id, title, text):
         buff=text.encode('utf-8')
 
     out.write(article_id, title, buff)
-##
-# Normalize title
-def normalizeTitle(title):
-  # remove leading whitespace and underscores
-  title = title.strip(' _')
-  # replace sequences of whitespace and underscore chars with a single space
-  title = re.compile(r'[\s_]+').sub(' ', title)
-
-  m = re.compile(r'([^:]*):(\s*)(\S(?:.*))').match(title)
-  if m:
-      prefix = m.group(1)
-      if m.group(2):
-          optionalWhitespace = ' '
-      else:
-          optionalWhitespace = ''
-      rest = m.group(3)
-
-      ns = prefix.capitalize()
-      if ns in wikiglobals.acceptedNamespaces:
-          # If the prefix designates a known namespace, then it might be
-          # followed by optional whitespace that should be removed to get
-          # the canonical page name
-          # (e.g., "Category:  Births" should become "Category:Births").
-          title = ns + ":" + rest.capitalize()
-      else:
-          # No namespace, just capitalize first letter.
-	  # If the part before the colon is not a known namespace, then we must
-          # not remove the space after the colon (if any), e.g.,
-          # "3001: The_Final_Odyssey" != "3001:The_Final_Odyssey".
-          # However, to get the canonical page name we must contract multiple
-          # spaces into one, because
-          # "3001:   The_Final_Odyssey" != "3001: The_Final_Odyssey".
-          title = prefix.capitalize() + ":" + optionalWhitespace + rest
-  else:
-      # no namespace, just capitalize first letter
-      title = title.capitalize();
-  return title
 
 ##
 # Removes HTML or XML character references and entities from a text string.
@@ -216,8 +179,6 @@ parametrizedLink = re.compile(r'\[\[.*?\]\]')
 def make_anchor_tag(match):
     link = match.group(1)
     colon = link.find(':')
-    if colon > 0 and link[:colon] not in wikiglobals.acceptedNamespaces:
-        return ''
     trail = match.group(3)
     anchor = match.group(2)
     if not anchor:

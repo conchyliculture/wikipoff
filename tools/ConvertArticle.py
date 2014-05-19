@@ -91,10 +91,8 @@ def process_data(input, output):
         elif inText:
             page.append(line)
         elif tag == '/page':
-            colon = title.find(':')
-            if (colon < 0 or title[:colon] in wikiglobals.acceptedNamespaces or title[colon-1:colon+2]==" : "): 
-                sys.stdout.flush()
-                wikitools.WikiDocumentSQL(output, id_, title, ''.join(page))
+            sys.stdout.flush()
+            wikitools.WikiDocumentSQL(output, id_, title, ''.join(page))
             id_ = None
             page = []
             return
