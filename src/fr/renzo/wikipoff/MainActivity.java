@@ -69,21 +69,49 @@ public class MainActivity extends Activity {
 	private Button rndbutton;
 	private File dbdir;
 
-	public class ClearSearchClickListener implements OnClickListener {
-		@Override
-		public void onClick(View v) {
-			searchtextview.setText("");
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		if (savedInstanceState==null) {
+			dbdir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
+			createEnv();
 		}
-	}
+		this.config=PreferenceManager.getDefaultSharedPreferences(this);
+		this.app= (WikipOff) getApplication();
+		setContentView(R.layout.activity_main);
 
+		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
+		randomlistview= (ListView) findViewById(R.id.randomView);
+		rndbutton = (Button) findViewById(R.id.buttonRandom);
+		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
+
+		newDatabaseSelected();
+
+		showViews();
+
+	}
+	
 	@Override
 	public void onResume(){
 		super.onResume();	
 		newDatabaseSelected();
 	}
+	
+	public void showViews(){
+		if (this.seldb != null) {
+			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
+			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
+			rndbutton.setOnClickListener(new ShowRandomClickListener());
+			searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.dbHandler));
+			searchtextview.setOnItemClickListener(new SearchClickListener());
+			searchtextview.setOnEditorActionListener(new SearchClickListener());
+
+			toggleAllViews(true);
+		} 
+	}
 
 	public class RandomItemClickListener implements OnItemClickListener {
-
+		// Handles clicks on an item in the random article list
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
@@ -91,15 +119,16 @@ public class MainActivity extends Activity {
 			MainActivity.this.startActivity(myIntent);
 		}
 	}
+	
 	public class SearchClickListener implements OnItemClickListener, OnEditorActionListener {
-
+		// Handles clicks on an item in the search article list
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Cursor c = (Cursor) parent.getItemAtPosition(position);
-			gogogo(c.getString(1));
+			displayArticle(c.getString(1));
 		}
 
-		private void gogogo(CharSequence q){
+		private void displayArticle(CharSequence q){
 			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 			myIntent.putExtra("article_title",q );
 			MainActivity.this.startActivity(myIntent);
@@ -107,8 +136,15 @@ public class MainActivity extends Activity {
 
 		@Override
 		public boolean onEditorAction(TextView view, int arg1, KeyEvent arg2) {
-			gogogo(view.getText().toString());
+			displayArticle(view.getText());
 			return true;
+		}
+	}
+
+	public class ClearSearchClickListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			searchtextview.setText("");
 		}
 	}
 
@@ -140,40 +176,9 @@ public class MainActivity extends Activity {
 		}
 
 	}
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		if (savedInstanceState==null) {
-			dbdir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
-			createEnv();
-		}
-		this.config=PreferenceManager.getDefaultSharedPreferences(this);
-		this.app= (WikipOff) getApplication();
-		setContentView(R.layout.activity_main);
 
-		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
-		randomlistview= (ListView) findViewById(R.id.randomView);
-		rndbutton = (Button) findViewById(R.id.buttonRandom);
-		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
 
-		newDatabaseSelected();
 
-		showViews();
-
-	}
-
-	public void showViews(){
-		if (this.seldb != null) {
-			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
-			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
-			rndbutton.setOnClickListener(new ShowRandomClickListener());
-			searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.dbHandler));
-			searchtextview.setOnItemClickListener(new SearchClickListener());
-			searchtextview.setOnEditorActionListener(new SearchClickListener());
-
-			toggleAllViews(true);
-		} 
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
