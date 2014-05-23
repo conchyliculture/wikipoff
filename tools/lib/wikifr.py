@@ -63,7 +63,7 @@ class SaveFRTemplates:
         self.fr_saveCodeTemplatesRE=re.compile(r'{{code\|([^\|}]+)}}', re.IGNORECASE)
         self.fr_saveJaponaisTemplatesRE=re.compile(r'{{japonais\|([^\|]+)\|([^}]+)}}', re.IGNORECASE)
         self.fr_saveSimpleSieclesTempaltesRE=re.compile(ur'{{([^}]+ (?:si.cle|mill.naire)[^}]*)}}', re.IGNORECASE|re.LOCALE)
-        self.fr_saveSieclesTempaltesRE=re.compile(ur'{{(?:([^|}]+(?:si.cle|mill.naire)[^|}]*)|(-?s2?-?(?:\|[^|}]+\|e)+))}}', re.IGNORECASE)
+        self.fr_saveSieclesTempaltesRE=re.compile(ur'{{(?:([^|}]+(?:si.cle|mill.naire)[^|}]*)|(-?s2?-?(?:\|[^|}]+\|e)+))\|?}}', re.IGNORECASE)
 
         self.aRE=re.compile(r'<math>')
         self.bRE=re.compile(r'</math>')
@@ -398,6 +398,7 @@ class WikiFRTests(unittest.TestCase):
                 ["{{-s2|III|e|IX|e}}",  u"IIIe et IXe siècles av. J.-C. "],
                 ["{{s2-|III|e|IX|e}}",  u"IIIe et IXe siècles"],
                 ["{{-s2-|III|e|IX|e}}",     u"IIIe et IXe siècles av. J.-C. "],
+                [u"{{s-|XIX|e|}}", u"XIXe siècle"],
 
         ]
         for t in tests:
