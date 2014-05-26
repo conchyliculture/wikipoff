@@ -93,16 +93,16 @@ def main():
     curr_output = OutputSqlite(curr_output_sqlitefile,languagedb,max_output_page_count)
     curr_output.set_lang(lang)
     while offset < row_count:
-        res=curs_input.execute("SELECT article_id,title,text FROM articles LIMIT %d OFFSET %d "%(nb_select,offset))
-        for i,t,tt in res:
+        res=curs_input.execute("SELECT title,text FROM articles LIMIT %d OFFSET %d "%(nb_select,offset))
+        for t,tt in res:
             offset+=1
             try: 
-                curr_output.write(i,t,tt,True)
+                curr_output.write(t,tt,True)
             except sqlite3.OperationalError as e:
                 if (e.message=="database or disk is full"):
                     print "%s is full"%curr_output_sqlitefile
                     curr_output.set_max_page_count(default_max_page_count)
-                    curr_output.write(i,t,tt,True)
+                    curr_output.write(t,tt,True)
                     curr_output.close()
                     curr_index+=1
                     curr_output_sqlitefile=root_name+"-%d.sqlite"%curr_index

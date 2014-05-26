@@ -15,7 +15,7 @@ def is_allowed_title(title):
     return True
 
 
-def WikiDocumentSQL(out, article_id, title, text):
+def WikiDocumentSQL(out, title, text):
     buff=""
     if wikiglobals.convert:
         text = clean(text)
@@ -27,7 +27,7 @@ def WikiDocumentSQL(out, article_id, title, text):
     else:
         buff=text.encode('utf-8')
 
-    out.write(article_id, title, buff)
+    out.write(title, buff)
 
 ##
 # Removes HTML or XML character references and entities from a text string.

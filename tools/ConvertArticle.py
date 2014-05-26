@@ -10,8 +10,6 @@ import wikitools
 import wikiglobals
 import sqlite3
 
-article_ids = []
-
 class OutputText:
     def __init__(self):
         pass
@@ -51,7 +49,7 @@ tagRE = re.compile(r'(.*?)<(/?\w+)[^>]*>(?:([^<]*)(<.*?>)?)?')
 redirRE = re.compile(r'(?:.*?)<redirect title="(.+)"\s*/>')
 
 def process_data(input, output):
-    global prefix,article_ids
+    global prefix
 
     page = []
     id_ = None
@@ -213,21 +211,19 @@ def show_usage(s):
 """%(s))
 
 def main():
-    global prefix, article_ids
+    global prefix
     script_name = os.path.basename(sys.argv[0])
 
     titles=[]
     try:
-        long_opts = ['id=',"db=","--dumpfile=","--title=","--orig","--lang"]
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 'i:d:f:t:rl:H:', long_opts)
+        long_opts = ["db=","--dumpfile=","--title=","--orig","--lang"]
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 'd:f:t:rl:H:', long_opts)
     except getopt.GetoptError, e:
         print("ERROR : ",e)
         show_usage
         sys.exit(1)
 
     for opt, arg in opts:
-        if opt in ('-i', '--id'):
-            article_ids= map((lambda x: int(x)), arg.split(","))
         if opt in ('-d', '--db'):
             sqlite_file= arg
         if opt in ('-f','--dumpfile'):
@@ -253,7 +249,7 @@ def main():
         create_helper_db(xmlfile,sqlite_file)
 
 
-    if article_ids==[] and titles==[]:
+    if titles==[]:
         print "Need at least one article id or one title"
         sys.exit(1)
 
@@ -265,18 +261,6 @@ def main():
         wikitools.ignoreTag('a')
 
     conn = sqlite3.connect(sqlite_file)
-
-    for id__ in article_ids:
-        id_=int(id__)
-        io=open(xmlfile)
-        pos = get_pos_from_id(conn,id_)
-        if pos != 0:
-            io.seek(pos)
-            worker = OutputText()
-            process_data(io, worker)
-            worker.close()
-        else:
-            print "Can't find article with id %d"%id_
 
     for title in titles:
         io=open(xmlfile)

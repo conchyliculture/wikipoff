@@ -109,7 +109,6 @@ class OutputSqlite:
             self.set_max_page_count(max_page_count)
 
         self.curs.execute('''CREATE TABLE IF NOT EXISTS articles (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                                                                  article_id INTEGER UNIQUE NOT NULL,
                                                                   title VARCHAR(255) NOT NULL,
                                                                   text BLOB)''')
         self.curs.execute('''CREATE TABLE IF NOT EXISTS redirects (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -154,18 +153,18 @@ class OutputSqlite:
     def reserve(self,size):
         pass
 
-    def write(self,article_id,title,text,raw=False):
+    def write(self,title,text,raw=False):
         if (len(self.curr_values)==self.max_inserts):
             self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?,?)",self.curr_values)
             self.conn.commit()
             self.curr_values=[]
         if raw:
-            self.curr_values.append((article_id,title,text))
+            self.curr_values.append((title,text))
         else:
             c=pylzma.compressfile(StringIO(text),dictionary=23)
             result=c.read(5)
             result+=struct.pack('<Q', len(text))
-            self.curr_values.append((article_id,title,buffer(result+c.read())))
+            self.curr_values.append((title,buffer(result+c.read())))
             
     def close(self):
         if (len(self.curr_values)>0):
@@ -201,8 +200,6 @@ def process_data(input, output):
     inText = False
     redirect = False
     redir_title = ""
-    article_id=None
-    past_rev = False
     for line in input:
    #     print(input.tell())
         line = line.decode('utf-8')
@@ -214,12 +211,8 @@ def process_data(input, output):
         if tag == 'page':
             page = []
             redirect = False
-        elif tag == "regision":
-            past_rev = True
         elif tag == 'id' and not id:
             id = m.group(3)
-            if not past_rev:
-                article_id = id 
         elif tag == 'title':
             title = m.group(3)
         elif tag == 'redirect':
@@ -240,7 +233,6 @@ def process_data(input, output):
         elif inText:
             page.append(line)
         elif tag == '/page':
-            past_rev=False
             if redirect:
                 output.insert_redirect(title,redir_title)
             else:
@@ -249,7 +241,7 @@ def process_data(input, output):
                     if not wikitools.is_allowed_title(title[0:colon]):
                         continue
                 sys.stdout.flush()
-                wikitools.WikiDocumentSQL(output, article_id, title, ''.join(page))
+                wikitools.WikiDocumentSQL(output, title, ''.join(page))
                 i+=1
                 if i%eta_every == 0:
                     percent =  (100.0 * input.tell()) / inputsize
