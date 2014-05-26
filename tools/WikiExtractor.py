@@ -155,7 +155,7 @@ class OutputSqlite:
 
     def write(self,title,text,raw=False):
         if (len(self.curr_values)==self.max_inserts):
-            self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?,?)",self.curr_values)
+            self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?)",self.curr_values)
             self.conn.commit()
             self.curr_values=[]
         if raw:
