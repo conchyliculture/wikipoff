@@ -244,7 +244,10 @@ def process_data(input, output):
             if redirect:
                 output.insert_redirect(title,redir_title)
             else:
-            #    print(id, title.encode('utf-8'))
+                colon=title.find(":")
+                if colon>0:
+                    if not wikitools.is_allowed_title(title[0:colon]):
+                        continue
                 sys.stdout.flush()
                 wikitools.WikiDocumentSQL(output, article_id, title, ''.join(page))
                 i+=1

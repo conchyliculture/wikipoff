@@ -9,6 +9,12 @@ from htmlentitydefs import name2codepoint
 
 toomanybr=re.compile(r'<br/>(<br/>(?:<br/>)+)')
 
+def is_allowed_title(title):
+    if wikiglobals.lang=="fr":
+        return wikifr.is_allowed_title(title)
+    return True
+
+
 def WikiDocumentSQL(out, article_id, title, text):
     buff=""
     if wikiglobals.convert:

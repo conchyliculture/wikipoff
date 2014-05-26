@@ -27,6 +27,12 @@ import unittest
 import traceback
 locale.setlocale(locale.LC_ALL, 'fr_FR.utf-8')
 
+def is_allowed_title(title):
+    print title
+    if title in [u"Modèle",u"Catégorie",u"Portail",u"Fichier",u"Wikipédia",u"Projet",u"Référence",u"MediaWiki",u"Aide",u"Module"]:
+        return False
+    return True
+
 class SaveFRTemplates:
     def __init__(self):
         # Templates that allow inclusion of }} in parameters will fail....
