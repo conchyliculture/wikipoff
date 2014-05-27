@@ -202,7 +202,7 @@ public class Database   {
 			if (res==null) {
 				// *sigh* maybe there's a redirect
 				String redirtitle = getRedirectArticleTitle(title);
-				if (redirtitle!=null) {
+				if (redirtitle!="") {
 					res=getArticleFromTitle(Html.fromHtml(redirtitle).toString());
 				}
 				if (res==null) {
