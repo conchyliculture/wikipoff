@@ -168,7 +168,7 @@ class OutputSqlite:
             
     def close(self):
         if (len(self.curr_values)>0):
-            self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?,?)",self.curr_values)
+            self.curs.executemany("INSERT INTO articles VALUES (NULL,?,?)",self.curr_values)
         self.conn.commit()
         print("Building indexes")
         self.curs.execute("CREATE INDEX tidx1 ON articles(title)")
