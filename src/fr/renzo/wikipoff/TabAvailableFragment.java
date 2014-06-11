@@ -3,7 +3,6 @@ package fr.renzo.wikipoff;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -115,6 +114,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	private void updateProgressBar(int position, int progress){
 		View v = availablewikislistview.getChildAt(position);
 		if (v!=null) {
+			// TODO display ETA
 			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
 			pb.setProgress(progress);
 			if (progress != testprogr) {
