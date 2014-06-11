@@ -112,6 +112,7 @@ public class Database   {
 
 	public String checkDatabaseHealth(){
 		String error="";
+		// TODO could add more checks
 		for (String p : seldatabasefilespaths) {
 			File dbfile = new File(p);
 			if (!dbfile.exists()) {
