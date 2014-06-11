@@ -47,6 +47,7 @@ This file is part of WikipOff.
             android:imeOptions="actionDone"
             android:hint="@string/searchhint"
             android:singleLine="true"
+            android:inputType="textNoSuggestions"
             android:text="" >
 
         </AutoCompleteTextView>
