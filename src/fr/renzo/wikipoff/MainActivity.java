@@ -85,8 +85,6 @@ public class MainActivity extends Activity {
 		rndbutton = (Button) findViewById(R.id.buttonRandom);
 		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
 
-		newDatabaseSelected();
-
 		showViews();
 
 	}
