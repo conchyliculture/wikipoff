@@ -56,7 +56,7 @@ public class Database   {
 
 		String error=checkDatabaseHealth();
 		if ( !error.equals("")) {
-			Log.e(TAG,"Error: "+error);
+			
 			throw (new DatabaseException(error));
 		} 
 		
@@ -66,8 +66,7 @@ public class Database   {
 				this.sqlh.add(sqlh);
 			}
 			catch (SQLiteCantOpenDatabaseException e) {
-				Toast.makeText(context, "Problem opening database '"+dbfile+"'"+e.getMessage(), Toast.LENGTH_LONG).show();
-				Log.d(TAG,"Problem opening database '"+dbfile+"'"+e.getMessage());
+				throw (new DatabaseException("Problem opening database '"+dbfile+"'"+e.getMessage()));
 			} 
 		}
 		this.maxId=getMaxId();
@@ -248,8 +247,10 @@ public class Database   {
 	public class DatabaseException extends Exception {
 
 		private static final long serialVersionUID = -4015796136387495698L;
+		private static final String TAG="DatabaseException";
 		public DatabaseException(String message) {
 			super(message);
+			Log.e(this.TAG,"Error: "+message);
 		}
 
 		public Builder alertUser(Context context){
