@@ -151,6 +151,7 @@ public class ArticleActivity extends Activity {
 		if (this.article != null) {
 			setTitle(this.article.title);
 			data+="<meta name=\"viewport\" content=\"width=device-width,  user-scalable=yes\">\n";
+			data+="<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
 			data+="</head>";
 			if (config.getBoolean(s(R.string.config_key_use_mathjax),true)) {
 				data+="<script type=\"text/javascript\" src=\""+s(R.string.link_to_mathjax)+"\"></script>\n";
