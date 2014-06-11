@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
 			displayArticle(c.getString(1));
 		}
 
-		private void displayArticle(CharSequence q){
+		private void displayArticle(String q){
 			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 			myIntent.putExtra("article_title",q );
 			MainActivity.this.startActivity(myIntent);
@@ -134,7 +134,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		public boolean onEditorAction(TextView view, int arg1, KeyEvent arg2) {
-			displayArticle(view.getText());
+			displayArticle(view.getText().toString());
 			return true;
 		}
 	}
