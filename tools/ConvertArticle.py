@@ -17,8 +17,8 @@ class OutputText:
     def reserve(self,size):
         pass
 
-    def write(self,artid,title,text):
-        print(title+"/"+artid+" : ")
+    def write(self,title,text):
+        print(title+" : ")
         print(text.decode("utf-8"))
             
     def close(self):
@@ -90,7 +90,7 @@ def process_data(input, output):
             page.append(line)
         elif tag == '/page':
             sys.stdout.flush()
-            wikitools.WikiDocumentSQL(output, id_, title, ''.join(page))
+            wikitools.WikiDocumentSQL(output, title, ''.join(page))
             id_ = None
             page = []
             return
