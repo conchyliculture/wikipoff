@@ -111,7 +111,7 @@ class OutputSqlite:
         self.curs.execute('''CREATE TABLE IF NOT EXISTS articles (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
                                                                   title VARCHAR(255) NOT NULL,
                                                                   text BLOB)''')
-        self.curs.execute('''CREATE TABLE IF NOT EXISTS redirects (_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        self.curs.execute('''CREATE TABLE IF NOT EXISTS redirects (
                                                                   title_from VARCHAR(255) NOT NULL,
                                                                   title_to VARCHAR(255))''')
         self.curs.execute('''CREATE TABLE IF NOT EXISTS metadata (key TEXT, value TEXT);''')
@@ -125,7 +125,7 @@ class OutputSqlite:
     def set_max_page_count(self,max_page_count):
         self.curs.execute("PRAGMA max_page_count=%d"%max_page_count)
     def insert_redirect(self,from_,to_):
-        self.curs.execute("INSERT INTO redirects VALUES (NULL,?,?)",(from_,to_))
+        self.curs.execute("INSERT INTO redirects VALUES (?,?)",(from_,to_))
 
     def set_lang(self,lang):
         self.curslang.execute("SELECT english,local FROM languages WHERE code LIKE ?",(lang,))
