@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -86,8 +85,12 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 					Wiki w = multiwikis.get(root_wiki);
 					w.addDBFile(f);
 				} else {
+					try {
 					Wiki w = new Wiki(context, f);
 					multiwikis.put(root_wiki,w);
+					} catch (WikiException e) {
+						Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+					}
 				}
 			} else {
 				Wiki w;
@@ -179,7 +182,6 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		Wiki wiki = installedwikis.get(position);
 		String key = context.getString(R.string.config_key_selecteddbfiles);
 		ArrayList<String> namelist = wiki.getDBFilesnamesAsList();
-		Log.d(TAG,"committing "+namelist.toString());
 		config.edit().putString(key ,TextUtils.join(", ", namelist)).commit();
 		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
 		String key2 = context.getString(R.string.config_key_should_update_db);
