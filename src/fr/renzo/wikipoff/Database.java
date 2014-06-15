@@ -30,13 +30,12 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MergeCursor;
-import android.database.sqlite.SQLiteCantOpenDatabaseException;
+//import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Environment;
 import android.text.Html;
 import android.util.Log;
-import android.widget.Toast;
 
 public class Database   {
 	private static final String TAG = "Database";
@@ -65,7 +64,7 @@ public class Database   {
 				SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(dbfile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS );
 				this.sqlh.add(sqlh);
 			}
-			catch (SQLiteCantOpenDatabaseException e) {
+			catch (SQLiteException e) {
 				throw (new DatabaseException("Problem opening database '"+dbfile+"'"+e.getMessage()));
 			} 
 		}
