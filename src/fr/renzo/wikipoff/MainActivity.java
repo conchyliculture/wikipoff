@@ -23,8 +23,8 @@ package fr.renzo.wikipoff;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
@@ -37,7 +37,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,7 +63,7 @@ public class MainActivity extends Activity {
 	private ListView randomlistview;
 	private Context context=this;
 	private SharedPreferences config;
-	private Set<String> seldb;
+	private ArrayList<String> seldb;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
 	private File dbdir;
@@ -96,7 +95,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void showViews(){
-		if (this.seldb != null) {
+		if (this.seldb != null && ! this.seldb.isEmpty()) {
 			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
 			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
 			rndbutton.setOnClickListener(new ShowRandomClickListener());
@@ -204,16 +203,17 @@ public class MainActivity extends Activity {
 
 	private void newDatabaseSelected() {
 		try {
-			this.seldb = config.getStringSet(s(R.string.config_key_selecteddbfiles),null );
+			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),"" );
+			this.seldb = new ArrayList<String>(Arrays.asList(tosplit));
 			boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
 
-			if (this.seldb!=null) {
+			if (! this.seldb.isEmpty()) {
 				if ((app.dbHandler == null ) || (new_db)){
-					app.dbHandler = new Database(context,new ArrayList<String>(this.seldb));
+					app.dbHandler = new Database(context,this.seldb);
 					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
 					showViews();
 					toggleAllViews(true);
-					Log.d(TAG,"We selected db '"+seldb+"'");
+					//Log.d(TAG,"We selected db '"+seldb.toString()+"'");
 				}
 			} else {
 				Toast.makeText(getApplicationContext(), "No selected database", 
