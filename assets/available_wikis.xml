@@ -44,24 +44,6 @@
         </dbfiles>
         <version>2.5</version>
     </wiki>
-        <wiki>
-        <type>wikipedia</type>
-        <lang-code>fur</lang-code>
-        <lang-english>Friulian-test</lang-english>
-        <lang-local>Furlan-test</lang-local>
-         <dbfiles>
-            <dbfile
-                filename="fur.wiki-1.sqlite"
-                gendate="2014-04-25 14:38:24"
-                size="1878016"
-                url="http://wikipoff.renzokuken.eu/databases/fur.wiki-1.sqlite" ></dbfile>
-            <dbfile
-                filename="fur.wiki-2.sqlite"
-                gendate="2014-04-25 14:38:24"
-                size="859136"
-                url="http://wikipoff.renzokuken.eu/databases/fur.wiki-2.sqlite" ></dbfile>
-        </dbfiles>
-        <version>2.5</version>
-    </wiki>
+       
     
 </root>
