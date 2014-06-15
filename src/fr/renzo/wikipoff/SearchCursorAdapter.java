@@ -60,7 +60,7 @@ public class SearchCursorAdapter extends CursorAdapter {
 	@Override
 	public View newView(Context ctx, Cursor cursor, ViewGroup parent) {
 		inflater = LayoutInflater.from(ctx);
-	    final TextView view = (TextView) inflater.inflate(android.R.layout.simple_dropdown_item_1line, parent, false);
+	    TextView view = (TextView) inflater.inflate(android.R.layout.select_dialog_item, parent, false);
 	    return view;
 	}
 	@Override
