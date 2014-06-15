@@ -23,7 +23,7 @@
         <dbfiles>
             <dbfile
                 filename="eu.wiki.sqlite"
-                gendate="2014-04-19 00:00:00"
+                gendate="2014-04-25 14:38:24"
                 size="180439040"
                 url="http://wikipoff.renzokuken.eu/databases/eu.wiki.sqlite" ></dbfile>
         </dbfiles>
@@ -38,8 +38,8 @@
          <dbfiles>
             <dbfile
                 filename="fur.wiki.sqlite"
-                gendate="2014-04-25 14:38:24"
-                size="2720768"
+                gendate="2014-05-03 22:55:13"
+                size=2756608
                 url="http://wikipoff.renzokuken.eu/databases/fur.wiki.sqlite" ></dbfile>
         </dbfiles>
         <version>2.5</version>
