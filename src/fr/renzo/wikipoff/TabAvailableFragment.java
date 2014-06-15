@@ -249,8 +249,10 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
 			try {
 				for(WikiDBFile wdbf : w.getDBFiles()) {
-					URL url = new URL(wdbf.getUrl());
-					download(url,new File(outputdir,wdbf.getFilename()));
+					if(!isCancelled()){
+						URL url = new URL(wdbf.getUrl());
+						download(url,new File(outputdir,wdbf.getFilename()),wdbf.getSize());
+					}
 				}
 			} catch (SocketTimeoutException e) {
 				Log.d(TAG,"Timeout...");
@@ -270,11 +272,10 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			return result;
 		}
 
-		private String download(URL url,File file) throws IOException {
+		private String download(URL url,File file,long fileLength) throws IOException {
 			String result="";
 			URLConnection connection = url.openConnection();
 			connection.connect();
-			long fileLength = connection.getContentLength();
 
 			URLConnection con = url.openConnection();
 			con.setConnectTimeout(3000);
@@ -340,9 +341,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		if (delete) {
 			for(String filename : wiki.getDBFilesnamesAsList()) {
 				File db=new File(outputdir,filename);
-				if (db.exists()) {
-					db.delete();
-				}
+				db.delete();
 			}
 		}
 	}
