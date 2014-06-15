@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 public class TabAvailableFragment extends Fragment implements OnItemClickListener {
 	private static final String TAG = "TabAvailableActivity";
-	//private static final String available_db_xml_file="available_wikis.xml"; // TODO : move in xml
 	private ArrayList<Wiki> availablewikis=new ArrayList<Wiki>();
 	private ListView availablewikislistview;
 	private Context context;
