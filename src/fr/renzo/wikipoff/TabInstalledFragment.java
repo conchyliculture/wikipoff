@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -176,7 +178,9 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Wiki wiki = installedwikis.get(position);
 		String key = context.getString(R.string.config_key_selecteddbfiles);
-		config.edit().putStringSet(key ,wiki.getDBFilesnamesAsSet()).commit();
+		ArrayList<String> namelist = wiki.getDBFilesnamesAsList();
+		Log.d(TAG,"committing "+namelist.toString());
+		config.edit().putString(key ,TextUtils.join(", ", namelist)).commit();
 		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
 		String key2 = context.getString(R.string.config_key_should_update_db);
 		config.edit().putBoolean(key2, true).commit();
