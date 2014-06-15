@@ -9,7 +9,7 @@
         	<dbfile
         	    url="http://wikipoff.renzokuken.eu/databases/fr.wiki.sqlite"
        			filename="fr.wiki.sqlite"
-        		size="2853296128"
+        		size="2845822976"
         		gendate="2014-05-27 17:17:29"></dbfile>
         </dbfiles>
         <version>2.5</version>
@@ -39,8 +39,27 @@
             <dbfile
                 filename="fur.wiki.sqlite"
                 gendate="2014-05-03 22:55:13"
-                size=2756608
+                size="2756608"
                 url="http://wikipoff.renzokuken.eu/databases/fur.wiki.sqlite" ></dbfile>
+        </dbfiles>
+        <version>2.5</version>
+    </wiki>
+    <wiki>
+        <type>wikipedia</type>
+        <lang-code>en</lang-code>
+        <lang-english>English</lang-english>
+        <lang-local>English</lang-local>
+         <dbfiles>
+            <dbfile
+                filename="en.wiki-1.sqlite"
+                gendate="2014-05-16 01:47:37"
+                size="4030176256"
+                url="http://wikipoff.renzokuken.eu/databases/en.wiki-1.sqlite" ></dbfile>
+            <dbfile
+                filename="en.wiki-2.sqlite"
+                gendate="2014-05-16 04:28:05"
+                size="3624504320"
+                url="http://wikipoff.renzokuken.eu/databases/en.wiki-1.sqlite" ></dbfile>
         </dbfiles>
         <version>2.5</version>
     </wiki>
