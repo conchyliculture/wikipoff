@@ -108,11 +108,11 @@ public class Wiki implements Serializable {
 				if (c.moveToFirst()) {
 					do {
 						k = c.getString(0);
-						if (c.getType(1)==3) {
+//						if (c.getType(1)==3) {
 							v = c.getString(1);
-						} else if (c.getType(1)==4) {
-							v = new String(c.getBlob(1)); // WTF ANDROID
-						}
+//						} else if (c.getType(1)==4) {
+//							v = new String(c.getBlob(1)); // WTF ANDROID
+//						}
 
 						if (k.equals("lang-code")) {
 							setLangcode(v);
@@ -156,10 +156,10 @@ public class Wiki implements Serializable {
 	public boolean isSelected() {
 		String key =context.getString(R.string.config_key_selecteddbfiles);
 		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
-		Set<String> sel_db=config.getStringSet(key, null);
-		if (sel_db==null)
+		ArrayList<String> sel_db=new ArrayList<String>(Arrays.asList(config.getString(key, "").split(",")));
+		if (sel_db.isEmpty())
 			return false;
-		if (sel_db.equals(getDBFilesnamesAsSet())) {
+		if (sel_db.equals(getDBFilesnamesAsList())) {
 			return true;
 		} else {
 			return false;
@@ -185,13 +185,7 @@ public class Wiki implements Serializable {
 		}
 		return res;
 	}
-	public Set<String> getDBFilesnamesAsSet() {
-		Set<String> res = new HashSet<String>();
-		for (WikiDBFile wdbf : this.dbfiles) {
-			res.add(wdbf.getFilename());
-		}
-		return res;
-	}
+
 	public String getSizeReadable(boolean si) {
 		long size=0;
 		for (WikiDBFile wdbf : this.dbfiles) {
