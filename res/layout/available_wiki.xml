@@ -20,7 +20,6 @@
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:text="lolilol"
         android:textAppearance="?android:attr/textAppearanceListItem" />
 
     <TextView
@@ -32,7 +31,6 @@
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:text="lolilol"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ProgressBar
