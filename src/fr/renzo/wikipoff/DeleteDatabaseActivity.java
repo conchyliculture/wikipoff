@@ -49,7 +49,7 @@ public class DeleteDatabaseActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				for(String db : dbtodelete)
-				deleteDb(db);
+					deleteDb(db);
 				byebye();
 			}
 		});
@@ -61,9 +61,10 @@ public class DeleteDatabaseActivity extends Activity {
 		if (db.exists()) {
 			db.delete();
 		}
+		setResult(this.dbtodeleteposition);
 	}
 	private void byebye(){
-		setResult(this.dbtodeleteposition);
+		
 		this.finish();
 	}
 }
