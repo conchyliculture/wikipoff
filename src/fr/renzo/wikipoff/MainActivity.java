@@ -204,7 +204,7 @@ public class MainActivity extends Activity {
 	private void newDatabaseSelected() {
 		try {
 			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),"" );
-			this.seldb = new ArrayList<String>(Arrays.asList(tosplit));
+			this.seldb = new ArrayList<String>(Arrays.asList(tosplit.split(",")));
 			boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
 
 			if (! this.seldb.isEmpty()) {
