@@ -2,6 +2,7 @@ package fr.renzo.wikipoff;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	private File rootDbDir;
 	private ArrayList<Wiki> installedwikis=new ArrayList<Wiki>();
 	private ListView installedwikislistview;
-	private Context context;
+	private ManageDatabasesActivity context;
 	private View wholeview;
 	@SuppressWarnings("unused")
 	private static final String TAG = "TabInstalledFragment";
@@ -42,7 +43,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context= getActivity();
+		context= (ManageDatabasesActivity) getActivity();
 		config = PreferenceManager.getDefaultSharedPreferences(context);
 		rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,container, false);
@@ -81,8 +82,6 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG,"req code "+requestCode);
-		Log.d(TAG,"res code "+resultCode);
 	    if(requestCode == ManageDatabasesActivity.REQUEST_DELETE_CODE)
 	    {
 	    	if (resultCode >=0 && resultCode < installedwikis.size()) {
@@ -94,6 +93,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	private ArrayList<Wiki> loadInstalledDb() throws WikiException {
 		HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
+		Collection<String> currendl = context.getCurrentDownloads();
 		for (File f : rootDbDir.listFiles()) {
 			String name = f.getName();
 			if (name.indexOf("-")>0) {
@@ -110,19 +110,20 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 					}
 				}
 			} else {
-				Wiki w;
 				try {
-					w = new Wiki(context,f);
-					res.add(w);
+					Wiki w = new Wiki(context,f);
+					if (! currendl.contains(w.getFilenamesAsString()))
+						res.add(w);
 				} catch (WikiException e) {
 					Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 				}
 			}
 		}
 		for (Wiki w : multiwikis.values()) {
-			res.add(w);
+			if (! currendl.contains(w.getFilenamesAsString()))
+				res.add(w);
 		}
-		
+
 		Collections.sort(res, new Comparator<Wiki>() {
 			public int compare(Wiki w1, Wiki w2) {
 				if (w1.getLangcode().equals(w2.getLangcode())) {

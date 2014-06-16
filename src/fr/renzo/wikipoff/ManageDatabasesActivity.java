@@ -1,5 +1,8 @@
 package fr.renzo.wikipoff;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,8 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	public static final String TAG = "ManageDatabasesActivity";
 	private TabInstalledFragment installedFragment;
 	private TabAvailableFragment availableFragment;
+	
+	public HashMap<Integer,String> currentdownloads=new HashMap<Integer,String>();
 	
 	public static final int REQUEST_DELETE_CODE = 1001;
 
@@ -69,6 +74,25 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 			ft.remove(fragment);
 		}
+	}
+	
+	public void addToCurrentDownloads(int position, String names) {
+		this.currentdownloads.put(Integer.valueOf(position), names);
+		Log.d(TAG,"added : "+names);
+	}
+	public void deleteFromCurrentDownloads(int position) {
+		this.currentdownloads.remove(Integer.valueOf(position));
+	}
+	public boolean isInCurrentDownloads(int position) {
+		return (this.currentdownloads.containsKey(Integer.valueOf(position)));
+	}
+	public boolean isInCurrentDownloads(String names) {
+		Log.d(TAG,"isin : "+names);
+		return (this.currentdownloads.containsKey(names));
+	}
+	public Collection<String> getCurrentDownloads() {
+		
+		return (this.currentdownloads.values());
 	}
 }
 

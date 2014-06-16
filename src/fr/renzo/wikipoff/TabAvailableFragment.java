@@ -41,9 +41,9 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	private static final String TAG = "TabAvailableActivity";
 	private ArrayList<Wiki> availablewikis=new ArrayList<Wiki>();
 	private ListView availablewikislistview;
-	private Context context;
+	private ManageDatabasesActivity context;
 	private int testprogr=0;
-	private ArrayList<Integer> currentdownloads=new ArrayList<Integer>();
+	
 	private View wholeview;
 	private DownloadFile downloadFile;
 
@@ -51,8 +51,10 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		
 
-		context=getActivity();
+		context=(ManageDatabasesActivity) getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,container, false);
 		if (savedInstanceState==null) {
 			try {
@@ -66,7 +68,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-					if (currentdownloads.contains(Integer.valueOf(position))) {
+					if (context.isInCurrentDownloads(Integer.valueOf(position))) {
 
 						Intent outputintent = new Intent(context, StopDownloadActivity.class);
 						outputintent.putExtra("position", position);
@@ -112,6 +114,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	private void updateProgressBar(int position, int progress){
 		View v = availablewikislistview.getChildAt(position);
+		//Log.d(TAG,"updating");
 		if (v!=null) {
 			// TODO display ETA
 			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
@@ -130,7 +133,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		final int index = position;
 		Wiki wiki = this.availablewikis.get(index);
 		boolean missing=true;
-		if (! currentdownloads.contains((Integer) position)) {
+		if (! context.isInCurrentDownloads(Integer.valueOf(position))) {
 			try {
 				missing = wiki.isMissing();
 			} catch (WikiException e) {
@@ -160,11 +163,11 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	}
 
 	private void download(final int position) {
-		if (currentdownloads.contains(position)) {
+		if (context.isInCurrentDownloads(Integer.valueOf(position))) {
 			Toast.makeText(context, "Download already running", Toast.LENGTH_LONG).show();
 		} else {
-			this.currentdownloads.add((Integer)position);
-			Wiki wiki = this.availablewikis.get(position);
+			
+			final Wiki wiki = this.availablewikis.get(position);
 			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 			if (wifi.isConnected()) {
@@ -187,6 +190,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 				.setNegativeButton("No", null)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
+						context.addToCurrentDownloads(Integer.valueOf(position),wiki.getFilenamesAsString());
 						do_download(position);
 					}
 				})
@@ -235,7 +239,9 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			bot.setText(w.getFilenamesAsString()+" "+w.getLocalizedGendate());
 			
 			ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.downloadprogress);
-			
+			if (context.isInCurrentDownloads(Integer.valueOf(position))) {
+				pb.setVisibility(View.VISIBLE);
+			}
 			if(w.getFilenamesAsString().equals("fur.wiki.sqlite"))
 				Log.d(TAG,"Progress bar "+w.getFilenamesAsString()+" "+pb.getVisibility());
 			return convertView;
@@ -335,7 +341,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	public void stopDownload(int position,boolean delete) {
 		File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
 		Wiki wiki = availablewikis.get(position);
-		currentdownloads.remove((Integer)position);
+		context.currentdownloads.remove((Integer)position);
 		View v = availablewikislistview.getChildAt(position);
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
 		pb.setVisibility(View.GONE);
@@ -347,7 +353,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		}
 	}
 	public void stopAsync(int pos) {
-		if (currentdownloads.contains(Integer.valueOf(pos))) {
+		if (context.isInCurrentDownloads(Integer.valueOf(pos))) {
 			this.downloadFile.cancel(true);
 			stopDownload(pos, true);
 		}
