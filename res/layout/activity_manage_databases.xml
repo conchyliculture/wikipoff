@@ -23,13 +23,8 @@ This file is part of WikipOff.
     android:layout_height="match_parent"
     android:orientation="vertical"
 
-    android:id="@+id/lolilolilol">
-	<LinearLayout android:layout_height="wrap_content"
-		android:layout_width="match_parent"
-		android:orientation="vertical"
-		android:id="@+id/fragment_container">
-	    
-	</LinearLayout>
+    android:id="@+id/fragment_container">
+
 <!--  
         <TabHost
             android:id="@android:id/tabhost"
