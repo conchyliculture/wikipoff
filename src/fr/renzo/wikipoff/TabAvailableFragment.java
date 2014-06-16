@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -274,13 +275,8 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 		private String download(URL url,File file,long fileLength) throws IOException {
 			String result="";
-			URLConnection connection = url.openConnection();
-			connection.connect();
-
-			URLConnection con = url.openConnection();
-			con.setConnectTimeout(3000);
-			con.setReadTimeout(3000);
-			con.setDoOutput(true);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.connect();
 			InputStream input = new BufferedInputStream(con.getInputStream());
 
 
