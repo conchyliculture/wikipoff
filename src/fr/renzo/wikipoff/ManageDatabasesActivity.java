@@ -15,7 +15,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	private TabAvailableFragment availableFragment;
 	
 	public static final int REQUEST_DELETE_CODE = 0;
-	public static final int REQUEST_DELETE_COMPLETED = 0;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
