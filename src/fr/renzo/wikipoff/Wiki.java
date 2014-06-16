@@ -23,11 +23,11 @@ public class Wiki implements Serializable {
 
 	private static final long serialVersionUID = -4809830901675667519L;
 	private static final String TAG = "WIKI";
-	private String type;
-	private String langcode;
-	private String langenglish;
-	private String langlocal;
-	private String version;
+	private String type="";
+	private String langcode="";
+	private String langenglish="";
+	private String langlocal="";
+	private String version="";
 
 
 	private ArrayList<WikiDBFile> dbfiles=new ArrayList<WikiDBFile>();
