@@ -32,7 +32,7 @@ public class DeleteDatabaseActivity extends Activity {
 		setContentView(R.layout.alert_dialog);
 		TextView msg = (TextView) findViewById(R.id.message);
 		msg.setText("Are you sure you want to delete "+dbtodelete.get(0)+"?");
-		
+		setResult(-1); //default is "we did nothing"
 		Button bno = (Button) findViewById(R.id.cancelbutton);
 		bno.setText("no");
 		bno.setOnClickListener(new OnClickListener() {
@@ -50,6 +50,7 @@ public class DeleteDatabaseActivity extends Activity {
 			public void onClick(View v) {
 				for(String db : dbtodelete)
 					deleteDb(db);
+				setResult(dbtodeleteposition);
 				byebye();
 			}
 		});
@@ -61,7 +62,7 @@ public class DeleteDatabaseActivity extends Activity {
 		if (db.exists()) {
 			db.delete();
 		}
-		setResult(this.dbtodeleteposition);
+		
 	}
 	private void byebye(){
 		
