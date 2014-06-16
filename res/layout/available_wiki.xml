@@ -41,6 +41,6 @@
         android:layout_gravity="right"
         android:layout_weight="1.47"
         android:max="100"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 </LinearLayout>

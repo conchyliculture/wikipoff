@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -54,7 +53,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		super.onCreate(savedInstanceState);
 
 		context=getActivity();
-		wholeview=inflater.inflate(R.layout.fragment_tab_available,null);
+		wholeview=inflater.inflate(R.layout.fragment_tab_available,container, false);
 		if (savedInstanceState==null) {
 			try {
 				this.availablewikis=loadAvailableDB();
@@ -118,7 +117,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
 			pb.setProgress(progress);
 			if (progress != testprogr) {
-				Log.d(TAG,"progress : "+progress+" position: "+position);
+				//Log.d(TAG,"progress : "+progress+" position: "+position);
 				testprogr=progress;
 			}
 		}
@@ -153,7 +152,8 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		View v = availablewikislistview.getChildAt(position);
 		if (v!=null) {
 			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
-			pb.setVisibility(ProgressBar.VISIBLE);
+			Log.d(TAG, "set visible");
+			pb.setVisibility(View.VISIBLE);
 		}
 		this.downloadFile = new DownloadFile();
 		downloadFile.execute(wiki,Integer.valueOf(position));
@@ -226,13 +226,18 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		public View getView(int position, View convertView, ViewGroup parent) {
 			Wiki w = data.get(position);
 			if(convertView == null){ 
-				convertView = this.inflater.inflate(R.layout.available_wiki, null);
+				convertView = this.inflater.inflate(R.layout.available_wiki, parent, false);
 			}
+			
 			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
 			header.setText(w.getType()+" "+w.getLanglocal());
 			TextView bot = (TextView ) convertView.findViewById(R.id.availablewikifooter);
 			bot.setText(w.getFilenamesAsString()+" "+w.getLocalizedGendate());
-
+			
+			ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.downloadprogress);
+			
+			if(w.getFilenamesAsString().equals("fur.wiki.sqlite"))
+				Log.d(TAG,"Progress bar "+w.getFilenamesAsString()+" "+pb.getVisibility());
 			return convertView;
 		}
 	}

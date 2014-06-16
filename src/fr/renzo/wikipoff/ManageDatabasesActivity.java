@@ -13,6 +13,9 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	public static final String TAG = "ManageDatabasesActivity";
 	private TabInstalledFragment installedFragment;
 	private TabAvailableFragment availableFragment;
+	
+	public static final int REQUEST_DELETE_CODE = 0;
+	public static final int REQUEST_DELETE_COMPLETED = 0;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,7 +46,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 			} else if (command.equals("stopdownload")) {
 				int pos = extras.getInt("position");
 				availableFragment.stopAsync(pos);
-				
 			}else {
 				Log.d(TAG,"Unkown command : "+ command);
 			}

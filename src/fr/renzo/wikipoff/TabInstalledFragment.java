@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,19 +39,20 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	@SuppressWarnings("unused")
 	private static final String TAG = "TabInstalledFragment";
 
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context= getActivity();
 		config = PreferenceManager.getDefaultSharedPreferences(context);
 		rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
-		wholeview=inflater.inflate(R.layout.fragment_tab_installed,null);
+		wholeview=inflater.inflate(R.layout.fragment_tab_installed,container, false);
 		if (savedInstanceState==null) {
-		try {
-			this.installedwikis=loadInstalledDb();
-		} catch (WikiException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			try {
+				this.installedwikis=loadInstalledDb();
+			} catch (WikiException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
 
@@ -65,13 +67,28 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 				Intent outputintent = new Intent(context, DeleteDatabaseActivity.class);
 				outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
-				startActivity(outputintent);
+				outputintent.putExtra("dbtodeleteposition", position);
+				startActivityForResult(outputintent,ManageDatabasesActivity.REQUEST_DELETE_CODE);
+				
 				return true;
 			}
 		});
+		
 		}
 		return wholeview;
 
+	}
+
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d(TAG,"req code "+requestCode);
+		Log.d(TAG,"res code "+resultCode);
+	    if(requestCode == ManageDatabasesActivity.REQUEST_DELETE_CODE)
+	    {
+	    	if (resultCode >=0 && resultCode < installedwikis.size()) {
+	    		refreshList(resultCode);
+	    	}
+	    } 
 	}
 
 	private ArrayList<Wiki> loadInstalledDb() throws WikiException {
@@ -119,6 +136,11 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 		return res;
 	}
+	public void refreshList(int position) {
+		Wiki wiki = installedwikis.get(position);
+		this.installedwikis.remove(wiki);
+		((BaseAdapter) this.installedwikislistview.getAdapter()).notifyDataSetInvalidated();
+	}
 
 
 	public class InstalledWikisListViewAdapter extends BaseAdapter implements OnClickListener {
@@ -163,7 +185,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			Wiki w = data.get(position);
 			if(convertView == null){ // If the View is not cached
 				// Inflates the Common View from XML file
-				convertView = this.inflater.inflate(R.layout.installed_wiki, null);
+				convertView = this.inflater.inflate(R.layout.installed_wiki, parent, false);
 			}
 			TextView header = (TextView ) convertView.findViewById(R.id.installedwikiheader);
 			header.setText(w.getType()+" "+w.getLanglocal());

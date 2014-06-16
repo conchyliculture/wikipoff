@@ -17,6 +17,7 @@ public class DeleteDatabaseActivity extends Activity {
 	@SuppressWarnings("unused")
 	private static final String TAG = "DeleteDatabaseActivity";
 	private ArrayList<String> dbtodelete;
+	private int dbtodeleteposition;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,6 +25,7 @@ public class DeleteDatabaseActivity extends Activity {
 		Intent i =getIntent();
 		if (i.getExtras()!= null) {
 			this.dbtodelete = i.getStringArrayListExtra("dbtodelete");
+			this.dbtodeleteposition = i.getIntExtra("dbtodeleteposition", -1);
 		}
 		
 		setTitle("Warning");
@@ -61,6 +63,7 @@ public class DeleteDatabaseActivity extends Activity {
 		}
 	}
 	private void byebye(){
+		setResult(this.dbtodeleteposition);
 		this.finish();
 	}
 }
