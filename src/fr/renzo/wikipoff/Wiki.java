@@ -5,15 +5,12 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseCorruptException;
-import android.database.sqlite.SQLiteException;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -108,11 +105,7 @@ public class Wiki implements Serializable {
 				if (c.moveToFirst()) {
 					do {
 						k = c.getString(0);
-//						if (c.getType(1)==3) {
-							v = c.getString(1);
-//						} else if (c.getType(1)==4) {
-//							v = new String(c.getBlob(1)); // WTF ANDROID
-//						}
+						v = c.getString(1);
 
 						if (k.equals("lang-code")) {
 							setLangcode(v);

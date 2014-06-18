@@ -24,7 +24,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +43,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	private ListView availablewikislistview;
 	private ManageDatabasesActivity context;
 	private int testprogr=0;
-	
+
 	private View wholeview;
 	private DownloadFile downloadFile;
 
@@ -52,8 +51,8 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		
+
+
 
 		context=(ManageDatabasesActivity) getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,container, false);
@@ -115,7 +114,6 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	private void updateProgressBar(int position, int progress){
 		View v = availablewikislistview.getChildAt(position);
-		//Log.d(TAG,"updating");
 		if (v!=null) {
 			// TODO display ETA
 			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
@@ -126,8 +124,6 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			}
 		}
 	}
-
-
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -166,7 +162,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		if (context.isInCurrentDownloads(Integer.valueOf(position))) {
 			Toast.makeText(context, "Download already running", Toast.LENGTH_LONG).show();
 		} else {
-			
+
 			final Wiki wiki = this.availablewikis.get(position);
 			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -176,7 +172,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 				msg+=nb_of_files+" files, ";
 			}
 			msg+=wiki.getSizeReadable(true);
-			
+
 			if (wifi.isConnected()) {
 				new AlertDialog.Builder(context)
 				.setTitle("Warning")
@@ -239,17 +235,17 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			if(convertView == null){ 
 				convertView = this.inflater.inflate(R.layout.available_wiki, parent, false);
 			}
-			
+
 			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
 			header.setText(w.getLanglocal()+"("+w.getLangcode()+")"+" "+w.getType());
 			TextView bot = (TextView ) convertView.findViewById(R.id.availablewikifooter);
 			bot.setText(w.getFilenamesAsString()+"("+w.getSizeReadable(true)+") "+w.getLocalizedGendate());
-			
+
 			ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.downloadprogress);
 			if (context.isInCurrentDownloads(Integer.valueOf(position))) {
 				pb.setVisibility(View.VISIBLE);
 			}
-			
+
 			return convertView;
 		}
 	}

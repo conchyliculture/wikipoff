@@ -25,9 +25,7 @@ import java.io.File;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 public class WikipOff extends Application {
 

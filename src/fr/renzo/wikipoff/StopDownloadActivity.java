@@ -9,10 +9,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class StopDownloadActivity extends Activity {
-	
+
 	@SuppressWarnings("unused")
 	private static final String TAG = "StopDownloadActivity";
-	
+
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle("Warning");
