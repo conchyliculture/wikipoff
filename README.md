@@ -6,7 +6,7 @@ This app is an offline [Wikipedia](https://www.wikipedia.org/) reader. It helps 
 # WARNING
 
 I am not:
-- an android developer
+- an Android developer
 - a Java developer
 - a developer.
 
@@ -17,10 +17,8 @@ Everything here has mostly been written by copy-pasting code from stackoverflow.
 2. `cd wikipoff` 
 3. `export ANDROID_HOME=<path/to/sdk>; ant debug`
 4. `ant install bin/fr.renzo.wikipoff-debug.apk`
-5. `cd tool`
-6. `make.sh` and follow instructions
-7. `adb push wiki.sqlite /mnt/sdcard/fr.renzo.wikipoff/databases/
-8. enjoy
+5. Download some already available wikis from the app, or [Build one yourself](https://github.com/conchyliculture/wikipoff-tools)
+5. enjoy
 
 ## License
 GPLv3. Get it, hack it, compile it, share it.
@@ -28,7 +26,7 @@ GPLv3. Get it, hack it, compile it, share it.
 ## Why
 I was used to have [WikiDroyd](https://play.google.com/store/apps/details?id=com.osa.android.wikidroyd) for winning arguments and to have something to read when I don't have my ebook reader.
 Unfortunately, the app isn't compatible with my [ParanoidAndroid](http://paranoidandroid.co/roms/mako/) ROM without Gapps. 
-There are tons of offline readers on Google Playstore, but not on F-Droid. I would have had to get the corresponding APK (some are 4Gb because they ship with the whole database...), test them, check if I could update my own DB, etc.... 
+There are tons of offline readers on Google Playstore, but not on F-Droid. I would have had to get the corresponding APK (some are 4Gb because they ship with the whole database...), test them, check if I could update my own DB, etc.
 It looked easier/funnier to make my own app.
 
 ## Donate
