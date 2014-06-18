@@ -16,9 +16,9 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	public static final String TAG = "ManageDatabasesActivity";
 	private TabInstalledFragment installedFragment;
 	private TabAvailableFragment availableFragment;
-	
+
 	public HashMap<Integer,String> currentdownloads=new HashMap<Integer,String>();
-	
+
 	public static final int REQUEST_DELETE_CODE = 1001;
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 			String command = extras.getString("command");
 			if (command == null) {
 				Log.d(TAG,"Need a command");
-			
+
 			} else if (command.equals("stopdownload")) {
 				int pos = extras.getInt("position");
 				availableFragment.stopAsync(pos);
@@ -75,7 +75,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 			ft.remove(fragment);
 		}
 	}
-	
+
 	public void addToCurrentDownloads(int position, String names) {
 		this.currentdownloads.put(Integer.valueOf(position), names);
 	}
@@ -90,7 +90,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		return (this.currentdownloads.containsKey(names));
 	}
 	public Collection<String> getCurrentDownloads() {
-		
+
 		return (this.currentdownloads.values());
 	}
 }

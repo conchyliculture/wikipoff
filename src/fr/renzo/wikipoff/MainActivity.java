@@ -57,6 +57,7 @@ import fr.renzo.wikipoff.Database.DatabaseException;
 
 public class MainActivity extends Activity {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "MainActivity";
 	private WikipOff app;
 	private AutoCompleteTextView searchtextview;
@@ -166,16 +167,13 @@ public class MainActivity extends Activity {
 		if (!f.exists()) {
 			res= f.mkdirs();
 			if (!res) {
-				Toast.makeText(this, "This app requires an external storage", Toast.LENGTH_LONG).show(); // TODO
+				Toast.makeText(this, "This app requires an external storage", Toast.LENGTH_LONG).show();
 				finish();          
 				moveTaskToBack(true);
 			}
 		}
 
 	}
-
-
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
