@@ -248,7 +248,7 @@ public class Database   {
 		private static final String TAG="DatabaseException";
 		public DatabaseException(String message) {
 			super(message);
-			Log.e(this.TAG,"Error: "+message);
+			Log.e(TAG,"Error: "+message);
 		}
 
 		public Builder alertUser(Context context){
