@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,7 +156,6 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		View v = availablewikislistview.getChildAt(position);
 		if (v!=null) {
 			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
-			Log.d(TAG, "set visible");
 			pb.setVisibility(View.VISIBLE);
 		}
 		this.downloadFile = new DownloadFile();
@@ -170,10 +170,17 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			final Wiki wiki = this.availablewikis.get(position);
 			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			int nb_of_files= wiki.getFilenamesAsString().split("\\+").length;
+			String msg = "Are you sure you want to download "+wiki.getType()+" "+wiki.getLanglocal()+" (";
+			if (nb_of_files>1) {
+				msg+=nb_of_files+" files, ";
+			}
+			msg+=wiki.getSizeReadable(true);
+			
 			if (wifi.isConnected()) {
 				new AlertDialog.Builder(context)
 				.setTitle("Warning")
-				.setMessage("Are you sure you want to download "+wiki.getLanglocal()+" ("+wiki.getSizeReadable(true)+")")
+				.setMessage(msg+" ?")
 				.setNegativeButton("No", null)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					@Override
@@ -186,7 +193,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			} else {
 				new AlertDialog.Builder(context)
 				.setTitle("No Wifi detected")
-				.setMessage("Are you sure you want to download this huge file ("+wiki.getSizeReadable(true)+") without WIFI?")
+				.setMessage(msg+" without WIFI?")
 				.setNegativeButton("No", null)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
@@ -234,16 +241,15 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			}
 			
 			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
-			header.setText(w.getType()+" "+w.getLanglocal());
+			header.setText(w.getLanglocal()+"("+w.getLangcode()+")"+" "+w.getType());
 			TextView bot = (TextView ) convertView.findViewById(R.id.availablewikifooter);
-			bot.setText(w.getFilenamesAsString()+" "+w.getLocalizedGendate());
+			bot.setText(w.getFilenamesAsString()+"("+w.getSizeReadable(true)+") "+w.getLocalizedGendate());
 			
 			ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.downloadprogress);
 			if (context.isInCurrentDownloads(Integer.valueOf(position))) {
 				pb.setVisibility(View.VISIBLE);
 			}
-			if(w.getFilenamesAsString().equals("fur.wiki.sqlite"))
-				Log.d(TAG,"Progress bar "+w.getFilenamesAsString()+" "+pb.getVisibility());
+			
 			return convertView;
 		}
 	}
