@@ -208,7 +208,7 @@ public class Wiki implements Serializable {
 		return this.dbfiles.get(0).getGendate();
 	}
 	public String getFilenamesAsString() {
-		return TextUtils.join("/", getDBFilesnamesAsList());
+		return TextUtils.join("+", getDBFilesnamesAsList());
 	}
 
 
