@@ -57,6 +57,7 @@ This file is part of WikipOff.
     <string name="action_search">Search</string>
     <string name="action_set_database">Select Database</string>
     <string name="action_webbrowser">Open online article</string>
+    <string name="action_about">About</string>
     <string name="action_manage_databases">Manage Databases/Wikis</string>
     
     <!--       buttons     -->

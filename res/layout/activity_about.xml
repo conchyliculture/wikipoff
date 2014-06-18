@@ -19,22 +19,19 @@ This file is part of WikipOff.
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item
-        android:id="@+id/action_manage_databases"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_manage_databases"/>
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
-    <item
-        android:id="@+id/action_about"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_about"/>
-        
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
 
-</menu>
+    android:textColor="#000000"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <WebView
+        android:id="@+id/aboutwebview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

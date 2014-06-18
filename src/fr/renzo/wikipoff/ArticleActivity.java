@@ -91,6 +91,10 @@ public class ArticleActivity extends Activity {
 			Intent webIntent = new Intent( Intent.ACTION_VIEW );
 			webIntent.setData( Uri.parse("http://"+app.dbHandler.lang+".wikipedia.org/wiki/"+this.article.title) );
 			this.startActivity( webIntent );
+		case R.id.action_about:
+			Intent i2 = new Intent(this, AboutActivity.class);
+			startActivity(i2);
+			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);

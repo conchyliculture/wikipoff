@@ -166,7 +166,7 @@ public class MainActivity extends Activity {
 		if (!f.exists()) {
 			res= f.mkdirs();
 			if (!res) {
-				Toast.makeText(this, "Problem creating directory: "+f.getAbsolutePath(), Toast.LENGTH_LONG).show(); // TODO
+				Toast.makeText(this, "This app requires an external storage", Toast.LENGTH_LONG).show(); // TODO
 				finish();          
 				moveTaskToBack(true);
 			}
@@ -195,6 +195,10 @@ public class MainActivity extends Activity {
 			Intent i1 = new Intent(this, ManageDatabasesActivity.class);
 			startActivity(i1);
 			return true;
+		case R.id.action_about:
+			Intent i2 = new Intent(this, AboutActivity.class);
+			startActivity(i2);
+			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
@@ -203,11 +207,12 @@ public class MainActivity extends Activity {
 
 	private void newDatabaseSelected() {
 		try {
-			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),"" );
-			this.seldb = new ArrayList<String>(Arrays.asList(tosplit.split(",")));
-			boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
+			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),null );
+			
 
-			if (! this.seldb.isEmpty()) {
+			if (tosplit!=null) {
+				this.seldb = new ArrayList<String>(Arrays.asList(tosplit.split(",")));
+				boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
 				if ((app.dbHandler == null ) || (new_db)){
 					app.dbHandler = new Database(context,this.seldb);
 					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
