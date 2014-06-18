@@ -89,7 +89,7 @@ public class SearchCursorAdapter extends CursorAdapter {
 				arraycursors[i] = cursors.get(i);
 			}
 			arraycursors[cursors.size()] = extras;
-			
+			extras.close();
 			return (Cursor) new MergeCursor(arraycursors);
 		} catch (DatabaseException e) {
 			 e.alertUser(context);
