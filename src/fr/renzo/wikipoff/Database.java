@@ -211,9 +211,7 @@ public class Database   {
 					c = myRawQuery("SELECT title FROM searchTitles WHERE title match ?",title);
 					if (c.moveToFirst()) {
 						res = getArticleFromTitle(c.getString(0));
-					} else {
-						Log.d(TAG, "allezzzzz");
-					}
+					} 
 					c.close();
 				}
 			} 
