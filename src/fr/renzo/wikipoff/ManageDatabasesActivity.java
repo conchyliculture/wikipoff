@@ -78,7 +78,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	
 	public void addToCurrentDownloads(int position, String names) {
 		this.currentdownloads.put(Integer.valueOf(position), names);
-		Log.d(TAG,"added : "+names);
 	}
 	public void deleteFromCurrentDownloads(int position) {
 		this.currentdownloads.remove(Integer.valueOf(position));
