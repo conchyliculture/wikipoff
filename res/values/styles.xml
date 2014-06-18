@@ -1,5 +1,4 @@
 <!--
-
 Copyright 2014 "Renzokuken" (pseudonym, first committer of WikipOff project) at
 https://github.com/conchyliculture/wikipoff
 
@@ -17,7 +16,6 @@ This file is part of WikipOff.
 
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 <resources>
 
@@ -39,9 +37,9 @@ This file is part of WikipOff.
     </style>
 
     <style name="Divider">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">1dp</item>
-    <item name="android:background">?android:attr/listDivider</item>
-</style>
-    
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
 </resources>

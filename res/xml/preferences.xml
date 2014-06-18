@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-
 Copyright 2014 "Renzokuken" (pseudonym, first committer of WikipOff project) at
 https://github.com/conchyliculture/wikipoff
 
@@ -18,19 +17,15 @@ This file is part of WikipOff.
 
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Settings">
-        <CheckBoxPreference
+    android:title="Settings" >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
         android:key="@string/config_key_use_mathjax"
-        android:title="@string/pref_mathjax"
         android:summary="@string/pref_mathjax_summ"
-        android:defaultValue="true" />
-        <!--  ListPreference
-        android:id="@+id/action_set_database"
-        android:key="@string/config_key_selecteddbfile"
-        android:title="@string/action_set_database"/-->
+        android:title="@string/pref_mathjax" />
 
 </PreferenceScreen>

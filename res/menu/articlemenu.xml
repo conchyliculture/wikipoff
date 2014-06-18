@@ -1,5 +1,4 @@
 <!--
-
 Copyright 2014 "Renzokuken" (pseudonym, first committer of WikipOff project) at
 https://github.com/conchyliculture/wikipoff
 
@@ -17,9 +16,9 @@ This file is part of WikipOff.
 
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <item
         android:id="@+id/action_manage_databases"
         android:orderInCategory="100"
@@ -43,10 +42,9 @@ This file is part of WikipOff.
     <item
         android:id="@+id/menu_search"
         android:actionViewClass="android.widget.SearchView"
-        android:orderInCategory="2000"
         android:icon="@drawable/ic_action_search"
+        android:orderInCategory="2000"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="string/action_search"/>
-        
 
 </menu>

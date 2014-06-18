@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-
 Copyright 2014 "Renzokuken" (pseudonym, first committer of WikipOff project) at
 https://github.com/conchyliculture/wikipoff
 
@@ -18,7 +17,6 @@ This file is part of WikipOff.
 
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 
 <resources>
@@ -31,26 +29,29 @@ This file is part of WikipOff.
     <string name="DBDir">fr.renzo.wikipoff/databases</string>
     <string name="available_xml_file">available_wikis.xml</string>
     <string name="available_xml_file_external_path">fr.renzo.wikipoff/available_wikis.xml</string>
-    
+
     <!-- SQL values to build queries -->
-    <!--  No. Let's not do that. 
+    <!--
+    No. Let's not do that. 
     <string name="sql_articles_table_name">articles</string>
     <string name="sql_title_col_name">title</string>
     -->
-    
+
+
     <!-- preferences keys -->
-    <!-- string name="pref_key_database_select">dbpref</string-->
-    
-    <!--  app settings keys -->
+    <!-- string name="pref_key_database_select">dbpref</string -->
+
+
+    <!-- app settings keys -->
     <string name="config_key_selecteddbfiles">seldbs</string>
     <string name="config_key_use_mathjax">usermathjax</string>
     <string name="config_key_available_database">config_key_available_database</string>
     <string name="config_key_nb_list_random">config_key_nb_list_random</string>
     <string name="config_key_downloadid">config_key_downloadid</string>
     <string name="config_key_should_update_db">config_key_should_update_db</string>
-    
-    <!--  Text strings in GUI -->
-    <!--       menus       -->
+
+    <!-- Text strings in GUI -->
+    <!-- menus -->
     <string name="pref_mathjax">Use MathJax</string>
     <string name="pref_mathjax_summ">Download MathJax.js from the web to display math in articles</string>
     <string name="action_settings">Settings</string>
@@ -59,12 +60,12 @@ This file is part of WikipOff.
     <string name="action_webbrowser">Open online article</string>
     <string name="action_about">About</string>
     <string name="action_manage_databases">Manage Databases/Wikis</string>
-    
-    <!--       buttons     -->
+
+    <!-- buttons -->
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    
-    <!--       views       -->
+
+    <!-- views -->
     <string name="randomsearch">Random Articles</string>
     <string name="searchhint">Search Article</string>
 
