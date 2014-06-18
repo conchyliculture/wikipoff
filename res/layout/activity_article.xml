@@ -1,5 +1,4 @@
 <!--
-
 Copyright 2014 "Renzokuken" (pseudonym, first committer of WikipOff project) at
 https://github.com/conchyliculture/wikipoff
 
@@ -17,7 +16,6 @@ This file is part of WikipOff.
 
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"

@@ -11,49 +11,46 @@
         android:layout_height="match_parent"
         android:layout_gravity="left"
         android:layout_weight="0.75"
-        android:paddingTop="2dip"
-		android:paddingBottom="2dip"
-		android:paddingLeft="8dip"
-		android:paddingRight="8dip"
-		android:clickable="false"
-		android:focusable="false"
+        android:clickable="false"
+        android:focusable="false"
         android:gravity="fill_horizontal"
-        android:orientation="vertical"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:mode="twoLine"
-        
-         >
+        android:orientation="vertical"
+        android:paddingBottom="2dip"
+        android:paddingLeft="8dip"
+        android:paddingRight="8dip"
+        android:paddingTop="2dip" >
 
         <TextView
             android:id="@+id/installedwikiheader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dip"
             android:clickable="false"
             android:focusable="false"
-            android:layout_marginTop="8dip"
-        	android:textAppearance="?android:attr/textAppearanceListItem"
-			/>
+            android:textAppearance="?android:attr/textAppearanceListItem" />
 
         <TextView
             android:id="@+id/installedwikifooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@id/installedwikiheader"
+            android:layout_below="@id/installedwikiheader"
             android:clickable="false"
             android:focusable="false"
-            android:layout_below="@id/installedwikiheader"
-    		android:layout_alignStart="@id/installedwikiheader"
-        	android:textAppearance="?android:attr/textAppearanceSmall"
-      		/>
+            android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
-<RadioButton
+
+    <RadioButton
         android:id="@+id/radio"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="right"
         android:layout_marginRight="10sp"
-        android:focusableInTouchMode="false"
-		android:clickable="false"
-		android:focusable="false"
-        android:checked="false"/>
+        android:checked="false"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
 
 </LinearLayout>

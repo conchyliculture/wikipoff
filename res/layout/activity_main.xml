@@ -1,5 +1,4 @@
 <!--
-
 Copyright 2014 "Renzokuken" (pseudonym, first committer of WikipOff project) at
 https://github.com/conchyliculture/wikipoff
 
@@ -17,7 +16,6 @@ This file is part of WikipOff.
 
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -27,8 +25,8 @@ This file is part of WikipOff.
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:textColor="#000000"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:textColor="#000000"
     tools:context=".MainActivity" >
 
     <LinearLayout
@@ -44,42 +42,42 @@ This file is part of WikipOff.
             android:layout_weight="1.33"
             android:completionThreshold="3"
             android:ems="10"
-            android:imeOptions="actionDone"
             android:hint="@string/searchhint"
-            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:inputType="textNoSuggestions"
+            android:singleLine="true"
             android:text="" >
-
         </AutoCompleteTextView>
+
         <ImageButton
             android:id="@+id/clear_search_button"
-            android:src="@drawable/ic_action_delete"
-            android:contentDescription="clear search button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             />
-
+            android:contentDescription="clear search button"
+            android:src="@drawable/ic_action_delete" />
     </LinearLayout>
-    <View style="@style/Divider"
-        android:layout_marginTop="15dp"
+
+    <View
+        style="@style/Divider"
         android:layout_marginBottom="15dp"
-        />
-<LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content" >
+        android:layout_marginTop="15dp" />
 
-    <Button
-        android:id="@+id/buttonRandom"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/randomsearch" />
+        android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/randomView"
-        
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
-</LinearLayout>
+        <Button
+            android:id="@+id/buttonRandom"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/randomsearch" />
+
+        <ListView
+            android:id="@+id/randomView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </ListView>
+    </LinearLayout>
+
 </LinearLayout>
