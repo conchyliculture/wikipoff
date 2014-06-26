@@ -85,16 +85,17 @@ public class MainActivity extends Activity {
 		rndbutton = (Button) findViewById(R.id.buttonRandom);
 		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
 
-		showViews();
+
 
 	}
-	
+
 	@Override
 	public void onResume(){
 		super.onResume();	
 		newDatabaseSelected();
+		showViews();
 	}
-	
+
 	public void showViews(){
 		if (this.seldb != null && ! this.seldb.isEmpty()) {
 			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
@@ -117,7 +118,7 @@ public class MainActivity extends Activity {
 			MainActivity.this.startActivity(myIntent);
 		}
 	}
-	
+
 	public class SearchClickListener implements OnItemClickListener, OnEditorActionListener {
 		// Handles clicks on an item in the search article list
 		@Override
@@ -206,7 +207,7 @@ public class MainActivity extends Activity {
 	private void newDatabaseSelected() {
 		try {
 			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),null );
-			
+
 
 			if (tosplit!=null) {
 				this.seldb = new ArrayList<String>(Arrays.asList(tosplit.split(",")));
