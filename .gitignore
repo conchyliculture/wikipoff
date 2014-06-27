@@ -28,6 +28,8 @@ proguard/
 *.iws
 .idea/
 
+src/gfx
+
 .settings/
 ic_launcher-web.png
 libs/
