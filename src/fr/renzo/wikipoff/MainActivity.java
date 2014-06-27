@@ -211,6 +211,8 @@ public class MainActivity extends Activity {
 				this.seldb = new ArrayList<String>(Arrays.asList(tosplit.split(",")));
 				boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
 				if ((app.dbHandler == null ) || (new_db)){
+					if (app.dbHandler!=null)
+						app.dbHandler.close();
 					app.dbHandler = new Database(context,this.seldb);
 					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
 					showViews();

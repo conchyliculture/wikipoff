@@ -260,4 +260,10 @@ public class Database   {
 			return dialog;
 		}
 	}
+
+	public void close() {
+		for (SQLiteDatabase db : this.sqlh) {
+				db.close();
+		}
+	}
 }
