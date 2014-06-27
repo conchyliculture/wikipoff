@@ -45,7 +45,7 @@ public class ArticleActivity extends Activity {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "ArticleActivity";
-	private WikipOff app;
+	private Database dbHandler;
 	private WebView webview;
 	private Article article;
 	private String wanted_title;
@@ -56,7 +56,7 @@ public class ArticleActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.app= (WikipOff) getApplication();
+		this.dbHandler= ((WikipOff) getApplication()).dbHandler;
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);;
 
 		setContentView(R.layout.activity_article);
@@ -66,7 +66,7 @@ public class ArticleActivity extends Activity {
 
 		Intent source_intent = getIntent();
 		wanted_title = source_intent.getStringExtra("article_title");
-		this.article = app.dbHandler.searchArticleFromTitle(wanted_title);
+		this.article = dbHandler.searchArticleFromTitle(wanted_title);
 
 		showHTML();
 	}
@@ -89,7 +89,7 @@ public class ArticleActivity extends Activity {
 			return true;
 		case R.id.action_webbrowser:
 			Intent webIntent = new Intent( Intent.ACTION_VIEW );
-			webIntent.setData( Uri.parse("http://"+app.dbHandler.lang+".wikipedia.org/wiki/"+this.article.title) );
+			webIntent.setData( Uri.parse("http://"+dbHandler.lang+".wikipedia.org/wiki/"+this.article.title) );
 			this.startActivity( webIntent );
 		case R.id.action_about:
 			Intent i2 = new Intent(this, AboutActivity.class);
