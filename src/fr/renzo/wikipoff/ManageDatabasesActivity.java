@@ -5,17 +5,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import fr.renzo.wikipoff.TabAvailableFragment.DownloadFile;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
