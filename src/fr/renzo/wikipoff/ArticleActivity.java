@@ -165,7 +165,7 @@ public class ArticleActivity extends Activity {
 			data += this.article.text;
 
 		} else {
-			data +="<h1>No article '"+wanted_title+"' found =( </h1>";
+			data +="<h2>No article '"+wanted_title+"' found =( </h2><br/>Article may not exist yet.";
 		}
 		data+="</body></html>";
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html","UTF-8",null);

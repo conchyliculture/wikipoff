@@ -29,7 +29,7 @@ This file is part of WikipOff.
     <string name="DBDir">fr.renzo.wikipoff/databases</string>
     <string name="available_xml_file">available_wikis.xml</string>
     <string name="available_xml_file_external_path">fr.renzo.wikipoff/available_wikis.xml</string>
-
+	<string name="available_xml_web_url">https://raw.githubusercontent.com/conchyliculture/wikipoff/master/assets/available_wikis.xml</string>
     <!-- SQL values to build queries -->
     <!--
     No. Let's not do that. 
@@ -60,6 +60,7 @@ This file is part of WikipOff.
     <string name="action_webbrowser">Open online article</string>
     <string name="action_about">About</string>
     <string name="action_manage_databases">Manage Databases/Wikis</string>
+    <string name="action_update_available_wikis_xml">Update Available Wikis from Web</string>
 
     <!-- buttons -->
     <string name="ok">OK</string>
