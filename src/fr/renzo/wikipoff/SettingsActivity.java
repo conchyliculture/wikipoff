@@ -32,7 +32,6 @@ import android.preference.PreferenceManager;
 
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences config;
-	private Context context;
 	private File rootDbDir;
     @SuppressWarnings("unused")
 	private static final String TAG = "SettingsActivity";
@@ -40,13 +39,12 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context=this.getApplicationContext();
         rootDbDir= new File(Environment.getExternalStorageDirectory(),s(R.string.DBDir));
         addPreferencesFromResource(R.xml.preferences);
         config = PreferenceManager.getDefaultSharedPreferences(this);
     }
    
 	private  String s(int i) {
-		return context.getString(i);
+		return getString(i);
 	}
 }
