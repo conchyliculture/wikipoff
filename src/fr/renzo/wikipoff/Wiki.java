@@ -127,7 +127,7 @@ public class Wiki implements Serializable {
 				sqlh.close();
 			} catch (SQLiteDatabaseCorruptException e ){
 				e.printStackTrace();
-				throw new WikiException("Database file : "+sqlitefile.getName()+"is corrupt. Please delete it or wait for transfer to finish!");
+				throw new WikiException("Database file : "+sqlitefile.getName()+" is corrupted. Please delete it or wait for transfer to finish!");
 			}
 
 		} else {
