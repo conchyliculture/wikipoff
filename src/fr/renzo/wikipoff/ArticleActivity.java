@@ -90,7 +90,8 @@ public class ArticleActivity extends Activity {
 		case R.id.action_webbrowser:
 			Intent webIntent = new Intent( Intent.ACTION_VIEW );
 			webIntent.setData( Uri.parse("http://"+dbHandler.lang+".wikipedia.org/wiki/"+this.article.title) );
-			this.startActivity( webIntent );
+			startActivity( webIntent );
+			return true;
 		case R.id.action_about:
 			Intent i2 = new Intent(this, AboutActivity.class);
 			startActivity(i2);
