@@ -110,9 +110,10 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 				}
 			} else {
 				try {
-					Wiki w = new Wiki(context,f);
-					if (! currendl.contains(w.getFilenamesAsString()))
+					if (! currendl.contains(f.getName())) {
+						Wiki w = new Wiki(context,f);
 						res.add(w);
+					}
 				} catch (WikiException e) {
 					Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 				}

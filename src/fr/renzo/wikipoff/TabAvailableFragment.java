@@ -52,8 +52,6 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-
-
 		context=(ManageDatabasesActivity) getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,container, false);
 		if (savedInstanceState==null) {
@@ -150,6 +148,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	private void do_download(int position) {
 		Wiki wiki = availablewikis.get(position);
 		View v = availablewikislistview.getChildAt(position);
+		context.addToCurrentDownloads(Integer.valueOf(position),wiki.getFilenamesAsString());
 		if (v!=null) {
 			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
 			pb.setVisibility(View.VISIBLE);
@@ -193,7 +192,6 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 				.setNegativeButton("No", null)
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						context.addToCurrentDownloads(Integer.valueOf(position),wiki.getFilenamesAsString());
 						do_download(position);
 					}
 				})
@@ -343,7 +341,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	public void stopDownload(int position,boolean delete) {
 		File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
 		Wiki wiki = availablewikis.get(position);
-		context.currentdownloads.remove((Integer)position);
+		context.deleteFromCurrentDownloads((Integer)position);
 		View v = availablewikislistview.getChildAt(position);
 		ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
 		pb.setVisibility(View.GONE);

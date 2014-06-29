@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -32,12 +32,14 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	private TabInstalledFragment installedFragment;
 	private TabAvailableFragment availableFragment;
 
-	public HashMap<Integer,String> currentdownloads=new HashMap<Integer,String>();
+	private WikipOff app;
 
 	public static final int REQUEST_DELETE_CODE = 1001;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		this.app = (WikipOff) getApplication();
 
 		setTitle("Manage your 'Wikis'");
 		ActionBar bar = getSupportActionBar();
@@ -104,7 +106,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
+
 				new DownloadXMLFile().execute(getString(R.string.available_xml_web_url));
 			}
 		})
@@ -121,7 +123,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		protected String doInBackground(String... s) {
 			try {
 				URL url = new URL(s[0]);
-				
+
 				HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
 				con.connect();
 				InputStream input = new BufferedInputStream(con.getInputStream());
@@ -148,10 +150,10 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		}
 
 		protected void onPostExecute() {
-	        if (this.result!="") {
-	        	Toast.makeText(getApplicationContext(), "Error: "+result, Toast.LENGTH_LONG).show();
-	        }
-	    }
+			if (this.result!="") {
+				Toast.makeText(getApplicationContext(), "Error: "+result, Toast.LENGTH_LONG).show();
+			}
+		}
 
 	}
 
@@ -176,20 +178,28 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	}
 
 	public void addToCurrentDownloads(int position, String names) {
-		this.currentdownloads.put(Integer.valueOf(position), names);
+		this.app.currentdownloads.put(Integer.valueOf(position), names);
 	}
 	public void deleteFromCurrentDownloads(int position) {
-		this.currentdownloads.remove(Integer.valueOf(position));
+		this.app.currentdownloads.remove(Integer.valueOf(position));
 	}
 	public boolean isInCurrentDownloads(int position) {
-		return (this.currentdownloads.containsKey(Integer.valueOf(position)));
+		return (this.app.currentdownloads.containsKey(Integer.valueOf(position)));
 	}
 	public boolean isInCurrentDownloads(String names) {
-		return (this.currentdownloads.containsKey(names));
+		return (this.app.currentdownloads.containsKey(names));
 	}
 	public Collection<String> getCurrentDownloads() {
-
-		return (this.currentdownloads.values());
+		return (this.app.currentdownloads.values());
+	}
+	public String showCurrentDownloads() {
+		String res="Current dls : ";
+		Collection<String> lol = getCurrentDownloads();
+		for (Iterator iterator = lol.iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+			res+=string+", ";
+		}
+		return res;
 	}
 }
 

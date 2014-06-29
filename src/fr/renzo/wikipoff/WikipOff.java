@@ -22,6 +22,7 @@ This file is part of WikipOff.
 package fr.renzo.wikipoff;
 
 import java.io.File;
+import java.util.HashMap;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -34,6 +35,7 @@ public class WikipOff extends Application {
     public static SharedPreferences config;
 	public File DBDir;
 	public Database dbHandler;
+	public HashMap<Integer,String> currentdownloads=new HashMap<Integer,String>();
 	
     public void onCreate(){
     	super.onCreate();
