@@ -90,7 +90,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		AssetManager am = context.getAssets();
 		try {
 			InputStream in = am.open(xml);
-			File outFile = new File(Environment.getExternalStorageDirectory(),context.getString(R.string.available_xml_file_external_path));
+			File outFile = new File(context.getStorage(),context.getString(R.string.available_xml_file_external_path));
 			if (!outFile.exists()) {
 				FileOutputStream out = new FileOutputStream(outFile);
 
@@ -258,7 +258,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 			Wiki w = (Wiki)params[0];
 			this.position = (Integer) params[1];
-			File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
+			File outputdir = new File(context.getStorage(),context.getString(R.string.DBDir));
 			try {
 				for(WikiDBFile wdbf : w.getDBFiles()) {
 					if(!isCancelled()){
@@ -339,7 +339,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	}
 	public void stopDownload(int position,boolean delete) {
-		File outputdir = Environment.getExternalStoragePublicDirectory(context.getString(R.string.DBDir));
+		File outputdir = new File(context.getStorage(),context.getString(R.string.DBDir));
 		Wiki wiki = availablewikis.get(position);
 		context.deleteFromCurrentDownloads((Integer)position);
 		View v = availablewikislistview.getChildAt(position);

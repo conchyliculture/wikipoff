@@ -18,33 +18,75 @@ This file is part of WikipOff.
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
-*/
+ */
 package fr.renzo.wikipoff;
 
 import java.io.File;
+import java.util.Iterator;
+import java.util.List;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import fr.renzo.wikipoff.StorageUtils.StorageInfo;
 
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences config;
-	private File rootDbDir;
-    @SuppressWarnings("unused")
+	private ListPreference myPref;
+	@SuppressWarnings("unused")
 	private static final String TAG = "SettingsActivity";
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        rootDbDir= new File(Environment.getExternalStorageDirectory(),s(R.string.DBDir));
-        addPreferencesFromResource(R.xml.preferences);
-        config = PreferenceManager.getDefaultSharedPreferences(this);
-    }
-   
-	private  String s(int i) {
-		return getString(i);
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.preferences);
+		config = PreferenceManager.getDefaultSharedPreferences(this);
+
+		List<StorageInfo> storagelist = StorageUtils.getStorageList();
+		for (Iterator<StorageInfo> iterator = storagelist.iterator(); iterator.hasNext();) {
+			StorageInfo storageInfo = iterator.next();
+			if (!testWriteable(storageInfo.path)){
+				storagelist.remove(storageInfo);
+			}
+		}
+		
+		String[] storage_names= new String[storagelist.size()];
+		String[] storage_paths= new String[storagelist.size()];
+		for (int i = 0; i < storagelist.size(); i++) {
+			storage_names[i] = storagelist.get(i).getDisplayName();
+			storage_paths[i] = storagelist.get(i).path;
+		}
+		
+		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
+		myPref.setEntries(storage_names);
+		myPref.setEntryValues(storage_paths);
+		myPref.setSummary(config.getString(getString(R.string.config_key_storage), "Please select something"));
+		myPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				myPref.setSummary((String)newValue);
+				return true;
+			}
+		});
+		
 	}
+	
+	
+	private boolean testWriteable(String path) {
+		boolean res=false;
+		File f = new File(path,".testdir");
+		res = f.mkdirs();
+		f.delete();
+		return res;
+	}
+	
+	
+
+
+
 }

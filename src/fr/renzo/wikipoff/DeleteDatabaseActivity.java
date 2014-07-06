@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -58,7 +59,9 @@ public class DeleteDatabaseActivity extends Activity {
 	}
 
 	public void deleteDb(String dbtodelete) {
-		File db=new File(Environment.getExternalStoragePublicDirectory(this.getString(R.string.DBDir)),dbtodelete);
+		String storage= PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.config_key_storage), null);
+		File root=new File(storage,this.getString(R.string.DBDir));
+		File db=new File(root,dbtodelete);
 		if (db.exists()) {
 			db.delete();
 		}

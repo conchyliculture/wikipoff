@@ -24,6 +24,7 @@ package fr.renzo.wikipoff;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
@@ -37,6 +38,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +56,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import fr.renzo.wikipoff.Database.DatabaseException;
+import fr.renzo.wikipoff.StorageUtils.StorageInfo;
 
 public class MainActivity extends Activity {
 
@@ -72,13 +75,21 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (savedInstanceState==null) {
-			dbdir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
-			createEnv();
-		}
+		
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
+		String storage_root_path = config.getString(getString(R.string.config_key_storage), null);
+		
+		if (storage_root_path == null) {
+			storage_root_path = Environment.getExternalStorageDirectory().getAbsolutePath();
+			config.edit().putString(getString(R.string.config_key_storage), storage_root_path).commit();
+		}
+		
+		dbdir= new File(storage_root_path,getString(R.string.DBDir));
+		if (savedInstanceState==null) {
+			createEnv();
+		}
 
 		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
 		randomlistview= (ListView) findViewById(R.id.randomView);
@@ -166,12 +177,11 @@ public class MainActivity extends Activity {
 		if (!f.exists()) {
 			res= f.mkdirs();
 			if (!res) {
-				Toast.makeText(this, "This app requires an external storage", Toast.LENGTH_LONG).show();
-				finish();          
-				moveTaskToBack(true);
+				Toast.makeText(this, "Couldn't create "+f.getAbsolutePath()+". Please select an external storage", Toast.LENGTH_LONG).show();
+				Intent i = new Intent(this, SettingsActivity.class);
+				startActivity(i); 
 			}
 		}
-
 	}
 
 	@Override
