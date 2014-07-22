@@ -41,7 +41,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		this.app = (WikipOff) getApplication();
 		this.storage= PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.config_key_storage), null);
 		
 		setTitle("Manage your 'Wikis'");
