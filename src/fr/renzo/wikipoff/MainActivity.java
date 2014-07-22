@@ -24,7 +24,6 @@ package fr.renzo.wikipoff;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
@@ -36,9 +35,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,7 +53,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import fr.renzo.wikipoff.Database.DatabaseException;
-import fr.renzo.wikipoff.StorageUtils.StorageInfo;
 
 public class MainActivity extends Activity {
 
