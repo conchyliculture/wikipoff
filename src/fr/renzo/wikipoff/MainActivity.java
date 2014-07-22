@@ -79,13 +79,9 @@ public class MainActivity extends Activity {
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
-		String storage_root_path = config.getString(getString(R.string.config_key_storage), null);
 		
-		if (storage_root_path == null) {
-			storage_root_path = Environment.getExternalStorageDirectory().getAbsolutePath();
-			config.edit().putString(getString(R.string.config_key_storage), storage_root_path).commit();
-		}
-		
+		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+				
 		dbdir= new File(storage_root_path,getString(R.string.DBDir));
 		if (savedInstanceState==null) {
 			createEnv();

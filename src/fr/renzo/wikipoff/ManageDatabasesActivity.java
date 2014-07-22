@@ -14,6 +14,7 @@ import javax.net.ssl.HttpsURLConnection;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,7 +42,8 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		this.storage= PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.config_key_storage), null);
+		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
+		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
 		
 		setTitle("Manage your 'Wikis'");
 		ActionBar bar = getSupportActionBar();

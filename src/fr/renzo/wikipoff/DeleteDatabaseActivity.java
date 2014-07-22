@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -59,7 +60,8 @@ public class DeleteDatabaseActivity extends Activity {
 	}
 
 	public void deleteDb(String dbtodelete) {
-		String storage= PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.config_key_storage), null);
+		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
+		String storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
 		File root=new File(storage,this.getString(R.string.DBDir));
 		File db=new File(root,dbtodelete);
 		if (db.exists()) {

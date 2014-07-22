@@ -56,7 +56,12 @@ public class StorageUtils {
         	return res;
         }
     }
+    
 
+    public static String getDefaultStorage() {
+    	return Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+    
     public static List<StorageInfo> getStorageList() {
 
         List<StorageInfo> list = new ArrayList<StorageInfo>();
