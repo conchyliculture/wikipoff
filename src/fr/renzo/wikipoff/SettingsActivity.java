@@ -22,6 +22,7 @@ This file is part of WikipOff.
 package fr.renzo.wikipoff;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,19 +47,21 @@ public class SettingsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.preferences);
 		config = PreferenceManager.getDefaultSharedPreferences(this);
 
-		List<StorageInfo> storagelist = StorageUtils.getStorageList();
-		for (Iterator<StorageInfo> iterator = storagelist.iterator(); iterator.hasNext();) {
+		List<StorageInfo> availablestorageslist= new ArrayList<StorageInfo>();
+		
+		List<StorageInfo> allstorageslist = StorageUtils.getStorageList();
+		for (Iterator<StorageInfo> iterator = allstorageslist.iterator(); iterator.hasNext();) {
 			StorageInfo storageInfo = iterator.next();
-			if (!testWriteable(storageInfo.path)){
-				storagelist.remove(storageInfo);
+			if (testWriteable(storageInfo.path)){
+				availablestorageslist.add(storageInfo);
 			}
 		}
 		
-		String[] storage_names= new String[storagelist.size()];
-		String[] storage_paths= new String[storagelist.size()];
-		for (int i = 0; i < storagelist.size(); i++) {
-			storage_names[i] = storagelist.get(i).getDisplayName();
-			storage_paths[i] = storagelist.get(i).path;
+		String[] storage_names= new String[availablestorageslist.size()];
+		String[] storage_paths= new String[availablestorageslist.size()];
+		for (int i = 0; i < availablestorageslist.size(); i++) {
+			storage_names[i] = availablestorageslist.get(i).getDisplayName();
+			storage_paths[i] = availablestorageslist.get(i).path;
 		}
 		
 		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
