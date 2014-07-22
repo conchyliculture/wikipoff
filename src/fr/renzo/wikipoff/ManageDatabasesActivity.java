@@ -40,7 +40,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		this.app = (WikipOff) getApplication();
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
 		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
 		
