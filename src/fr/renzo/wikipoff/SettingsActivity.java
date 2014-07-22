@@ -67,7 +67,7 @@ public class SettingsActivity extends PreferenceActivity {
 		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
 		myPref.setEntries(storage_names);
 		myPref.setEntryValues(storage_paths);
-		myPref.setSummary(config.getString(getString(R.string.config_key_storage), "Please select something"));
+		myPref.setSummary(config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage()));
 		myPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			
 			@Override
