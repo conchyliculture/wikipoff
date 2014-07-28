@@ -33,6 +33,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import fr.renzo.wikipoff.StorageUtils.StorageInfo;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -48,49 +49,56 @@ public class SettingsActivity extends PreferenceActivity {
 		config = PreferenceManager.getDefaultSharedPreferences(this);
 
 		List<StorageInfo> availablestorageslist= new ArrayList<StorageInfo>();
-		
+
 		List<StorageInfo> allstorageslist = StorageUtils.getStorageList();
 		for (Iterator<StorageInfo> iterator = allstorageslist.iterator(); iterator.hasNext();) {
 			StorageInfo storageInfo = iterator.next();
 			if (testWriteable(storageInfo.path)){
 				availablestorageslist.add(storageInfo);
+				Log.d(TAG,storageInfo.path +" is writeable");
+			} else {
+				Log.d(TAG,storageInfo.path +" is not writeable");
+
 			}
 		}
-		
+
 		String[] storage_names= new String[availablestorageslist.size()];
 		String[] storage_paths= new String[availablestorageslist.size()];
 		for (int i = 0; i < availablestorageslist.size(); i++) {
 			storage_names[i] = availablestorageslist.get(i).getDisplayName();
 			storage_paths[i] = availablestorageslist.get(i).path;
 		}
-		
+
 		String currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
-		
+
 		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
 		myPref.setEntries(storage_names);
 		myPref.setEntryValues(storage_paths);
 		myPref.setSummary(currentStorage);
 		myPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-			
+
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				myPref.setSummary((String)newValue);
+				config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
+				config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
 				return true;
 			}
 		});
-		
 	}
-	
-	
+
 	private boolean testWriteable(String path) {
 		boolean res=false;
 		File f = new File(path,".testdir");
-		res = f.mkdirs();
-		f.delete();
+		f.mkdirs();
+		if (f.exists()) {
+			res=true;
+			//f.delete();
+		}
 		return res;
 	}
-	
-	
+
+
 
 
 

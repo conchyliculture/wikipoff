@@ -71,17 +71,12 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
-		
-		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
-				
-		dbdir= new File(storage_root_path,getString(R.string.DBDir));
-		if (savedInstanceState==null) {
-			createEnv();
-		}
+
+		setStorage();
 
 		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
 		randomlistview= (ListView) findViewById(R.id.randomView);
@@ -89,15 +84,20 @@ public class MainActivity extends Activity {
 		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
 
 	}
+	private void setStorage() {
+		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		dbdir= new File(storage_root_path,getString(R.string.DBDir));
+		createEnv();
+	}
 
 	@Override
 	public void onResume(){
 		super.onResume();	
+		setStorage();
 		newDatabaseSelected();
-		showViews();
 	}
 
-	public void showViews(){
+	private void showViews(){
 		if (this.seldb != null && ! this.seldb.isEmpty()) {
 			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
 			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
@@ -106,7 +106,6 @@ public class MainActivity extends Activity {
 			searchtextview.setOnItemClickListener(new SearchClickListener());
 			searchtextview.setOnEditorActionListener(new SearchClickListener());
 
-			toggleAllViews(true);
 		} 
 	}
 
@@ -161,14 +160,16 @@ public class MainActivity extends Activity {
 		}
 	}
 	private void createEnv() {
-		createDir(dbdir);
+		if (! dbdir.exists()) {
+			createDir(dbdir);
+		}
 	}
 
 	private void createDir(File f) {
 		boolean res;
 		if (!f.exists()) {
 			res= f.mkdirs();
-			if (!res) {
+			if (!f.exists()) {
 				Toast.makeText(this, "Couldn't create "+f.getAbsolutePath()+". Please select an external storage", Toast.LENGTH_LONG).show();
 				Intent i = new Intent(this, SettingsActivity.class);
 				startActivity(i); 
@@ -217,17 +218,25 @@ public class MainActivity extends Activity {
 						app.dbHandler.close();
 					app.dbHandler = new Database(context,this.seldb);
 					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
-					showViews();
-					toggleAllViews(true);
+					if (app.dbHandler == null) {
+						toggleAllViews(false);
+					} else {
+						clearViewData();
+						showViews();
+						toggleAllViews(true);
+					}
 					//Log.d(TAG,"We selected db '"+seldb.toString()+"'");
 				}
 			} else {
+				toggleAllViews(false);
+				clearViewData();
 				Toast.makeText(getApplicationContext(), "No selected database", 
 						Toast.LENGTH_LONG).show();
-				toggleAllViews(false);
 			}		
 
 		} catch (DatabaseException e) {
+			toggleAllViews(false);
+			clearViewData();
 			Builder b = e.alertUser(context);
 			b.setCancelable(false);
 			b.setOnCancelListener(new OnCancelListener() {
@@ -237,6 +246,14 @@ public class MainActivity extends Activity {
 				}  //onCancel
 			}); //setOnCancelListener
 		} // try
+	}
+	private void clearViewData() {
+		ArrayAdapter<String> adapter= ((ArrayAdapter<String>) this.randomlistview.getAdapter());
+		if (adapter != null) {
+			adapter.clear();
+			adapter.notifyDataSetChanged();
+		}
+		this.searchtextview.setText("");
 	}
 
 	private void toggleAllViews(boolean state) {
