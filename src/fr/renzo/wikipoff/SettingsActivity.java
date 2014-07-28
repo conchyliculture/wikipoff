@@ -39,6 +39,7 @@ import fr.renzo.wikipoff.StorageUtils.StorageInfo;
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences config;
 	private ListPreference myPref;
+	private String currentStorage;
 	@SuppressWarnings("unused")
 	private static final String TAG = "SettingsActivity";
 
@@ -69,7 +70,7 @@ public class SettingsActivity extends PreferenceActivity {
 			storage_paths[i] = availablestorageslist.get(i).path;
 		}
 
-		String currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
 
 		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
 		myPref.setEntries(storage_names);
@@ -79,9 +80,12 @@ public class SettingsActivity extends PreferenceActivity {
 
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				myPref.setSummary((String)newValue);
-				config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
-				config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
+				String newStorage = (String)newValue;
+				if (! newStorage.equals(currentStorage)) {
+					myPref.setSummary(newStorage);
+					config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
+					config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
+				}
 				return true;
 			}
 		});
