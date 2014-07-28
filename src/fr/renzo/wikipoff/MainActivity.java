@@ -166,11 +166,10 @@ public class MainActivity extends Activity {
 	}
 
 	private void createDir(File f) {
-		boolean res;
 		if (!f.exists()) {
-			res= f.mkdirs();
+			f.mkdirs();
 			if (!f.exists()) {
-				Toast.makeText(this, "Couldn't create "+f.getAbsolutePath()+". Please select an external storage", Toast.LENGTH_LONG).show();
+				Toast.makeText(this,getString(R.string.message_cant_create_in_storage, f.getAbsolutePath()) , Toast.LENGTH_LONG).show();
 				Intent i = new Intent(this, SettingsActivity.class);
 				startActivity(i); 
 			}
@@ -230,7 +229,7 @@ public class MainActivity extends Activity {
 			} else {
 				toggleAllViews(false);
 				clearViewData();
-				Toast.makeText(getApplicationContext(), "No selected database", 
+				Toast.makeText(getApplicationContext(), getString(R.string.message_no_selected_database), 
 						Toast.LENGTH_LONG).show();
 			}		
 
@@ -248,6 +247,7 @@ public class MainActivity extends Activity {
 		} // try
 	}
 	private void clearViewData() {
+		@SuppressWarnings("unchecked")
 		ArrayAdapter<String> adapter= ((ArrayAdapter<String>) this.randomlistview.getAdapter());
 		if (adapter != null) {
 			adapter.clear();

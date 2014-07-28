@@ -15,14 +15,14 @@ public class StopDownloadActivity extends Activity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle("Warning");
+		setTitle(getString(R.string.message_warning));
 		setContentView(R.layout.alert_dialog);
 		TextView msg = (TextView) findViewById(R.id.message);
-		msg.setText("Are you sure you want to stop this download?");
+		msg.setText(getString(R.string.message_stop_download));
 		Intent inputintent = getIntent();
 		final int position = inputintent.getIntExtra("position", -1);
 		Button bno = (Button) findViewById(R.id.cancelbutton);
-		bno.setText("no");
+		bno.setText(getString(R.string.no));
 		bno.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -31,7 +31,7 @@ public class StopDownloadActivity extends Activity {
 		});
 
 		Button byes = (Button) findViewById(R.id.okbutton);
-		byes.setText("yes");
+		byes.setText(getString(R.string.yes));
 		byes.setOnClickListener(new OnClickListener() {
 
 			@Override

@@ -137,7 +137,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 				this.download(index);
 
 			} else {
-				Toast.makeText(context, "The wiki is already installed ", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, getString(R.string.message_wiki_already_installed), Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -158,45 +158,56 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	private void download(final int position) {
 		if (context.isInCurrentDownloads(Integer.valueOf(position))) {
-			Toast.makeText(context, "Download already running", Toast.LENGTH_LONG).show();
+			Toast.makeText(context, getString(R.string.message_download_already_running), Toast.LENGTH_LONG).show();
 		} else {
 
 			final Wiki wiki = this.availablewikis.get(position);
 			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 			int nb_of_files= wiki.getFilenamesAsString().split("\\+").length;
-			String msg = "Are you sure you want to download "+wiki.getType()+" "+wiki.getLanglocal()+" (";
-			if (nb_of_files>1) {
-				msg+=nb_of_files+" files, ";
-			}
-			msg+=wiki.getSizeReadable(true);
+			String msg = "";
 
 			if (wifi.isConnected()) {
-				new AlertDialog.Builder(context)
-				.setTitle("Warning")
-				.setMessage(msg+" ?")
-				.setNegativeButton("No", null)
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						do_download(position);
-					}
-				})
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.show();
-			} else {
-				new AlertDialog.Builder(context)
-				.setTitle("No Wifi detected")
-				.setMessage(msg+" without WIFI?")
-				.setNegativeButton("No", null)
-				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						do_download(position);
-					}
-				})
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.show();
+				if (nb_of_files>1) {
+					msg = getString(R.string.message_validate_download_n,
+							wiki.getType(),
+							wiki.getLanglocal(),
+							wiki.getSizeReadable(true),
+							nb_of_files);
+				} else {
+					msg = getString(R.string.message_validate_download,
+							wiki.getType(),
+							wiki.getLanglocal(),
+							wiki.getSizeReadable(true));
+				} 
+			}else {
+				if (nb_of_files>1) {
+					msg = getString(R.string.message_validate_download_n_nowifi,
+							wiki.getType(),
+							wiki.getLanglocal(),
+							wiki.getSizeReadable(true),
+							nb_of_files);
+				} else {
+					msg = getString(R.string.message_validate_download_nowifi,
+							wiki.getType(),
+							wiki.getLanglocal(),
+							wiki.getSizeReadable(true));
+				} 
+
 			}
+			new AlertDialog.Builder(context)
+			.setTitle(getString(R.string.message_warning))
+			.setMessage(msg)
+			.setNegativeButton(getString(R.string.no), null)
+			.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					do_download(position);
+				}
+			})
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.show();
+			
 		}
 	}
 

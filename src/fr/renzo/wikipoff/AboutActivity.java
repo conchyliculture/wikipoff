@@ -43,12 +43,10 @@ public class AboutActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle("About");
+		setTitle(getString(R.string.title_about));
 		setContentView(R.layout.activity_about);
 
 		this.webview= (WebView) findViewById(R.id.aboutwebview);
-
-		
 
 		try {
 			showHTML();

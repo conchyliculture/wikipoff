@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -44,14 +43,14 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
 		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
 		
-		setTitle("Manage your 'Wikis'");
+		setTitle(getString(R.string.title_manage_wikis));
 		ActionBar bar = getSupportActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		setContentView(R.layout.activity_manage_databases);
 		installedFragment = new TabInstalledFragment();
 		availableFragment = new TabAvailableFragment();
-		Tab installedTab = bar.newTab().setText("Downloaded Wikis");
-		Tab availableTab = bar.newTab().setText("Available Wikis");
+		Tab installedTab = bar.newTab().setText(getString(R.string.title_installed_wikis));
+		Tab availableTab = bar.newTab().setText(getString(R.string.title_available_wikis));
 		installedTab.setTabListener(new MyTabsListener(installedFragment));
 		availableTab.setTabListener(new MyTabsListener(availableFragment));
 
@@ -103,10 +102,11 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 	private void updateAvailableWikisXML() {
 		new AlertDialog.Builder(this)
-		.setTitle("Warning")
-		.setMessage("Are you sure you want to overwrite current "+getString(R.string.available_xml_file)+" file ?")
-		.setNegativeButton("No", null)
-		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		.setTitle(getString(R.string.message_warning))
+		.setMessage(
+				getString(R.string.message_overwrite_file,getString(R.string.available_xml_file)))
+		.setNegativeButton(getString(R.string.no), null)
+		.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 
@@ -195,15 +195,15 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	public Collection<String> getCurrentDownloads() {
 		return (this.app.currentdownloads.values());
 	}
-	public String showCurrentDownloads() {
-		String res="Current dls : ";
-		Collection<String> lol = getCurrentDownloads();
-		for (Iterator<String> iterator = lol.iterator(); iterator.hasNext();) {
-			String string = iterator.next();
-			res+=string+", ";
-		}
-		return res;
-	}
+//	public String showCurrentDownloads() {
+//		String res="Current dls : ";
+//		Collection<String> lol = getCurrentDownloads();
+//		for (Iterator<String> iterator = lol.iterator(); iterator.hasNext();) {
+//			String string = iterator.next();
+//			res+=string+", ";
+//		}
+//		return res;
+//	}
 	
 	public String getStorage() {
 		return this.storage;

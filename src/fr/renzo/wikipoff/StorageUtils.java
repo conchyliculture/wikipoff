@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import android.content.Context;
 import android.os.Environment;
 
 public class StorageUtils {
@@ -30,31 +31,31 @@ public class StorageUtils {
         public final int number;
 
         StorageInfo(String path, boolean readonly, boolean removable, int number) {
-            this.path = path;
+        	this.path = path;
             this.readonly = readonly;
             this.removable = removable;         
             this.number = number;
         }
-
-        public String getDisplayName() {
+        
+        public String getDisplayName(Context c) {
             StringBuilder res = new StringBuilder();
             if (!removable) {
-                res.append("Internal SD card");
+                res.append(c.getString(R.string.message_internal_sd_card));
             } else if (number > 1) {
-                res.append("SD card " + number);
+                res.append(c.getString(R.string.message_sd_card_n,number));
             } else {
-                res.append("SD card");
+                res.append(c.getString(R.string.message_sd_card));
             }
             if (readonly) {
-                res.append(" (Read only)");
+                res.append(c.getString(R.string.message_read_only_sd_card));
             }
             return res.toString();
         }
         
-        public String toString() {
-        	String res=this.getDisplayName()+" ("+path+", ro:"+readonly+", rm:"+removable+", num:"+number+")";
-        	return res;
-        }
+//        public String toString() {
+//        	String res=this.getDisplayName()+" ("+path+", ro:"+readonly+", rm:"+removable+", num:"+number+")";
+//        	return res;
+//        }
     }
     
 

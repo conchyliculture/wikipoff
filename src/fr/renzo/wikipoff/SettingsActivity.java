@@ -43,6 +43,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("unused")
 	private static final String TAG = "SettingsActivity";
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class SettingsActivity extends PreferenceActivity {
 		String[] storage_names= new String[availablestorageslist.size()];
 		String[] storage_paths= new String[availablestorageslist.size()];
 		for (int i = 0; i < availablestorageslist.size(); i++) {
-			storage_names[i] = availablestorageslist.get(i).getDisplayName();
+			storage_names[i] = availablestorageslist.get(i).getDisplayName(this);
 			storage_paths[i] = availablestorageslist.get(i).path;
 		}
 

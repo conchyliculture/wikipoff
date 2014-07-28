@@ -29,13 +29,14 @@ public class DeleteDatabaseActivity extends Activity {
 			this.dbtodeleteposition = i.getIntExtra("dbtodeleteposition", -1);
 		}
 		
-		setTitle("Warning");
+		setTitle(getString(R.string.message_warning));
 		setContentView(R.layout.alert_dialog);
 		TextView msg = (TextView) findViewById(R.id.message);
-		msg.setText("Are you sure you want to delete "+dbtodelete.get(0)+"?");
+		String txtmessage = getString(R.string.message_delete_db,dbtodelete.get(0));
+		msg.setText(txtmessage);
 		setResult(-1); //default is "we did nothing"
 		Button bno = (Button) findViewById(R.id.cancelbutton);
-		bno.setText("no");
+		bno.setText(getString(R.string.no));
 		bno.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -44,7 +45,7 @@ public class DeleteDatabaseActivity extends Activity {
 		});
 		
 		Button byes = (Button) findViewById(R.id.okbutton);
-		byes.setText("yes");
+		byes.setText(getString(R.string.yes));
 		byes.setOnClickListener(new OnClickListener() {
 
 			@Override
