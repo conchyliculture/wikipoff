@@ -53,39 +53,39 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 				e.printStackTrace();
 			}
 
-		InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
+			InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
 
-		installedwikislistview= (ListView) wholeview.findViewById(R.id.installedwikislistview);
-		installedwikislistview.setAdapter(adapter);
-		installedwikislistview.setOnItemClickListener(this);
-		installedwikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
+			installedwikislistview= (ListView) wholeview.findViewById(R.id.installedwikislistview);
+			installedwikislistview.setAdapter(adapter);
+			installedwikislistview.setOnItemClickListener(this);
+			installedwikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				Wiki wiki = installedwikis.get(position);
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+					Wiki wiki = installedwikis.get(position);
 
-				Intent outputintent = new Intent(context, DeleteDatabaseActivity.class);
-				outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
-				outputintent.putExtra("dbtodeleteposition", position);
-				startActivityForResult(outputintent,ManageDatabasesActivity.REQUEST_DELETE_CODE);
-				
-				return true;
-			}
-		});
-		
+					Intent outputintent = new Intent(context, DeleteDatabaseActivity.class);
+					outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
+					outputintent.putExtra("dbtodeleteposition", position);
+					startActivityForResult(outputintent,ManageDatabasesActivity.REQUEST_DELETE_CODE);
+
+					return true;
+				}
+			});
+
 		}
 		return wholeview;
 
 	}
 
-	
+
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if(requestCode == ManageDatabasesActivity.REQUEST_DELETE_CODE)
-	    {
-	    	if (resultCode >=0 && resultCode < installedwikis.size()) {
-	    		refreshList(resultCode);
-	    	}
-	    } 
+		if(requestCode == ManageDatabasesActivity.REQUEST_DELETE_CODE)
+		{
+			if (resultCode >=0 && resultCode < installedwikis.size()) {
+				refreshList(resultCode);
+			}
+		} 
 	}
 
 	private ArrayList<Wiki> loadInstalledDb() throws WikiException {
@@ -101,8 +101,8 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 					w.addDBFile(f);
 				} else {
 					try {
-					Wiki w = new Wiki(context, f);
-					multiwikis.put(root_wiki,w);
+						Wiki w = new Wiki(context, f);
+						multiwikis.put(root_wiki,w);
 					} catch (WikiException e) {
 						Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 					}
