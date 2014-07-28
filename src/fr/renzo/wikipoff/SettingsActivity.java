@@ -93,7 +93,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 	private boolean testWriteable(String path) {
 		boolean res=false;
-		File f = new File(path,".testdir");
+		File f = new File(path,".testdir.wikipoff");
 		f.mkdirs();
 		if (f.exists()) {
 			res=true;
