@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseCorruptException;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,7 +24,6 @@ public class Wiki implements Serializable {
 	private String langenglish="";
 	private String langlocal="";
 	private String version="";
-
 
 	private ArrayList<WikiDBFile> dbfiles=new ArrayList<WikiDBFile>();
 
@@ -137,7 +135,10 @@ public class Wiki implements Serializable {
 	}
 
 	public boolean isMissing() throws WikiException {
-		File rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
+		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(context);
+		String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		
+		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
 		ArrayList<File> allpaths = new ArrayList<File>(Arrays.asList(rootDbDir.listFiles()));
 		ArrayList<String> allnames = new ArrayList<String>();
 		for(File i : allpaths) {

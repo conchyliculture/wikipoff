@@ -22,6 +22,10 @@ This file is part of WikipOff.
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="Settings" >
 
+    <ListPreference
+        android:key="@string/config_key_storage"
+        android:title="@string/pref_storage" />
+
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="@string/config_key_use_mathjax"

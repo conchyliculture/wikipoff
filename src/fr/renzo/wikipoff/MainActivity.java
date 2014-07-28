@@ -35,7 +35,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -72,13 +71,17 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (savedInstanceState==null) {
-			dbdir= new File(Environment.getExternalStorageDirectory(),getApplicationContext().getString(R.string.DBDir));
-			createEnv();
-		}
+		
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
 		setContentView(R.layout.activity_main);
+		
+		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+				
+		dbdir= new File(storage_root_path,getString(R.string.DBDir));
+		if (savedInstanceState==null) {
+			createEnv();
+		}
 
 		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
 		randomlistview= (ListView) findViewById(R.id.randomView);
@@ -166,12 +169,11 @@ public class MainActivity extends Activity {
 		if (!f.exists()) {
 			res= f.mkdirs();
 			if (!res) {
-				Toast.makeText(this, "This app requires an external storage", Toast.LENGTH_LONG).show();
-				finish();          
-				moveTaskToBack(true);
+				Toast.makeText(this, "Couldn't create "+f.getAbsolutePath()+". Please select an external storage", Toast.LENGTH_LONG).show();
+				Intent i = new Intent(this, SettingsActivity.class);
+				startActivity(i); 
 			}
 		}
-
 	}
 
 	@Override

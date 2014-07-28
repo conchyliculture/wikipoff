@@ -18,33 +18,80 @@ This file is part of WikipOff.
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
-*/
+ */
 package fr.renzo.wikipoff;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import fr.renzo.wikipoff.StorageUtils.StorageInfo;
 
 public class SettingsActivity extends PreferenceActivity {
 	private SharedPreferences config;
-	private File rootDbDir;
-    @SuppressWarnings("unused")
+	private ListPreference myPref;
+	@SuppressWarnings("unused")
 	private static final String TAG = "SettingsActivity";
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        rootDbDir= new File(Environment.getExternalStorageDirectory(),s(R.string.DBDir));
-        addPreferencesFromResource(R.xml.preferences);
-        config = PreferenceManager.getDefaultSharedPreferences(this);
-    }
-   
-	private  String s(int i) {
-		return getString(i);
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.preferences);
+		config = PreferenceManager.getDefaultSharedPreferences(this);
+
+		List<StorageInfo> availablestorageslist= new ArrayList<StorageInfo>();
+		
+		List<StorageInfo> allstorageslist = StorageUtils.getStorageList();
+		for (Iterator<StorageInfo> iterator = allstorageslist.iterator(); iterator.hasNext();) {
+			StorageInfo storageInfo = iterator.next();
+			if (testWriteable(storageInfo.path)){
+				availablestorageslist.add(storageInfo);
+			}
+		}
+		
+		String[] storage_names= new String[availablestorageslist.size()];
+		String[] storage_paths= new String[availablestorageslist.size()];
+		for (int i = 0; i < availablestorageslist.size(); i++) {
+			storage_names[i] = availablestorageslist.get(i).getDisplayName();
+			storage_paths[i] = availablestorageslist.get(i).path;
+		}
+		
+		String currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		
+		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
+		myPref.setEntries(storage_names);
+		myPref.setEntryValues(storage_paths);
+		myPref.setSummary(currentStorage);
+		myPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				myPref.setSummary((String)newValue);
+				return true;
+			}
+		});
+		
 	}
+	
+	
+	private boolean testWriteable(String path) {
+		boolean res=false;
+		File f = new File(path,".testdir");
+		res = f.mkdirs();
+		f.delete();
+		return res;
+	}
+	
+	
+
+
+
 }

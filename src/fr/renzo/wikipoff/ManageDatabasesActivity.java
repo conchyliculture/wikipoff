@@ -14,9 +14,10 @@ import javax.net.ssl.HttpsURLConnection;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -33,14 +34,16 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	private TabAvailableFragment availableFragment;
 
 	private WikipOff app;
+	private String storage;
 
 	public static final int REQUEST_DELETE_CODE = 1001;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		this.app = (WikipOff) getApplication();
-
+		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
+		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		
 		setTitle("Manage your 'Wikis'");
 		ActionBar bar = getSupportActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -127,8 +130,8 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 				HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
 				con.connect();
 				InputStream input = new BufferedInputStream(con.getInputStream());
-
-				File outFile = new File(Environment.getExternalStorageDirectory(),getString(R.string.available_xml_file_external_path));
+				
+				File outFile = new File(storage,getString(R.string.available_xml_file_external_path));
 
 				FileOutputStream out = new FileOutputStream(outFile,false);
 
@@ -195,11 +198,15 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	public String showCurrentDownloads() {
 		String res="Current dls : ";
 		Collection<String> lol = getCurrentDownloads();
-		for (Iterator iterator = lol.iterator(); iterator.hasNext();) {
-			String string = (String) iterator.next();
+		for (Iterator<String> iterator = lol.iterator(); iterator.hasNext();) {
+			String string = iterator.next();
 			res+=string+", ";
 		}
 		return res;
+	}
+	
+	public String getStorage() {
+		return this.storage;
 	}
 }
 

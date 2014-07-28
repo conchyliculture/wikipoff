@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -44,7 +43,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		super.onCreate(savedInstanceState);
 		context= (ManageDatabasesActivity) getActivity();
 		config = PreferenceManager.getDefaultSharedPreferences(context);
-		rootDbDir= new File(Environment.getExternalStorageDirectory(),context.getString(R.string.DBDir));
+		rootDbDir= new File(context.getStorage(),context.getString(R.string.DBDir));
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,container, false);
 		if (savedInstanceState==null) {
 			try {
