@@ -55,7 +55,7 @@ This file is part of WikipOff.
     <!-- menus -->
     <string name="pref_mathjax">Use MathJax</string>
     <string name="pref_mathjax_summ">Download MathJax.js from the web to display math in articles</string>
-    <string name="pref_storage">Set app storage</string>
+    <string name="pref_storage">Select Application Storage</string>
     <string name="pref_storage_summ">none</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
