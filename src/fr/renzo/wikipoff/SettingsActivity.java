@@ -64,10 +64,12 @@ public class SettingsActivity extends PreferenceActivity {
 			storage_paths[i] = availablestorageslist.get(i).path;
 		}
 		
+		String currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		
 		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
 		myPref.setEntries(storage_names);
 		myPref.setEntryValues(storage_paths);
-		myPref.setSummary(config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage()));
+		myPref.setSummary(currentStorage);
 		myPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			
 			@Override
