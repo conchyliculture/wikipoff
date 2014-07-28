@@ -50,16 +50,18 @@ public class Database   {
 		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
 		String storage= config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
 		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
+
 		for (String filename : databasefilespaths) {
 			this.seldatabasefilespaths.add(new File(rootDbDir,filename).getAbsolutePath());
 		}
 
-		String error=checkDatabaseHealth();
+
+		String error = checkDatabaseHealth();
 		if ( !error.equals("")) {
-			
 			throw (new DatabaseException(error));
-		} 
-		
+		}
+
+
 		for (String dbfile : this.seldatabasefilespaths) {
 			try {
 				SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(dbfile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS );
@@ -264,7 +266,7 @@ public class Database   {
 
 	public void close() {
 		for (SQLiteDatabase db : this.sqlh) {
-				db.close();
+			db.close();
 		}
 	}
 }
