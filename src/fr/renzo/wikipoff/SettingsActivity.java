@@ -43,7 +43,6 @@ public class SettingsActivity extends PreferenceActivity {
 	@SuppressWarnings("unused")
 	private static final String TAG = "SettingsActivity";
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,7 +97,7 @@ public class SettingsActivity extends PreferenceActivity {
 		f.mkdirs();
 		if (f.exists()) {
 			res=true;
-			//f.delete();
+			f.delete();
 		}
 		return res;
 	}
