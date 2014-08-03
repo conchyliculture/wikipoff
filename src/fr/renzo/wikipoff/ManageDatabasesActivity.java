@@ -13,10 +13,8 @@ import javax.net.ssl.HttpsURLConnection;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -33,16 +31,12 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	private TabAvailableFragment availableFragment;
 
 	private WikipOff app;
-	private String storage;
 
 	public static final int REQUEST_DELETE_CODE = 1001;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.app = (WikipOff) getApplication();
-		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
-		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
-		
 		setTitle(getString(R.string.title_manage_wikis));
 		ActionBar bar = getSupportActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -115,6 +109,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		})
 		.setIcon(android.R.drawable.ic_dialog_alert)
 		.show();
+		
 
 	}
 
@@ -205,9 +200,6 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 //		}
 //		return res;
 //	}
-	
-	public String getStorage() {
-		return this.storage;
-	}
+
 }
 

@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 
 public class StorageUtils {
 
@@ -43,6 +45,8 @@ public class StorageUtils {
                 res.append(c.getString(R.string.message_internal_sd_card));
             } else if (number > 1) {
                 res.append(c.getString(R.string.message_sd_card_n,number));
+            } else if (number == -1 ) {
+            	res.append(c.getString(R.string.message_external_files_dir,-1));
             } else {
                 res.append(c.getString(R.string.message_sd_card));
             }
@@ -125,5 +129,29 @@ public class StorageUtils {
             }
         }
         return list;
+    }
+    
+    public static String getAvailableXmlPath(Context context){
+    	SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
+    	String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+    	String res = "";
+    	if (storage.contains(context.getApplicationContext().getPackageName())) {
+    		res = storage+"/"+context.getString(R.string.available_xml_file); 
+    	} else {
+    		res = storage+"/"+context.getApplicationContext().getPackageName()+"/"+context.getString(R.string.available_xml_file);
+    	}
+    	return res;
+    }
+    
+    public static String getDBDirPath(Context context){
+    	SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
+    	String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+    	String res = "";
+    	if (storage.contains(context.getApplicationContext().getPackageName())) {
+    		res = storage+"/"+context.getString(R.string.DBDir); 
+    	} else {
+    		res = storage+"/"+context.getApplicationContext().getPackageName()+"/"+context.getString(R.string.DBDir);
+    	}
+    	return res;
     }
 }

@@ -66,7 +66,6 @@ public class MainActivity extends Activity {
 	private ArrayList<String> seldb;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
-	private File dbdir;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +84,10 @@ public class MainActivity extends Activity {
 
 	}
 	private void setStorage() {
-		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
-		dbdir= new File(storage_root_path,getString(R.string.DBDir));
-		createEnv();
+		File dbdir= new File(StorageUtils.getDBDirPath(context));
+		if (! dbdir.exists()) {
+			createDir(dbdir);
+		}
 	}
 
 	@Override
@@ -157,11 +157,6 @@ public class MainActivity extends Activity {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rndtitles); 
 				randomlistview.setAdapter(adapter);
 			} catch (DatabaseException e) {e.alertUser(context);}
-		}
-	}
-	private void createEnv() {
-		if (! dbdir.exists()) {
-			createDir(dbdir);
 		}
 	}
 

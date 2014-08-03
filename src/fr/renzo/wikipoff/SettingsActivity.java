@@ -50,7 +50,8 @@ public class SettingsActivity extends PreferenceActivity {
 		config = PreferenceManager.getDefaultSharedPreferences(this);
 
 		List<StorageInfo> availablestorageslist= new ArrayList<StorageInfo>();
-
+		availablestorageslist.add(new StorageInfo(getExternalFilesDir(null).getPath(), false, true, -1));
+		
 		List<StorageInfo> allstorageslist = StorageUtils.getStorageList();
 		for (Iterator<StorageInfo> iterator = allstorageslist.iterator(); iterator.hasNext();) {
 			StorageInfo storageInfo = iterator.next();
@@ -59,7 +60,6 @@ public class SettingsActivity extends PreferenceActivity {
 				Log.d(TAG,storageInfo.path +" is writeable");
 			} else {
 				Log.d(TAG,storageInfo.path +" is not writeable");
-
 			}
 		}
 
@@ -85,6 +85,8 @@ public class SettingsActivity extends PreferenceActivity {
 					myPref.setSummary(newStorage);
 					config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
 					config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
+					
+					config.edit().putString(getString(R.string.config_key_storage),newStorage).commit();
 				}
 				return true;
 			}

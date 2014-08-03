@@ -28,12 +28,10 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 
@@ -47,9 +45,8 @@ public class Database   {
 
 	public Database(Context context, ArrayList<String> databasefilespaths) throws DatabaseException {
 		this.context=context;
-		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
-		String storage= config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
-		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
+		
+		File rootDbDir= new File(StorageUtils.getDBDirPath(context));
 
 		for (String filename : databasefilespaths) {
 			this.seldatabasefilespaths.add(new File(rootDbDir,filename).getAbsolutePath());

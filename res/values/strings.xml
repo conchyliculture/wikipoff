@@ -25,9 +25,8 @@ This file is part of WikipOff.
 
     <!-- internal values -->
     <string name="link_to_mathjax">http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML</string>
-    <string name="DBDir">fr.renzo.wikipoff/databases</string>
+    <string name="DBDir">databases</string>
     <string name="available_xml_file">available_wikis.xml</string>
-    <string name="available_xml_file_external_path">fr.renzo.wikipoff/available_wikis.xml</string>
     <string name="available_xml_web_url">https://raw.githubusercontent.com/conchyliculture/wikipoff/master/assets/available_wikis.xml</string>
     <!-- SQL values to build queries -->
     <!--
@@ -92,6 +91,7 @@ This file is part of WikipOff.
     <string name="message_sd_card">SD card</string>
     <string name="message_sd_card_n">SD card %d</string>
     <string name="message_internal_sd_card">Internal SD card</string>
+    <string name="message_external_files_dir">Use Android\'s "External" directory</string>
     <string name="message_stop_download">Are you sure you want to stop this download?</string>
     <string name="message_overwrite_file">"Are you sure you want to overwrite current %1$s file ?"</string>
     <string name="message_no_selected_database">No selected database</string>
