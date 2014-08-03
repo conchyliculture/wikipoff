@@ -25,7 +25,6 @@ This file is part of WikipOff.
 
     <!-- internal values -->
     <string name="link_to_mathjax">http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML</string>
-    <string name="appdir">fr.renzo.wikipoff</string>
     <string name="DBDir">fr.renzo.wikipoff/databases</string>
     <string name="available_xml_file">available_wikis.xml</string>
     <string name="available_xml_file_external_path">fr.renzo.wikipoff/available_wikis.xml</string>
