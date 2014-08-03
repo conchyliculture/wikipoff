@@ -120,10 +120,8 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 	class DownloadXMLFile extends AsyncTask<String, Integer, String> {
 
-
-		private String result;
-
 		protected String doInBackground(String... s) {
+			String result="";
 			try {
 				URL url = new URL(s[0]);
 
@@ -131,7 +129,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 				con.connect();
 				InputStream input = new BufferedInputStream(con.getInputStream());
 				
-				File outFile = new File(storage,getString(R.string.available_xml_file_external_path));
+				File outFile = new File(StorageUtils.getAvailableXmlPath(ManageDatabasesActivity.this));
 
 				FileOutputStream out = new FileOutputStream(outFile,false);
 
@@ -147,15 +145,18 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 			} catch (IOException e) {
 				e.printStackTrace();
-				this.result="failed "+e.getMessage();
+				result="failed "+e.getMessage();
 			}
 			return result;
 		}
 
-		protected void onPostExecute() {
-			if (this.result!="") {
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			if (result!="") {
 				Toast.makeText(getApplicationContext(), "Error: "+result, Toast.LENGTH_LONG).show();
 			}
+			availableFragment.refreshList();
 		}
 
 	}

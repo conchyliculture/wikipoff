@@ -380,4 +380,15 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		}
 		Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 	}
+	public void refreshList() {
+		try {
+			ArrayList<Wiki> newavailablewikis = this.loadAvailableDB();
+			availablewikis.clear();
+			for (Wiki w: newavailablewikis) availablewikis.add(w);
+			
+		} catch (IOException e) {
+			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+		((AvailableWikisListViewAdapter) this.availablewikislistview.getAdapter()).notifyDataSetChanged();
+	}
 }
