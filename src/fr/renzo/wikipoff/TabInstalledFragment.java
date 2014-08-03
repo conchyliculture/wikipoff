@@ -93,6 +93,9 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		Collection<String> currendl = context.getCurrentDownloads();
 		for (File f : rootDbDir.listFiles()) {
+			if (! f.getName().endsWith(".sqlite")) {
+				continue;
+			}
 			String name = f.getName();
 			if (name.indexOf("-")>0) {
 				String root_wiki=name.substring(0, name.indexOf("-"));
