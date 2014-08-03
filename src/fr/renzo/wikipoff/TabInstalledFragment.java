@@ -141,6 +141,11 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 	}
 	public void refreshList(int position) {
 		Wiki wiki = installedwikis.get(position);
+		String currseldb = config.getString(getString(R.string.config_key_selecteddbfiles), "");
+		if (wiki.getFilenamesAsString().equals(currseldb)){
+			config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
+		}
+		config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
 		this.installedwikis.remove(wiki);
 		((BaseAdapter) this.installedwikislistview.getAdapter()).notifyDataSetInvalidated();
 	}
