@@ -129,8 +129,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 				con.connect();
 				InputStream input = new BufferedInputStream(con.getInputStream());
 				
-				File outFile = new File(StorageUtils.getAvailableXmlPath(ManageDatabasesActivity.this));
-
+				File outFile = new File(storage,getString(R.string.available_xml_file_external_path));
 				FileOutputStream out = new FileOutputStream(outFile,false);
 
 				byte[] buffer = new byte[1024];
