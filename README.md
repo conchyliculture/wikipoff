@@ -29,6 +29,11 @@ Unfortunately, the app isn't compatible with my [ParanoidAndroid](http://paranoi
 There are tons of offline readers on Google Playstore, but not on F-Droid. I would have had to get the corresponding APK (some are 4Gb because they ship with the whole database...), test them, check if I could update my own DB, etc.
 It looked easier/funnier to make my own app.
 
+## Contact
+
+* email : wikipoff@renzokuken.eu
+* IRC : irc://chat.freenode.org/#wikipoff
+
 ## Donate
 I accept donations in beer, various cryptcoins, angry and happy emails.
 * AUR   AH9hYc6BxHNxqGWn21Gmv8Q3ztDtnWurSo
