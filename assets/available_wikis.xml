@@ -46,6 +46,20 @@
     </wiki>
     <wiki>
         <type>wikipedia</type>
+        <lang-code>it</lang-code>
+        <lang-english>Italian</lang-english>
+        <lang-local>Italiano</lang-local>
+         <dbfiles>
+            <dbfile
+                filename="it.wiki.sqlite"
+                gendate="2014-07-31 11:09:32"
+                size="2300666880"
+                url="http://www.gardiol.org/wikipoff/it.wiki.sqlite" ></dbfile>
+        </dbfiles>
+        <version>2.5</version>
+    </wiki>
+    <wiki>
+        <type>wikipedia</type>
         <lang-code>en</lang-code>
         <lang-english>English</lang-english>
         <lang-local>English</lang-local>
