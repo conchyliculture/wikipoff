@@ -95,6 +95,7 @@ public class MainActivity extends Activity {
 		super.onResume();	
 		setStorage();
 		newDatabaseSelected();
+		showViews();
 	}
 
 	private void showViews(){
