@@ -62,13 +62,7 @@ public class ArticleActivity extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		
-		try {
-			this.dbHandler= ((WikipOff) getApplication()).getDatabaseHandler();
-		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
+		this.dbHandler= ((WikipOff) getApplication()).getDatabaseHandler(this);
 		
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);;
 

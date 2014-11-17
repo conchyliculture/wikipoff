@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
 	private File dbdir;
-	private Database dbhandler;
+	//private Database dbhandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +72,7 @@ public class MainActivity extends Activity {
 
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
-		try {
-			this.dbhandler = app.getDatabaseHandler();
-		} catch (DatabaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		setContentView(R.layout.activity_main);
 
 		setStorage();
@@ -106,7 +101,7 @@ public class MainActivity extends Activity {
 			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
 			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
 			rndbutton.setOnClickListener(new ShowRandomClickListener());
-			searchtextview.setAdapter(new SearchCursorAdapter(context, null, this.dbhandler));
+			searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.getDatabaseHandler(context)));
 			searchtextview.setOnItemClickListener(new SearchClickListener());
 			searchtextview.setOnEditorActionListener(new SearchClickListener());
 
@@ -157,7 +152,7 @@ public class MainActivity extends Activity {
 			hideSoftKeyboard();
 			List<String> rndtitles;
 			try {
-				rndtitles = dbhandler.getRandomTitles();
+				rndtitles = app.getDatabaseHandler(MainActivity.this).getRandomTitles();
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rndtitles); 
 				randomlistview.setAdapter(adapter);
 			} catch (DatabaseException e) {e.alertUser(context);}
@@ -209,8 +204,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void newDatabaseSelected() {
-		try {
-			Database dbHandler = app.getDatabaseHandler();
+			Database dbHandler = app.getDatabaseHandler(this);
 			if (dbHandler != null) {
 				
 				clearViewData();
@@ -223,20 +217,8 @@ public class MainActivity extends Activity {
 				Toast.makeText(getApplicationContext(), getString(R.string.message_no_selected_database), 
 						Toast.LENGTH_LONG).show();
 			}		
-
-		} catch (DatabaseException e) {
-			toggleAllViews(false);
-			clearViewData();
-			Builder b = e.alertUser(context);
-			b.setCancelable(false);
-			b.setOnCancelListener(new OnCancelListener() {
-				@Override
-				public void onCancel(DialogInterface dialog) {
-					finish();
-				}  //onCancel
-			}); //setOnCancelListener
-		} // try
 	}
+	
 	private void clearViewData() {
 		@SuppressWarnings("unchecked")
 		ArrayAdapter<String> adapter= ((ArrayAdapter<String>) this.randomlistview.getAdapter());

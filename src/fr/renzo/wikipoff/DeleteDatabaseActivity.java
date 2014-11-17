@@ -19,9 +19,12 @@ public class DeleteDatabaseActivity extends Activity {
 	private static final String TAG = "DeleteDatabaseActivity";
 	private ArrayList<String> dbtodelete;
 	private int dbtodeleteposition;
+	private SharedPreferences config;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		config = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		Intent i =getIntent();
 		if (i.getExtras()!= null) {
@@ -53,6 +56,7 @@ public class DeleteDatabaseActivity extends Activity {
 				for(String db : dbtodelete)
 					deleteDb(db);
 				setResult(dbtodeleteposition);
+				config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
 				byebye();
 			}
 		});

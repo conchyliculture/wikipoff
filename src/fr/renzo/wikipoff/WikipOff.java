@@ -26,7 +26,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import android.app.AlertDialog.Builder;
 import android.app.Application;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import fr.renzo.wikipoff.Database.DatabaseException;
@@ -47,7 +51,7 @@ public class WikipOff extends Application {
     	config = PreferenceManager.getDefaultSharedPreferences(this);  	
     }
     
-    public Database getDatabaseHandler() throws DatabaseException {
+    public Database getDatabaseHandler(Context context) {
 
 			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),null );
 
@@ -57,10 +61,23 @@ public class WikipOff extends Application {
 				if ((this.dbHandler == null ) || (new_db)){
 					if (this.dbHandler!=null)
 						this.dbHandler.close();
-					this.dbHandler = new Database(this,seldb);
+					try {
+						this.dbHandler = new Database(this,seldb);
+					} catch (DatabaseException e) {
+						Builder b = e.alertUser(context);
+						b.setCancelable(false);
+						b.setOnCancelListener(new OnCancelListener() {
+							@Override
+							public void onCancel(DialogInterface dialog) {
+								
+							}  //onCancel
+						}); //setOnCancelListener
+					}
 					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
 				}
-			}	
+			}	else {
+				return null;
+			}
 		return this.dbHandler;
     }
 	
