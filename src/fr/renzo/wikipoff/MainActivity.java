@@ -22,8 +22,6 @@ This file is part of WikipOff.
 package fr.renzo.wikipoff;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
@@ -63,10 +61,10 @@ public class MainActivity extends Activity {
 	private ListView randomlistview;
 	private Context context=this;
 	private SharedPreferences config;
-	private ArrayList<String> seldb;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
 	private File dbdir;
+	private Database dbhandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +72,12 @@ public class MainActivity extends Activity {
 
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
+		try {
+			this.dbhandler = app.getDatabaseHandler();
+		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		setContentView(R.layout.activity_main);
 
 		setStorage();
@@ -99,16 +103,15 @@ public class MainActivity extends Activity {
 	}
 
 	private void showViews(){
-		if (this.seldb != null && ! this.seldb.isEmpty()) {
 			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
 			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
 			rndbutton.setOnClickListener(new ShowRandomClickListener());
-			searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.dbHandler));
+			searchtextview.setAdapter(new SearchCursorAdapter(context, null, this.dbhandler));
 			searchtextview.setOnItemClickListener(new SearchClickListener());
 			searchtextview.setOnEditorActionListener(new SearchClickListener());
 
-		} 
-	}
+	} 
+
 
 	public class RandomItemClickListener implements OnItemClickListener {
 		// Handles clicks on an item in the random article list
@@ -154,7 +157,7 @@ public class MainActivity extends Activity {
 			hideSoftKeyboard();
 			List<String> rndtitles;
 			try {
-				rndtitles = app.dbHandler.getRandomTitles();
+				rndtitles = dbhandler.getRandomTitles();
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rndtitles); 
 				randomlistview.setAdapter(adapter);
 			} catch (DatabaseException e) {e.alertUser(context);}
@@ -207,26 +210,13 @@ public class MainActivity extends Activity {
 
 	private void newDatabaseSelected() {
 		try {
-			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),null );
+			Database dbHandler = app.getDatabaseHandler();
+			if (dbHandler != null) {
+				
+				clearViewData();
+				showViews();
+				toggleAllViews(true);
 
-
-			if (tosplit!=null) {
-				this.seldb = new ArrayList<String>(Arrays.asList(tosplit.split(",")));
-				boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
-				if ((app.dbHandler == null ) || (new_db)){
-					if (app.dbHandler!=null)
-						app.dbHandler.close();
-					app.dbHandler = new Database(context,this.seldb);
-					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
-					if (app.dbHandler == null) {
-						toggleAllViews(false);
-					} else {
-						clearViewData();
-						showViews();
-						toggleAllViews(true);
-					}
-					//Log.d(TAG,"We selected db '"+seldb.toString()+"'");
-				}
 			} else {
 				toggleAllViews(false);
 				clearViewData();
@@ -263,11 +253,6 @@ public class MainActivity extends Activity {
 		this.rndbutton.setEnabled(state);
 		this.searchtextview.setEnabled(state);
 	}
-
-	private  String s(int i) {
-		return context.getString(i);
-	}
-
 
 	private void hideSoftKeyboard() {
 		InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);

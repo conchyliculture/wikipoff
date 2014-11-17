@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
+import fr.renzo.wikipoff.Database.DatabaseException;
 
 
 public class ArticleActivity extends Activity {
@@ -56,7 +58,18 @@ public class ArticleActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.dbHandler= ((WikipOff) getApplication()).dbHandler;
+
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		
+		try {
+			this.dbHandler= ((WikipOff) getApplication()).getDatabaseHandler();
+		} catch (DatabaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);;
 
 		setContentView(R.layout.activity_article);

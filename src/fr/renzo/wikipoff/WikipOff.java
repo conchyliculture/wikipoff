@@ -22,11 +22,14 @@ This file is part of WikipOff.
 package fr.renzo.wikipoff;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import fr.renzo.wikipoff.Database.DatabaseException;
 
 public class WikipOff extends Application {
 
@@ -34,7 +37,7 @@ public class WikipOff extends Application {
 	private static final String TAG = "WikipOff";
     public static SharedPreferences config;
 	public File DBDir;
-	public Database dbHandler;
+	private Database dbHandler;
 	public HashMap<Integer,String> currentdownloads=new HashMap<Integer,String>();
 	
     public void onCreate(){
@@ -44,5 +47,24 @@ public class WikipOff extends Application {
     	config = PreferenceManager.getDefaultSharedPreferences(this);  	
     }
     
+    public Database getDatabaseHandler() throws DatabaseException {
+
+			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),null );
+
+			if (tosplit!=null) {
+				ArrayList<String> seldb = new ArrayList<String>(Arrays.asList(tosplit.split(",")));
+				boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
+				if ((this.dbHandler == null ) || (new_db)){
+					if (this.dbHandler!=null)
+						this.dbHandler.close();
+					this.dbHandler = new Database(this,seldb);
+					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
+				}
+			}	
+		return this.dbHandler;
+    }
 	
+    private  String s(int i) {
+		return this.getString(i);
+	}
 }
