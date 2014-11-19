@@ -51,7 +51,11 @@ This file is part of WikipOff.
         </activity>
         <activity
             android:name="fr.renzo.wikipoff.ArticleActivity"
-            android:label="articleactivity" >
+            android:label="articleactivity" 
+            android:parentActivityName=".MainActivity">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="fr.renzo.wikipoff.MainActivity" />
         </activity>
          <activity
             android:name="fr.renzo.wikipoff.ManageDatabasesActivity"
