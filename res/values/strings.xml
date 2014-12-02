@@ -78,8 +78,8 @@ This file is part of WikipOff.
     <!-- views -->
     <string name="randomsearch">Random Articles</string>
     <string name="searchhint">Search Article</string>
-    
-    <!--  more text -->
+
+    <!-- more text -->
     <string name="message_warning">Warning !</string>
     <string name="message_no_wifi_detected">No Wifi detected</string>
     <string name="message_validate_download"> Are you sure you want to download %1$s %2$s (%3$s)</string>
@@ -98,5 +98,6 @@ This file is part of WikipOff.
     <string name="message_cant_create_in_storage">Couldn\'t create %1$s. Please select an external storage.</string>
     <string name="message_delete_db">Are you sure you want to delete %1$s ?</string>
     <string name="html_message_no_article">&lt;h2&gt;No article \'%1$s\' found =( &lt;/h2&gt;&lt;br/&gt;Article may not exist yet.</string>
+    <string name="database_corrupted">DB is corrupted</string>
 
 </resources>
