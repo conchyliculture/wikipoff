@@ -40,30 +40,30 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,container, false);
 		//if (savedInstanceState==null) {
 
-			this.installedwikis=context.getInstalledWikis();
+		this.installedwikis=context.getInstalledWikis();
 
 
-			InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
+		InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
 
-			installedwikislistview= (ListView) wholeview.findViewById(R.id.installedwikislistview);
-			installedwikislistview.setAdapter(adapter);
-			installedwikislistview.setOnItemClickListener(this);
-			installedwikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
+		installedwikislistview= (ListView) wholeview.findViewById(R.id.installedwikislistview);
+		installedwikislistview.setAdapter(adapter);
+		installedwikislistview.setOnItemClickListener(this);
+		installedwikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-				@Override
-				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-					Wiki wiki = installedwikis.get(position);
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				Wiki wiki = installedwikis.get(position);
 
-					Intent outputintent = new Intent(context, DeleteDatabaseActivity.class);
-					outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
-					outputintent.putExtra("dbtodeleteposition", position);
-					startActivityForResult(outputintent,ManageDatabasesActivity.REQUEST_DELETE_CODE);
+				Intent outputintent = new Intent(context, DeleteDatabaseActivity.class);
+				outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
+				outputintent.putExtra("dbtodeleteposition", position);
+				startActivityForResult(outputintent,ManageDatabasesActivity.REQUEST_DELETE_CODE);
 
-					return true;
-				}
-			});
+				return true;
+			}
+		});
 
-	//	}
+		//	}
 		return wholeview;
 
 	}
