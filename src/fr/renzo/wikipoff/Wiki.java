@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,6 +26,7 @@ public class Wiki implements Serializable {
 	private String langenglish="";
 	private String langlocal="";
 	private String version="";
+	public boolean corrupted=false;
 
 	private ArrayList<WikiDBFile> dbfiles=new ArrayList<WikiDBFile>();
 
@@ -38,6 +41,9 @@ public class Wiki implements Serializable {
 	}
 
 	public String getType() {
+		if (type=="") {
+			return this.context.getString(R.string.database_corrupted);
+		}
 		return type;
 	}
 	public String toString(){
@@ -94,6 +100,7 @@ public class Wiki implements Serializable {
 		WikiDBFile wdbf =new WikiDBFile(sqlitefile);
 		this.context=context;
 		if (sqlitefile.getName().endsWith(".sqlite")){
+			this.dbfiles.add(wdbf);
 			SQLiteDatabase sqlh = openDB(sqlitefile);
 			Cursor c;
 			String k="";
@@ -125,19 +132,20 @@ public class Wiki implements Serializable {
 				sqlh.close();
 			} catch (SQLiteDatabaseCorruptException e ){
 				e.printStackTrace();
-				throw new WikiException("Database file : "+sqlitefile.getName()+" is corrupted. Please delete it or wait for transfer to finish!");
+				this.corrupted=true;
+				//throw new WikiException("Database file : "+sqlitefile.getName()+" is corrupted. Please delete it or wait for transfer to finish!");
 			}
 
 		} else {
 			Log.d(TAG,"not a sqlite file to load a Wiki from : "+sqlitefile);
 		}
-		this.dbfiles.add(wdbf);
+		
 	}
 
 	public boolean isMissing() throws WikiException {
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(context);
 		String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
-		
+
 		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
 		ArrayList<File> allpaths = new ArrayList<File>(Arrays.asList(rootDbDir.listFiles()));
 		ArrayList<String> allnames = new ArrayList<String>();
@@ -162,7 +170,12 @@ public class Wiki implements Serializable {
 
 	public String getLocalizedGendate() {
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
-		return dateFormat.format(this.dbfiles.get(0).getDate());
+		WikiDBFile file = this.dbfiles.get(0);
+		if (file == null) {
+			return "CORRUPT DB";
+		} else {
+			return dateFormat.format(file.getDate());
+		}
 	}
 
 	public ArrayList<String> getDBFilesnamesAsList() {
@@ -198,8 +211,11 @@ public class Wiki implements Serializable {
 		dbfiles.add(new WikiDBFile(file));
 	}
 
-	public String getGendate() {
+	public String getGendateAsString() {
 		return this.dbfiles.get(0).getGendate();
+	}
+	public Date getGendateAsDate() {
+		return this.dbfiles.get(0).getDate();
 	}
 	public String getFilenamesAsString() {
 		return TextUtils.join("+", getDBFilesnamesAsList());

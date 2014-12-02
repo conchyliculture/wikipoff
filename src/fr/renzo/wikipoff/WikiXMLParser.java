@@ -35,12 +35,12 @@ public class WikiXMLParser {
 		Collections.sort(wikis, new Comparator<Wiki>() {
 			public int compare(Wiki w1, Wiki w2) {
 				if (w1.getLangcode().equals(w2.getLangcode())) {
-					return w1.getGendate().compareTo(w2.getGendate());
+					return w1.getGendateAsDate().compareTo(w2.getGendateAsDate());
 				} else {
 					return w1.getLangcode().compareToIgnoreCase(w2.getLangcode());
 				}
 			}
-		});
+		}); 
 
 		return wikis;
 	}

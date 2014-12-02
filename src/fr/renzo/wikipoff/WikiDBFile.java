@@ -11,7 +11,7 @@ public class WikiDBFile implements Serializable {
 	private static final long serialVersionUID = -4809830901675667519L;
 	@SuppressWarnings("unused")
 	private static final String TAG = "WikiDBFile";
-	private String date;
+	private String date="";
 	private String filename;
 	
 	public WikiDBFile() {}
@@ -50,8 +50,9 @@ public class WikiDBFile implements Serializable {
 			return sdf.parse(this.date);
 		} catch (ParseException e) {
 			e.printStackTrace();
+			return new Date();
 		}
-		return null;
+		
 	}
 	public String getDateAsString() {
 		return this.date.toString();
