@@ -25,10 +25,7 @@ import java.io.File;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -71,7 +68,7 @@ public class MainActivity extends Activity {
 
 		this.config=PreferenceManager.getDefaultSharedPreferences(this);
 		this.app= (WikipOff) getApplication();
-		
+
 		setContentView(R.layout.activity_main);
 
 		setStorage();
@@ -97,12 +94,12 @@ public class MainActivity extends Activity {
 	}
 
 	private void showViews(){
-			clearSearchButton.setOnClickListener(new ClearSearchClickListener());
-			randomlistview.setOnItemClickListener(new RandomItemClickListener());			
-			rndbutton.setOnClickListener(new ShowRandomClickListener());
-			searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.getDatabaseHandler(context)));
-			searchtextview.setOnItemClickListener(new SearchClickListener());
-			searchtextview.setOnEditorActionListener(new SearchClickListener());
+		clearSearchButton.setOnClickListener(new ClearSearchClickListener());
+		randomlistview.setOnItemClickListener(new RandomItemClickListener());			
+		rndbutton.setOnClickListener(new ShowRandomClickListener());
+		searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.getDatabaseHandler(context)));
+		searchtextview.setOnItemClickListener(new SearchClickListener());
+		searchtextview.setOnEditorActionListener(new SearchClickListener());
 
 	} 
 
@@ -203,19 +200,19 @@ public class MainActivity extends Activity {
 	}
 
 	private void newDatabaseSelected() {
-			Database dbHandler = app.getDatabaseHandler(this);
-			if (dbHandler != null) {
-				showViews();
-				toggleAllViews(true);
+		Database dbHandler = app.getDatabaseHandler(this);
+		if (dbHandler != null) {
+			showViews();
+			toggleAllViews(true);
 
-			} else {
-				toggleAllViews(false);
-				clearViewData();
-				Toast.makeText(getApplicationContext(), getString(R.string.message_no_selected_database), 
-						Toast.LENGTH_LONG).show();
-			}		
+		} else {
+			toggleAllViews(false);
+			clearViewData();
+			Toast.makeText(getApplicationContext(), getString(R.string.message_no_selected_database), 
+					Toast.LENGTH_LONG).show();
+		}		
 	}
-	
+
 	private void clearViewData() {
 		@SuppressWarnings("unchecked")
 		ArrayAdapter<String> adapter= ((ArrayAdapter<String>) this.randomlistview.getAdapter());
