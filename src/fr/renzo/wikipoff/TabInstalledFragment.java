@@ -38,7 +38,6 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		config = PreferenceManager.getDefaultSharedPreferences(context);
 
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,container, false);
-		//if (savedInstanceState==null) {
 
 		this.installedwikis=context.getInstalledWikis();
 
@@ -63,7 +62,6 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			}
 		});
 
-		//	}
 		return wholeview;
 
 	}
