@@ -64,7 +64,6 @@ public class MainActivity extends Activity {
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
 	private File dbdir;
-	//private Database dbhandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -206,8 +205,6 @@ public class MainActivity extends Activity {
 	private void newDatabaseSelected() {
 			Database dbHandler = app.getDatabaseHandler(this);
 			if (dbHandler != null) {
-				
-				clearViewData();
 				showViews();
 				toggleAllViews(true);
 
