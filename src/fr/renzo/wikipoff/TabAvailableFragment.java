@@ -53,30 +53,30 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 		context=(ManageDatabasesActivity) getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,container, false);
-		if (savedInstanceState==null) {
-			try {
-				this.availablewikis=loadAvailableDB();
-			} catch (IOException e) {
-				Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
-			}
-			availablewikislistview= (ListView) wholeview.findViewById(R.id.availablewikislistview);
-			availablewikislistview.setOnItemClickListener(this);
-			availablewikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-				@Override
-				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-					if (context.isInCurrentDownloads(Integer.valueOf(position))) {
-
-						Intent outputintent = new Intent(context, StopDownloadActivity.class);
-						outputintent.putExtra("position", position);
-						startActivity(outputintent);
-					}
-					return true;
-				}
-			});
-			AvailableWikisListViewAdapter adapter = new AvailableWikisListViewAdapter(getActivity(),  this.availablewikis); 
-			availablewikislistview.setAdapter(adapter);
+		//if (savedInstanceState==null) {
+		try {
+			this.availablewikis=loadAvailableDB();
+		} catch (IOException e) {
+			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
 		}
+		availablewikislistview= (ListView) wholeview.findViewById(R.id.availablewikislistview);
+		availablewikislistview.setOnItemClickListener(this);
+		availablewikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				if (context.isInCurrentDownloads(Integer.valueOf(position))) {
+
+					Intent outputintent = new Intent(context, StopDownloadActivity.class);
+					outputintent.putExtra("position", position);
+					startActivity(outputintent);
+				}
+				return true;
+			}
+		});
+		AvailableWikisListViewAdapter adapter = new AvailableWikisListViewAdapter(getActivity(),  this.availablewikis); 
+		availablewikislistview.setAdapter(adapter);
+		//	}
 		return wholeview ;
 	}
 
@@ -207,7 +207,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			})
 			.setIcon(android.R.drawable.ic_dialog_alert)
 			.show();
-			
+
 		}
 	}
 
@@ -395,7 +395,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			ArrayList<Wiki> newavailablewikis = this.loadAvailableDB();
 			availablewikis.clear();
 			for (Wiki w: newavailablewikis) availablewikis.add(w);
-			
+
 		} catch (IOException e) {
 			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
 		}
