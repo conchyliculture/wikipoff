@@ -45,13 +45,10 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		config = PreferenceManager.getDefaultSharedPreferences(context);
 		rootDbDir= new File(context.getStorage(),context.getString(R.string.DBDir));
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,container, false);
-		if (savedInstanceState==null) {
-			try {
-				this.installedwikis=loadInstalledDb();
-			} catch (WikiException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		//if (savedInstanceState==null) {
+
+			this.installedwikis=context.getInstalledWikis();
+
 
 			InstalledWikisListViewAdapter adapter = new InstalledWikisListViewAdapter(getActivity(),  this.installedwikis); 
 
@@ -73,7 +70,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 				}
 			});
 
-		}
+	//	}
 		return wholeview;
 
 	}
@@ -88,57 +85,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		} 
 	}
 
-	private ArrayList<Wiki> loadInstalledDb() throws WikiException {
-		HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
-		ArrayList<Wiki> res = new ArrayList<Wiki>();
-		Collection<String> currendl = context.getCurrentDownloads();
-		for (File f : rootDbDir.listFiles()) {
-			if (! f.getName().endsWith(".sqlite")) {
-				continue;
-			}
-			String name = f.getName();
-			if (name.indexOf("-")>0) {
-				String root_wiki=name.substring(0, name.indexOf("-"));
-				if (multiwikis.containsKey(root_wiki)){
-					Wiki w = multiwikis.get(root_wiki);
-					w.addDBFile(f);
-				} else {
-					try {
-						Wiki w = new Wiki(context, f);
-						multiwikis.put(root_wiki,w);
-					} catch (WikiException e) {
-						Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-					}
-				}
-			} else {
-				try {
-					if (! currendl.contains(f.getName())) {
-						Wiki w = new Wiki(context,f);
-						res.add(w);
-					}
-				} catch (WikiException e) {
-					Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-				}
-			}
-		}
-		for (Wiki w : multiwikis.values()) {
-			if (! currendl.contains(w.getFilenamesAsString()))
-				res.add(w);
-		}
 
-		Collections.sort(res, new Comparator<Wiki>() {
-			public int compare(Wiki w1, Wiki w2) {
-				if (w1.getLangcode().equals(w2.getLangcode())) {
-					return w1.getGendate().compareTo(w2.getGendate());
-				} else {
-					return w1.getLangcode().compareToIgnoreCase(w2.getLangcode());
-				}
-			}
-		}
-				);
-
-		return res;
-	}
 	public void refreshList(int position) {
 		Wiki wiki = installedwikis.get(position);
 		String currseldb = config.getString(getString(R.string.config_key_selecteddbfiles), "");

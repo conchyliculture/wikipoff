@@ -6,7 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -18,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
@@ -34,6 +41,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 
 	private WikipOff app;
 	private String storage;
+	private ActionBar bar;
 
 	public static final int REQUEST_DELETE_CODE = 1001;
 
@@ -42,20 +50,34 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		this.app = (WikipOff) getApplication();
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
 		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
-		
+
 		setTitle(getString(R.string.title_manage_wikis));
-		ActionBar bar = getSupportActionBar();
+		bar = getSupportActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		setContentView(R.layout.activity_manage_databases);
+
 		installedFragment = new TabInstalledFragment();
 		availableFragment = new TabAvailableFragment();
+
+
 		Tab installedTab = bar.newTab().setText(getString(R.string.title_installed_wikis));
 		Tab availableTab = bar.newTab().setText(getString(R.string.title_available_wikis));
 		installedTab.setTabListener(new MyTabsListener(installedFragment));
 		availableTab.setTabListener(new MyTabsListener(availableFragment));
 
+
 		bar.addTab(installedTab);
 		bar.addTab(availableTab);
+		if( savedInstanceState != null ){
+			int state = savedInstanceState.getInt("tabState");
+			bar.setSelectedNavigationItem(state);
+		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// super.onSaveInstanceState(outState);  // Fucking ugly but fix my problem of fragments created twice
+		outState.putInt("tabState", bar.getSelectedTab().getPosition());
 	}
 
 	@Override
@@ -105,16 +127,16 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		.setTitle(getString(R.string.message_warning))
 		.setMessage(
 				getString(R.string.message_overwrite_file,getString(R.string.available_xml_file)))
-		.setNegativeButton(getString(R.string.no), null)
-		.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
+				.setNegativeButton(getString(R.string.no), null)
+				.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
-				new DownloadXMLFile().execute(getString(R.string.available_xml_web_url));
-			}
-		})
-		.setIcon(android.R.drawable.ic_dialog_alert)
-		.show();
+						new DownloadXMLFile().execute(getString(R.string.available_xml_web_url));
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
 
 	}
 
@@ -128,7 +150,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 				HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
 				con.connect();
 				InputStream input = new BufferedInputStream(con.getInputStream());
-				
+
 				File outFile = new File(storage,getString(R.string.available_xml_file_external_path));
 				FileOutputStream out = new FileOutputStream(outFile,false);
 
@@ -195,18 +217,87 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	public Collection<String> getCurrentDownloads() {
 		return (this.app.currentdownloads.values());
 	}
-//	public String showCurrentDownloads() {
-//		String res="Current dls : ";
-//		Collection<String> lol = getCurrentDownloads();
-//		for (Iterator<String> iterator = lol.iterator(); iterator.hasNext();) {
-//			String string = iterator.next();
-//			res+=string+", ";
-//		}
-//		return res;
-//	}
-	
+	//	public String showCurrentDownloads() {
+	//		String res="Current dls : ";
+	//		Collection<String> lol = getCurrentDownloads();
+	//		for (Iterator<String> iterator = lol.iterator(); iterator.hasNext();) {
+	//			String string = iterator.next();
+	//			res+=string+", ";
+	//		}
+	//		return res;
+	//	}
+
+	public ArrayList<Wiki> getInstalledWikis(){
+		// TODO cache?
+		HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
+		ArrayList<Wiki> res = new ArrayList<Wiki>();
+		Collection<String> currendl = getCurrentDownloads();
+		for (File f : new File(getStorage(),getString(R.string.DBDir)).listFiles()) {
+			if (! f.getName().endsWith(".sqlite")) {
+				continue;
+			}
+			String name = f.getName();
+			if (name.indexOf("-")>0) {
+				String root_wiki=name.substring(0, name.indexOf("-"));
+				if (multiwikis.containsKey(root_wiki)){
+					Wiki w = multiwikis.get(root_wiki);
+					w.addDBFile(f);
+				} else {
+					try {
+						Wiki w = new Wiki(this, f);
+						multiwikis.put(root_wiki,w);
+					} catch (WikiException e) {
+						Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+					}
+				}
+			} else {
+				try {
+					if (! currendl.contains(f.getName())) {
+						Wiki w = new Wiki(this,f);
+						res.add(w);
+					}
+				} catch (WikiException e) {
+					Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+				}
+			}
+		}
+		for (Wiki w : multiwikis.values()) {
+			if (! currendl.contains(w.getFilenamesAsString()))
+				res.add(w);
+		}
+
+		Collections.sort(res, new Comparator<Wiki>() {
+			public int compare(Wiki w1, Wiki w2) {
+				if (w1.getLangcode().equals(w2.getLangcode())) {
+					return w1.getGendateAsDate().compareTo(w2.getGendateAsDate());
+				} else {
+					return w1.getLangcode().compareToIgnoreCase(w2.getLangcode());
+				}
+			}
+		}
+				);
+
+		return res;
+	}
+
 	public String getStorage() {
 		return this.storage;
+	}
+
+	public int alreadyDownloaded(Wiki w_tocheck) {
+		ArrayList<Wiki> wikis = getInstalledWikis();
+		for (Iterator<Wiki> iterator = wikis.iterator(); iterator.hasNext();) {
+			Wiki w = (Wiki) iterator.next();
+			if (w.getType() == w_tocheck.getType() && true ){
+				if (w.getGendateAsDate().before(w_tocheck.getGendateAsDate())) { // What we have is newer
+					return 1;
+				} else {
+					return 2;
+				}
+			}
+		}
+
+		return 0; // We don't have that Wiki
 	}
 }
 

@@ -247,7 +247,17 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
 			header.setText(w.getLanglocal()+"("+w.getLangcode()+")"+" "+w.getType());
 			TextView bot = (TextView ) convertView.findViewById(R.id.availablewikifooter);
-			bot.setText(w.getFilenamesAsString()+"("+w.getSizeReadable(true)+") "+w.getLocalizedGendate());
+			String bottext= w.getFilenamesAsString()+"("+w.getSizeReadable(true)+") "+w.getLocalizedGendate();
+			int newer = context.alreadyDownloaded(w); // 0: not d/led ; 1 : d/led ; 2 : d/led but new is available
+			switch (newer) {
+			case 1:
+				bottext = bottext + " *installed*";
+				break;
+			case 2:
+				bottext = bottext + " *updated*";
+				break;
+			}
+			bot.setText(bottext);
 
 			ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.downloadprogress);
 			if (context.isInCurrentDownloads(Integer.valueOf(position))) {
