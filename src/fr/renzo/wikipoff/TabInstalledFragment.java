@@ -1,11 +1,6 @@
 package fr.renzo.wikipoff;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +20,6 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class TabInstalledFragment extends Fragment implements OnItemClickListener {
