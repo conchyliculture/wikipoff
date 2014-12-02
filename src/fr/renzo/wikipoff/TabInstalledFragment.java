@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 public class TabInstalledFragment extends Fragment implements OnItemClickListener {
 	private SharedPreferences config;
-	private File rootDbDir;
 	private ArrayList<Wiki> installedwikis=new ArrayList<Wiki>();
 	private ListView installedwikislistview;
 	private ManageDatabasesActivity context;
@@ -43,7 +42,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		super.onCreate(savedInstanceState);
 		context= (ManageDatabasesActivity) getActivity();
 		config = PreferenceManager.getDefaultSharedPreferences(context);
-		rootDbDir= new File(context.getStorage(),context.getString(R.string.DBDir));
+
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,container, false);
 		//if (savedInstanceState==null) {
 
