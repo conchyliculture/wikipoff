@@ -160,7 +160,7 @@ public class ArticleActivity extends Activity {
 
 		String data ="<html><head>\n";
 		if (this.article != null) {
-			setTitle(this.article.title);
+			setTitle(capitalize(this.article.title));
 			data+="<meta name=\"viewport\" content=\"width=device-width,  user-scalable=yes\">\n";
 			data+="<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
 			data+="</head>";
@@ -168,7 +168,7 @@ public class ArticleActivity extends Activity {
 				data+="<script type=\"text/javascript\" src=\""+s(R.string.link_to_mathjax)+"\"></script>\n";
 			}
 			data+="<body>";
-			data +="<h1>"+this.article.title+"</h1>";
+			data +="<h1>"+capitalize(this.article.title)+"</h1>";
 			data += this.article.text;
 
 		} else {
@@ -176,6 +176,16 @@ public class ArticleActivity extends Activity {
 		}
 		data+="</body></html>";
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html","UTF-8",null);
+	}
+
+	private String capitalize(String text){
+		String res="";
+		if (text.length() > 0) {
+			res = String.valueOf(text.charAt(0)).toUpperCase() + text.subSequence(1, text.length());
+		} else {
+			res = text.toUpperCase();
+		}
+		return res;
 	}
 
 	private  String s(int i) {
