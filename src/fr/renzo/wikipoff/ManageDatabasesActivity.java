@@ -286,16 +286,12 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 		ArrayList<Wiki> wikis = getInstalledWikis();
 		for (Iterator<Wiki> iterator = wikis.iterator(); iterator.hasNext();) {
 			Wiki w = (Wiki) iterator.next();
-			if (w.getType() == w_tocheck.getType() && true ){
-				if (w.getGendateAsDate().before(w_tocheck.getGendateAsDate())) { // What we have is newer
-					return 1;
-				} else {
-					return 2;
-				}
+			if (w.getType().equals(w_tocheck.getType()) && w.getLangcode().equals(w_tocheck.getLangcode()) ){
+				int res=w.getGendateAsDate().compareTo(w_tocheck.getGendateAsDate());
+				return res;
 			}
 		}
-
-		return 0; // We don't have that Wiki
+		return -1; // We don't have that Wiki
 	}
 }
 

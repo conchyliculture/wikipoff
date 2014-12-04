@@ -137,10 +137,10 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 			header.setText(w.getType()+" "+w.getLanglocal());
 			TextView bot = (TextView ) convertView.findViewById(R.id.installedwikifooter);
 			bot.setText(w.getFilenamesAsString()+" "+w.getLocalizedGendate());
-			RadioButton rb = (RadioButton) convertView.findViewById(R.id.radio);
-			rb.setChecked(w.isSelected());
-			rb.setTag(position);
-			rb.setOnClickListener(this);
+//			RadioButton rb = (RadioButton) convertView.findViewById(R.id.radio);
+//			rb.setChecked(w.isSelected());
+//			rb.setTag(position);
+//			rb.setOnClickListener(this);
 			return convertView;
 		}
 	}
@@ -151,10 +151,10 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 		String key = context.getString(R.string.config_key_selecteddbfiles);
 		ArrayList<String> namelist = wiki.getDBFilesnamesAsList();
 		config.edit().putString(key ,TextUtils.join(",", namelist)).commit();
-		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
+//		RadioButton rb =(RadioButton) view.findViewById(R.id.radio);
 		String key2 = context.getString(R.string.config_key_should_update_db);
 		config.edit().putBoolean(key2, true).commit();
-		rb.setSelected(true);
+//		rb.setSelected(true);
 		for (int i = 0; i < installedwikis.size(); i++) {
 			View ll = (View) installedwikislistview.getChildAt(i);
 			RadioButton rbb =(RadioButton) ll.findViewById(R.id.radio);

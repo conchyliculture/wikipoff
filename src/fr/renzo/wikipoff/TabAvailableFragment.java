@@ -248,13 +248,16 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 			header.setText(w.getLanglocal()+"("+w.getLangcode()+")"+" "+w.getType());
 			TextView bot = (TextView ) convertView.findViewById(R.id.availablewikifooter);
 			String bottext= w.getFilenamesAsString()+"("+w.getSizeReadable(true)+") "+w.getLocalizedGendate();
-			int newer = context.alreadyDownloaded(w); // 0: not d/led ; 1 : d/led ; 2 : d/led but new is available
+			int newer = context.alreadyDownloaded(w); // -1: not d/led ; 0 : d/led ; 1 : d/led but new is available ; 2 : d/led but older is available
 			switch (newer) {
-			case 1:
+			case 0:
 				bottext = bottext + " *installed*";
 				break;
-			case 2:
+			case 1:
 				bottext = bottext + " *updated*";
+				break;
+			case 2:
+				bottext = bottext + " *older than yours*";
 				break;
 			}
 			bot.setText(bottext);
