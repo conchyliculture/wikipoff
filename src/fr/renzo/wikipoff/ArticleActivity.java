@@ -25,24 +25,24 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnFocusChangeListener;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.SearchView;
-import android.widget.SearchView.OnQueryTextListener;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 
 
-public class ArticleActivity extends Activity {
+public class ArticleActivity extends SherlockActivity implements SearchView.OnQueryTextListener {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "ArticleActivity";
@@ -51,14 +51,13 @@ public class ArticleActivity extends Activity {
 	private Article article;
 	private String wanted_title;
 	private SharedPreferences config;
-	private MenuItem searchItem;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		ActionBar actionBar = getActionBar();
+		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		this.dbHandler= ((WikipOff) getApplication()).getDatabaseHandler(this);
@@ -102,7 +101,9 @@ public class ArticleActivity extends Activity {
 			Intent i2 = new Intent(this, AboutActivity.class);
 			startActivity(i2);
 			return true;
-
+		case  android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -110,37 +111,31 @@ public class ArticleActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.articlemenu, menu);
-		searchItem = menu.findItem(R.id.menu_search);
-		SearchView searchView = (SearchView) searchItem.getActionView();
+		getSupportMenuInflater().inflate(R.menu.articlemenu, menu);
+		SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
 
-		searchView.setOnQueryTextFocusChangeListener(new OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (!hasFocus) {
-					searchItem.collapseActionView();
-				}				
-			}
-		});
-
-		searchView.setOnQueryTextListener(new OnQueryTextListener() {
-
-			@Override
-			public boolean onQueryTextSubmit(String query) {
-				webview.findNext(true);
-				return true;
-			}
-
-			@SuppressWarnings("deprecation") // Because we want to work with API 14
-			@Override
-			public boolean onQueryTextChange(String newText) {
-				webview.findAll(newText);
-				return true;
-			}
-		});
+		searchView.setOnQueryTextListener(this);
+		menu.add("Search")
+		.setActionView(searchView)
+		.setIcon(R.drawable.ic_action_search)
+		.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
 		return true;
 	}
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		webview.findNext(true);
+		return true;
+	}
+
+	@Override
+	@SuppressWarnings("deprecation") // Because we want to work with API 14
+	public boolean onQueryTextChange(String newText) {
+		webview.findAll(newText);
+		return true;
+	}
+
+
 
 	private void showHTML() {
 		this.webview.setWebViewClient(new WebViewClient(){

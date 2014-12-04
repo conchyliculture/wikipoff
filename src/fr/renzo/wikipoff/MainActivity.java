@@ -24,6 +24,10 @@ package fr.renzo.wikipoff;
 import java.io.File;
 import java.util.List;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -32,8 +36,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -49,7 +52,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import fr.renzo.wikipoff.Database.DatabaseException;
 
-public class MainActivity extends Activity {
+public class MainActivity extends SherlockActivity {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "MainActivity";
@@ -171,10 +174,9 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.mainmenu, menu);
+		getSupportMenuInflater().inflate(R.menu.mainmenu, menu);
 		return true;
 	}
 

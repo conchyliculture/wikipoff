@@ -2,6 +2,8 @@ package fr.renzo.wikipoff;
 
 import java.util.ArrayList;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,7 +24,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 
-public class TabInstalledFragment extends Fragment implements OnItemClickListener {
+public class TabInstalledFragment extends SherlockFragment implements OnItemClickListener {
 	private SharedPreferences config;
 	private ArrayList<Wiki> installedwikis=new ArrayList<Wiki>();
 	private ListView installedwikislistview;
@@ -34,7 +36,7 @@ public class TabInstalledFragment extends Fragment implements OnItemClickListene
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context= (ManageDatabasesActivity) getActivity();
+		context= (ManageDatabasesActivity) getSherlockActivity();
 		config = PreferenceManager.getDefaultSharedPreferences(context);
 
 		wholeview=inflater.inflate(R.layout.fragment_tab_installed,container, false);

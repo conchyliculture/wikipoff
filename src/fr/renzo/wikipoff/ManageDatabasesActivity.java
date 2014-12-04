@@ -24,15 +24,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBar.Tab;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-public class ManageDatabasesActivity extends ActionBarActivity {
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class ManageDatabasesActivity extends SherlockFragmentActivity {
 	public static final String TAG = "ManageDatabasesActivity";
 	private TabInstalledFragment installedFragment;
 	private TabAvailableFragment availableFragment;
@@ -98,7 +99,7 @@ public class ManageDatabasesActivity extends ActionBarActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.managedbmenu, menu);
+		getSupportMenuInflater().inflate(R.menu.managedbmenu, menu);
 		return true;
 	}
 
