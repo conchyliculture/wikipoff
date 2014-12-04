@@ -81,7 +81,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	}
 
 	private ArrayList<Wiki> loadAvailableDB() throws IOException {
-		InputStream xml = copyXML(context.getString(R.string.available_xml_file));
+		InputStream xml = copyXML(getActivity().getString(R.string.available_xml_file));
 		return WikiXMLParser.loadAvailableDBFromXML(context,xml);
 	}
 
