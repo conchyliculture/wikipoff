@@ -288,7 +288,7 @@ public class ManageDatabasesActivity extends SherlockFragmentActivity {
 		for (Iterator<Wiki> iterator = wikis.iterator(); iterator.hasNext();) {
 			Wiki w = (Wiki) iterator.next();
 			if (w.getType().equals(w_tocheck.getType()) && w.getLangcode().equals(w_tocheck.getLangcode()) ){
-				int res=w.getGendateAsDate().compareTo(w_tocheck.getGendateAsDate());
+				int res=w_tocheck.getGendateAsDate().compareTo(w.getGendateAsDate());
 				return res;
 			}
 		}
