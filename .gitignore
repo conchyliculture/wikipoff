@@ -33,7 +33,6 @@ src/gfx
 .settings/
 ic_launcher-web.png
 libs/
-lint.xml
 proguard-project.txt
 
 tools/*.xml
