@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -126,7 +127,9 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		final int index = position;
 		Wiki wiki = this.availablewikis.get(index);
+
 		boolean missing=true;
+
 		if (! context.isInCurrentDownloads(Integer.valueOf(position))) {
 			try {
 				missing = wiki.isMissing();
@@ -134,10 +137,29 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 				Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 			}
 			if (missing) {
-				this.download(index);
+				// We can't file the files, so it's not there, we can d/l
+				download(index);
 
 			} else {
-				Toast.makeText(context, getString(R.string.message_wiki_already_installed), Toast.LENGTH_LONG).show();
+				// There are files already, is it an older copy of the wiki?
+				if (context.olderPresent(wiki)) {
+					// IT is ! Let's be sure the user wants to overwrite it
+					new AlertDialog.Builder(context)
+					.setTitle(getString(R.string.message_warning))
+					.setMessage(getString(R.string.message_validate_download_olderpresent))
+					.setNegativeButton(getString(R.string.no), null )
+					.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							download(index);
+						}
+					})
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.show();
+				} else {
+					Toast.makeText(context, getString(R.string.message_wiki_already_installed), Toast.LENGTH_LONG).show();
+				}
 			}
 		}
 

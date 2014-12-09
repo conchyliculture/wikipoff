@@ -86,6 +86,7 @@ This file is part of WikipOff.
     <string name="message_validate_download_n">Are you sure you want to download %1$s %2$s (%3$s, %4$d files)</string>
     <string name="message_validate_download_nowifi"> Are you sure you want to download %1$s %2$s (%3$s) without WiFi ?</string>
     <string name="message_validate_download_n_nowifi">Are you sure you want to download %1$s %2$s (%3$s, %4$d files) without WiFi ?</string>
+ 	<string name="message_validate_download_olderpresent">An older version of this Wiki is already present on the storage, overwrite it?</string>
     <string name="message_download_already_running">Download is already running</string>
     <string name="message_wiki_already_installed">The wiki is already installed</string>
     <string name="message_read_only_sd_card"> (Read only)</string>

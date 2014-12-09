@@ -284,15 +284,29 @@ public class ManageDatabasesActivity extends SherlockFragmentActivity {
 	}
 
 	public int alreadyDownloaded(Wiki w_tocheck) {
+		int res = Wiki.WIKINOTINSTALLED; // We don't have that Wiki, by default
 		ArrayList<Wiki> wikis = getInstalledWikis();
 		for (Iterator<Wiki> iterator = wikis.iterator(); iterator.hasNext();) {
 			Wiki w = (Wiki) iterator.next();
-			if (w.getType().equals(w_tocheck.getType()) && w.getLangcode().equals(w_tocheck.getLangcode()) ){
-				int res=w_tocheck.getGendateAsDate().compareTo(w.getGendateAsDate());
+			res= w.compareWithWiki(w_tocheck);
+			if (res < Wiki.WIKINOTINSTALLED) {  // This is ugly, and relies on good choice of integers for the static enum... j'assume.
 				return res;
 			}
 		}
-		return -1; // We don't have that Wiki
+		return res;
+	}
+
+	public boolean olderPresent(Wiki w_tocheck) {
+		boolean res = false;
+		ArrayList<Wiki> wikis = getInstalledWikis();
+		for (Iterator<Wiki> iterator = wikis.iterator(); iterator.hasNext();) {
+			Wiki w = (Wiki) iterator.next();
+			int compres= w.compareWithWiki(w_tocheck);
+			if (compres == Wiki.WIKIOLDER) {  // This is ugly, and relies on good choice of integers for the static enum... j'assume.
+				res=true;
+			}
+		}
+		return res;
 	}
 }
 

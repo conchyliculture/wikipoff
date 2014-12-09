@@ -49,14 +49,15 @@ This file is part of WikipOff.
     <!-- views -->
     <string name="randomsearch">Articles au hasard</string>
     <string name="searchhint">Recherche Article</string>
-    
-    <!--  more text -->
+
+    <!-- more text -->
     <string name="message_warning">Attention !</string>
     <string name="message_no_wifi_detected">WiFi désactivé</string>
     <string name="message_validate_download">Êtes-vous sûr de vouloir télécharger %1$s %2$s (%3$s)</string>
     <string name="message_validate_download_n">Êtes-vous sûr de vouloir télécharger %1$s %2$s (%3$s, %4$d files)</string>
     <string name="message_validate_download_nowifi">Êtes-vous sûr de vouloir télécharger %1$s %2$s (%3$s) sans WiFi ?</string>
     <string name="message_validate_download_n_nowifi">Êtes-vous sûr de vouloir télécharger %1$s %2$s (%3$s, %4$d files) sans WiFi ?</string>
+    <string name="message_validate_download_olderpresent">Une version plus ancienne de ce Wiki est déjà présente sur le stockage, voulez-vous la supprimer?</string>
     <string name="message_download_already_running">Téléchargement en cours</string>
     <string name="message_wiki_already_installed">Ce Wiki est déjà installé</string>
     <string name="message_read_only_sd_card"> (lecture seule)</string>
