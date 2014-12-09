@@ -1,7 +1,7 @@
 # WikipOff
 
 ## About
-This app is an offline [Wikipedia](https://www.wikipedia.org/) reader. It helps any one with a few Gb of space on their android storage to be always right in arguments, whether or not they have a dataplan.
+This app is an offline [Wikipedia](https://www.wikipedia.org/) reader. Its purpose is to help anyone with a few Gb of space on their android storage to be always right in arguments, whether or not they have a dataplan.
 
 # WARNING
 
@@ -17,8 +17,8 @@ Everything here has mostly been written by copy-pasting code from stackoverflow.
 2. `cd wikipoff` 
 3. `export ANDROID_HOME=<path/to/sdk>; ant debug`
 4. `ant install bin/fr.renzo.wikipoff-debug.apk`
-5. Download some already available wikis from the app, or [Build one yourself](https://github.com/conchyliculture/wikipoff-tools)
-5. enjoy
+5. Download some already available wikis from the app, or [Build one yourself](https://github.com/conchyliculture/wikipoff-tools).
+6. enjoy
 
 ## License
 GPLv3. Get it, hack it, compile it, share it.
