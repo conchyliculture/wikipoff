@@ -31,6 +31,56 @@ public class Wiki implements Serializable {
 	private ArrayList<WikiDBFile> dbfiles=new ArrayList<WikiDBFile>();
 
 	private transient Context context; 
+	
+	public Wiki (Context context){
+		this.context=context;
+	}
+
+	public Wiki (Context context,File sqlitefile) throws WikiException {
+		WikiDBFile wdbf =new WikiDBFile(sqlitefile);
+		this.context=context;
+		if (sqlitefile.getName().endsWith(".sqlite")){
+			this.dbfiles.add(wdbf);
+			SQLiteDatabase sqlh = openDB(sqlitefile);
+			Cursor c;
+			String k="";
+			String v="";
+			try {
+				c = sqlh.rawQuery("SELECT * FROM metadata", new String[0]);
+				if (c.moveToFirst()) {
+					do {
+						k = c.getString(0);
+						v = c.getString(1);
+
+						if (k.equals("lang-code")) {
+							setLangcode(v);
+						}else if (k.equals("lang")) {
+							setLangcode(v);
+						} else if (k.equals("type")) {
+							setType(v);
+						} else if (k.equals("lang-local")) {
+							setLanglocal(v);
+						} else if (k.equals("lang-english")) {
+							setLangenglish(v);
+						} else if (k.equals("date")) {
+							wdbf.setGendate(v);
+						} else if (k.equals("version")) {
+							setVersion(v);
+						}
+					} while (c.moveToNext());
+				}
+				sqlh.close();
+			} catch (SQLiteDatabaseCorruptException e ){
+				e.printStackTrace();
+				this.corrupted=true;
+				//throw new WikiException("Database file : "+sqlitefile.getName()+" is corrupted. Please delete it or wait for transfer to finish!");
+			}
+
+		} else {
+			Log.d(TAG,"not a sqlite file to load a Wiki from : "+sqlitefile);
+		}
+		
+	}
 
 	public ArrayList<WikiDBFile> getDBFiles(){
 		return this.dbfiles;
@@ -90,56 +140,6 @@ public class Wiki implements Serializable {
 	private SQLiteDatabase openDB(File sqlitefile) throws SQLiteDatabaseCorruptException {
 		SQLiteDatabase sqlh=SQLiteDatabase.openDatabase(sqlitefile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS );
 		return sqlh;
-	}
-
-	public Wiki (Context context){
-		this.context=context;
-	}
-
-	public Wiki (Context context,File sqlitefile) throws WikiException {
-		WikiDBFile wdbf =new WikiDBFile(sqlitefile);
-		this.context=context;
-		if (sqlitefile.getName().endsWith(".sqlite")){
-			this.dbfiles.add(wdbf);
-			SQLiteDatabase sqlh = openDB(sqlitefile);
-			Cursor c;
-			String k="";
-			String v="";
-			try {
-				c = sqlh.rawQuery("SELECT * FROM metadata", new String[0]);
-				if (c.moveToFirst()) {
-					do {
-						k = c.getString(0);
-						v = c.getString(1);
-
-						if (k.equals("lang-code")) {
-							setLangcode(v);
-						}else if (k.equals("lang")) {
-							setLangcode(v);
-						} else if (k.equals("type")) {
-							setType(v);
-						} else if (k.equals("lang-local")) {
-							setLanglocal(v);
-						} else if (k.equals("lang-english")) {
-							setLangenglish(v);
-						} else if (k.equals("date")) {
-							wdbf.setGendate(v);
-						} else if (k.equals("version")) {
-							setVersion(v);
-						}
-					} while (c.moveToNext());
-				}
-				sqlh.close();
-			} catch (SQLiteDatabaseCorruptException e ){
-				e.printStackTrace();
-				this.corrupted=true;
-				//throw new WikiException("Database file : "+sqlitefile.getName()+" is corrupted. Please delete it or wait for transfer to finish!");
-			}
-
-		} else {
-			Log.d(TAG,"not a sqlite file to load a Wiki from : "+sqlitefile);
-		}
-		
 	}
 
 	public boolean isMissing() throws WikiException {
