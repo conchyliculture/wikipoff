@@ -21,6 +21,14 @@ public class Wiki implements Serializable {
 
 	private static final long serialVersionUID = -4809830901675667519L;
 	private static final String TAG = "WIKI";
+	
+	// Careful when changing those, you might break everything.
+	// Blame the poor original programmer
+	public static final int WIKINOTINSTALLED = 2;
+	public static final int WIKIEQUAL = 0;
+	public static final int WIKIOLDER = -1;
+	public static final int WIKINEWER = 1;
+	
 	private String type="";
 	private String langcode="";
 	private String langenglish="";
@@ -220,6 +228,16 @@ public class Wiki implements Serializable {
 	public String getFilenamesAsString() {
 		return TextUtils.join("+", getDBFilesnamesAsList());
 	}
+	
+	public int compareWithWiki(Wiki w_tocheck) {
+		Log.d(TAG,"Comparing this: "+this.toString()+" with to_check: "+w_tocheck.toString());
+		if (this.getType().equals(w_tocheck.getType()) && this.getLangcode().equals(w_tocheck.getLangcode()) ){
+			// w_tocheck is the same wikicode (lang + type)
+			int res=this.getGendateAsDate().compareTo(w_tocheck.getGendateAsDate());
+			return res;
+		}
+		return WIKINOTINSTALLED;
+	}
 
-
+	
 }
