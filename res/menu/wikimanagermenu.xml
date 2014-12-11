@@ -20,24 +20,16 @@ This file is part of WikipOff.
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_manage_databases"
+        android:id="@+id/toto"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="@string/action_manage_databases"/>
+        android:title="toto"/>
+    
     <item
-        android:id="@+id/action_manage_wikis"
-        android:orderInCategory="100"
+        android:id="@+id/tutu"
+        android:orderInCategory="200"
         android:showAsAction="never"
-        android:title="@string/action_manage_databases"/>
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
-    <item
-        android:id="@+id/action_about"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_about"/>
+        android:title="tutu"/>
+   
 
 </menu>

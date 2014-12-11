@@ -6,13 +6,13 @@
     android:mode="twoLine"
     android:orientation="horizontal" >
 
+   
+
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_gravity="left"
         android:layout_weight="0.75"
-        android:clickable="false"
-        android:focusable="false"
         android:gravity="fill_horizontal"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:mode="twoLine"
@@ -39,18 +39,19 @@
             android:layout_below="@id/installedwikiheader"
             android:clickable="false"
             android:focusable="false"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+             />
     </LinearLayout>
 
-    <RadioButton
-        android:id="@+id/radio"
+    <TextView
+        android:id="@+id/checked"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="right"
-        android:layout_marginRight="10sp"
-        android:checked="false"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
+        android:layout_marginRight="10dp"
+        android:gravity="center_vertical"
+        android:text=" "
+        android:textColor="#00E300"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
 </LinearLayout>
