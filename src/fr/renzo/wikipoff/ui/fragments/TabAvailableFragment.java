@@ -1,4 +1,4 @@
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.fragments;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -36,6 +35,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import fr.renzo.wikipoff.R;
+import fr.renzo.wikipoff.Wiki;
+import fr.renzo.wikipoff.WikiDBFile;
+import fr.renzo.wikipoff.WikiException;
+import fr.renzo.wikipoff.WikiXMLParser;
+import fr.renzo.wikipoff.ui.activities.ManageDatabasesActivity;
+import fr.renzo.wikipoff.ui.activities.StopDownloadActivity;
 
 public class TabAvailableFragment extends Fragment implements OnItemClickListener {
 	private static final String TAG = "TabAvailableActivity";

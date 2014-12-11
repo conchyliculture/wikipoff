@@ -42,7 +42,7 @@ This file is part of WikipOff.
         android:name="fr.renzo.wikipoff.WikipOff"
         android:theme="@style/Theme.Sherlock.Light.DarkActionBar" >
         <activity
-            android:name="fr.renzo.wikipoff.MainActivity"
+            android:name="fr.renzo.wikipoff.ui.activities.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,7 +50,7 @@ This file is part of WikipOff.
             </intent-filter>
         </activity>
         <activity
-            android:name="fr.renzo.wikipoff.ArticleActivity"
+            android:name="fr.renzo.wikipoff.ui.activities.ArticleActivity"
             android:label="articleactivity" 
             android:parentActivityName=".MainActivity">
             <meta-data
@@ -58,25 +58,25 @@ This file is part of WikipOff.
             android:value="fr.renzo.wikipoff.MainActivity" />
         </activity>
          <activity
-            android:name="fr.renzo.wikipoff.ManageDatabasesActivity"
+            android:name="fr.renzo.wikipoff.ui.activities.ManageDatabasesActivity"
             android:label="managedatabasesactivity" >
         </activity>
                 
         <activity
-            android:name="fr.renzo.wikipoff.SettingsActivity"
+            android:name="fr.renzo.wikipoff.ui.activities.SettingsActivity"
             android:label="settingsactivity" >
         </activity>
                 <activity
-            android:name="fr.renzo.wikipoff.AboutActivity"
+            android:name="fr.renzo.wikipoff.ui.activities.AboutActivity"
             android:label="aboutactivity" >
         </activity>
         <activity
-            android:name="fr.renzo.wikipoff.StopDownloadActivity"
+            android:name="fr.renzo.wikipoff.ui.activities.StopDownloadActivity"
             android:theme="@android:style/Theme.Dialog"
             android:label="stopdownloadactivity" >
         </activity>
                 <activity
-            android:name="fr.renzo.wikipoff.DeleteDatabaseActivity"
+            android:name="fr.renzo.wikipoff.ui.activities.DeleteDatabaseActivity"
             android:theme="@android:style/Theme.Dialog"
             android:label="deletedatabaseactivity" >
         </activity>

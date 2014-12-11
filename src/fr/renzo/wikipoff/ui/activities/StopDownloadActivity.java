@@ -1,4 +1,4 @@
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import fr.renzo.wikipoff.R;
 
 public class StopDownloadActivity extends Activity {
 

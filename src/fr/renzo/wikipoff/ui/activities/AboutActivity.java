@@ -19,12 +19,14 @@ This file is part of WikipOff.
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
  */
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.activities;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import fr.renzo.wikipoff.R;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

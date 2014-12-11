@@ -1,4 +1,4 @@
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.activities;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import fr.renzo.wikipoff.R;
+import fr.renzo.wikipoff.StorageUtils;
 
 public class DeleteDatabaseActivity extends Activity {
 	

@@ -19,7 +19,7 @@ This file is part of WikipOff.
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
  */
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.activities;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -31,7 +31,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -40,6 +39,11 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
+
+import fr.renzo.wikipoff.Article;
+import fr.renzo.wikipoff.Database;
+import fr.renzo.wikipoff.R;
+import fr.renzo.wikipoff.WikipOff;
 
 
 public class ArticleActivity extends SherlockActivity implements SearchView.OnQueryTextListener {

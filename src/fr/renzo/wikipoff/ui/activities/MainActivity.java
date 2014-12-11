@@ -19,14 +19,10 @@ This file is part of WikipOff.
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
  */
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.activities;
 
 import java.io.File;
 import java.util.List;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 import android.app.Activity;
 import android.content.Context;
@@ -36,7 +32,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
-
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -50,7 +45,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+import fr.renzo.wikipoff.Database;
 import fr.renzo.wikipoff.Database.DatabaseException;
+import fr.renzo.wikipoff.R;
+import fr.renzo.wikipoff.SearchCursorAdapter;
+import fr.renzo.wikipoff.StorageUtils;
+import fr.renzo.wikipoff.WikipOff;
 
 public class MainActivity extends SherlockActivity {
 

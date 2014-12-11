@@ -1,4 +1,4 @@
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.activities;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -32,6 +32,14 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
+import fr.renzo.wikipoff.R;
+import fr.renzo.wikipoff.StorageUtils;
+import fr.renzo.wikipoff.Wiki;
+import fr.renzo.wikipoff.WikiException;
+import fr.renzo.wikipoff.WikipOff;
+import fr.renzo.wikipoff.ui.fragments.TabAvailableFragment;
+import fr.renzo.wikipoff.ui.fragments.TabInstalledFragment;
 
 public class ManageDatabasesActivity extends SherlockFragmentActivity {
 	public static final String TAG = "ManageDatabasesActivity";

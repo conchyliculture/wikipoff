@@ -19,7 +19,7 @@ This file is part of WikipOff.
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
  */
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.activities;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,6 +34,8 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import fr.renzo.wikipoff.R;
+import fr.renzo.wikipoff.StorageUtils;
 import fr.renzo.wikipoff.StorageUtils.StorageInfo;
 
 public class SettingsActivity extends PreferenceActivity {

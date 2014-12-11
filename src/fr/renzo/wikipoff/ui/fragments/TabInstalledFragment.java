@@ -1,15 +1,12 @@
-package fr.renzo.wikipoff;
+package fr.renzo.wikipoff.ui.fragments;
 
 import java.util.ArrayList;
-
-import com.actionbarsherlock.app.SherlockFragment;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +19,13 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockFragment;
+
+import fr.renzo.wikipoff.R;
+import fr.renzo.wikipoff.Wiki;
+import fr.renzo.wikipoff.ui.activities.DeleteDatabaseActivity;
+import fr.renzo.wikipoff.ui.activities.ManageDatabasesActivity;
 
 
 public class TabInstalledFragment extends SherlockFragment implements OnItemClickListener {
