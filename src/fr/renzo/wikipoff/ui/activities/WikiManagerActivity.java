@@ -31,7 +31,7 @@ import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.WikiException;
 import fr.renzo.wikipoff.WikipOff;
 import fr.renzo.wikipoff.ui.fragments.FragmentInstalledTypes;
-import fr.renzo.wikipoff.ui.fragments.WikiManagerAvailableFragment;
+import fr.renzo.wikipoff.ui.fragments.FragmentAvailableTypes;
 
 public class WikiManagerActivity extends SherlockFragmentActivity implements ActionBar.TabListener, OnQueryTextListener {
 
@@ -202,7 +202,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 				fragment = Fragment.instantiate(this, FragmentInstalledTypes.class.getName());
 				break;
 			case AVAILABLE:
-				fragment = Fragment.instantiate(this, WikiManagerAvailableFragment.class.getName());
+				fragment = Fragment.instantiate(this, FragmentAvailableTypes.class.getName());
 				break;
 			default:
 				throw new java.lang.IllegalArgumentException("Unknown tab");
