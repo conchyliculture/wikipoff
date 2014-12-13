@@ -52,10 +52,10 @@ This file is part of WikipOff.
         <activity
             android:name="fr.renzo.wikipoff.ui.activities.ArticleActivity"
             android:label="articleactivity" 
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="fr.renzo.wikipoff.ui.activities.MainActivity">
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value="fr.renzo.wikipoff.MainActivity" />
+            android:value="fr.renzo.wikipoff.ui.activities.MainActivity" />
         </activity>
          <activity
             android:name="fr.renzo.wikipoff.ui.activities.ManageDatabasesActivity"
