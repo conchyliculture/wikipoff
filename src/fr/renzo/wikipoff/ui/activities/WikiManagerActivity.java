@@ -109,7 +109,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getSupportMenuInflater().inflate(R.menu.wikimanagermenu, menu);
+		getSupportMenuInflater().inflate(R.menu.managedbmenu, menu);
 		SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
 
 		searchView.setOnQueryTextListener(this);
@@ -119,6 +119,25 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		return true;
 	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+
+		case R.id.action_update_available_wikis_xml:
+			updateAvailableWikisXML();
+			return true;
+		case R.id.action_about:
+			Intent i2 = new Intent(this, AboutActivity.class);
+			startActivity(i2);
+			return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+
 
 	@Override
 	protected void onResume()
