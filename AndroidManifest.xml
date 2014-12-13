@@ -87,8 +87,9 @@ This file is part of WikipOff.
             android:label="deletedatabaseactivity" >
         </activity>
         <activity
-            android:name="fr.renzo.wikipoff.ui.activities.WikiActivity"
-            android:label="wikiactivity" >
+            android:name="fr.renzo.wikipoff.ui.activities.WikiInstalledActivity"
+            android:label="wikiinstalledactivity" >
+        </activity>
         </activity>
         
     </application>

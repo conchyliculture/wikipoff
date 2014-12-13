@@ -18,7 +18,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
-import fr.renzo.wikipoff.ui.activities.WikiActivity;
+import fr.renzo.wikipoff.ui.activities.WikiInstalledActivity;
 import fr.renzo.wikipoff.ui.activities.WikiManagerActivity;
 
 public class FragmentInstalledWikis extends SherlockListFragment {
@@ -34,7 +34,7 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 		String type = getArguments().getString("type",null);
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
 		config= PreferenceManager.getDefaultSharedPreferences(manageractivity);
-		this.wikis = manageractivity.getWikiByTypes(type);
+		this.wikis = manageractivity.getInstalledWikiByTypes(type);
 		setListAdapter(new InstalledWikisListViewAdapter(manageractivity,this.wikis));
 	}
 
@@ -42,7 +42,7 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Wiki wiki = wikis.get(position);
 
-		Intent myIntent = new Intent(getSherlockActivity(), WikiActivity.class);
+		Intent myIntent = new Intent(getSherlockActivity(), WikiInstalledActivity.class);
 		myIntent.putExtra("wiki",  wiki);
 		myIntent.putExtra("position",position);
 		startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);

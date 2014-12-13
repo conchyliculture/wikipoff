@@ -360,7 +360,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		return this.storage;
 	}
 
-	public ArrayList<String> getWikiTypes() {
+	public ArrayList<String> getInstalledWikiTypes() {
 		ArrayList<String> res = new ArrayList<String>();
 
 		for (Iterator<Wiki> iterator = getInstalledWikis().iterator(); iterator.hasNext();) {
@@ -372,7 +372,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		}
 		return res;
 	}
-	public ArrayList<Wiki> getWikiByTypes(String type) {
+	public ArrayList<Wiki> getInstalledWikiByTypes(String type) {
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 
 		for (Iterator<Wiki> iterator = getInstalledWikis().iterator(); iterator.hasNext();) {

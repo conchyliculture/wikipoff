@@ -21,9 +21,9 @@ import android.widget.TextView;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 
-public class WikiActivity extends Activity {
+public class WikiInstalledActivity extends Activity {
 	@SuppressWarnings("unused")
-	private static final String TAG = "WikiActivity";
+	private static final String TAG = "WikiInstalledActivity";
 	private Wiki wiki;
 	private SharedPreferences config;
 	private CheckedTextView iconview;
@@ -34,7 +34,7 @@ public class WikiActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_wiki);
+		setContentView(R.layout.activity_installed_wiki);
 
 		config = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -77,7 +77,7 @@ public class WikiActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Intent outputintent = new Intent(WikiActivity.this, DeleteDatabaseActivity.class);
+				Intent outputintent = new Intent(WikiInstalledActivity.this, DeleteDatabaseActivity.class);
 				outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
 				outputintent.putExtra("dbtodeleteposition", position);
 				startActivityForResult(outputintent,ManageDatabasesActivity.REQUEST_DELETE_CODE);
