@@ -27,18 +27,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dip"
-            android:clickable="false"
-            android:focusable="false"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
 
+            android:textAppearance="?android:attr/textAppearanceMedium" />
         <TextView
             android:id="@+id/installedwikifooter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignStart="@id/installedwikiheader"
             android:layout_below="@id/installedwikiheader"
-            android:clickable="false"
-            android:focusable="false"
+
             android:textAppearance="?android:attr/textAppearanceSmall"
              />
     </LinearLayout>
