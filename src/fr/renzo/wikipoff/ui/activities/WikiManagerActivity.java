@@ -1,6 +1,12 @@
 package fr.renzo.wikipoff.ui.activities;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,11 +16,19 @@ import java.util.Iterator;
 import java.util.Stack;
 import java.util.UUID;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -29,9 +43,10 @@ import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.StorageUtils;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.WikiException;
+import fr.renzo.wikipoff.WikiXMLParser;
 import fr.renzo.wikipoff.WikipOff;
-import fr.renzo.wikipoff.ui.fragments.FragmentInstalledTypes;
 import fr.renzo.wikipoff.ui.fragments.FragmentAvailableTypes;
+import fr.renzo.wikipoff.ui.fragments.FragmentInstalledTypes;
 
 public class WikiManagerActivity extends SherlockFragmentActivity implements ActionBar.TabListener, OnQueryTextListener {
 
@@ -43,6 +58,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	private String storage;
 
 	// god bless https://gist.github.com/andreynovikov/4619215
+	// All this is fragment managing related stuff
 	enum TabType
 	{
 		INSTALLED, AVAILABLE
@@ -52,6 +68,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	private HashMap<TabType, Stack<String>> backStacks;
 	public boolean refresh_installed_wikis;
 	private ArrayList<Wiki> installed_wikis;
+	private ArrayList<Wiki> availablewikis;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -296,7 +313,126 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		return true;
 	}
 
-	// Utils
+	// XML related stuff
+	private void updateAvailableWikisXML() {
+		new AlertDialog.Builder(this)
+		.setTitle(getString(R.string.message_warning))
+		.setMessage(
+				getString(R.string.message_overwrite_file,getString(R.string.available_xml_file)))
+				.setNegativeButton(getString(R.string.no), null)
+				.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						new DownloadXMLFile().execute(getString(R.string.available_xml_web_url));
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
+
+	}
+
+	private InputStream copyXML(String xml) throws IOException {
+		AssetManager am = getAssets();
+		try {
+			InputStream in = am.open(xml);
+			File outFile = new File(getStorage(),getString(R.string.available_xml_file_external_path));
+			if (!outFile.exists()) {
+				Log.d(TAG, "fqsdf");
+				FileOutputStream out = new FileOutputStream(outFile);
+
+				byte[] buffer = new byte[1024];
+				int read;
+				while((read = in.read(buffer)) != -1){
+					out.write(buffer, 0, read);
+				}
+				in.close();
+				out.flush();
+				out.close();
+			} else {
+				Log.d(TAG, "dafuck file is there?");
+			}
+			
+			return new FileInputStream(outFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return am.open(xml);
+		}
+	}
+
+	class DownloadXMLFile extends AsyncTask<String, Integer, String> {
+
+		protected String doInBackground(String... s) {
+			String result="";
+			try {
+				URL url = new URL(s[0]);
+
+				HttpsURLConnection con = (HttpsURLConnection)url.openConnection();
+				con.connect();
+				InputStream input = new BufferedInputStream(con.getInputStream());
+
+				File outFile = new File(storage,getString(R.string.available_xml_file_external_path));
+				FileOutputStream out = new FileOutputStream(outFile,false);
+
+				byte[] buffer = new byte[1024];
+				int read;
+				while((read = input.read(buffer)) != -1){
+					out.write(buffer, 0, read);
+				}
+				input.close();
+				out.flush();
+				out.close();
+
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				result="failed "+e.getMessage();
+			}
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			if (result!="") {
+				Toast.makeText(getApplicationContext(), "Error: "+result, Toast.LENGTH_LONG).show();
+			}
+			// LOL TODO		availableFragment.refreshList();
+		}
+
+	}
+
+	// current download management
+	public int alreadyDownloaded(Wiki w_tocheck) {
+		int res = Wiki.WIKINOTINSTALLED; // We don't have that Wiki, by default
+		ArrayList<Wiki> wikis = getInstalledWikis();
+		for (Iterator<Wiki> iterator = wikis.iterator(); iterator.hasNext();) {
+			Wiki w = (Wiki) iterator.next();
+			res= w.compareWithWiki(w_tocheck);
+			if (res < Wiki.WIKINOTINSTALLED) {  // This is ugly, and relies on good choice of integers for the static enum... j'assume.
+				return res;
+			}
+		}
+		return res;
+	}
+	public void addToCurrentDownloads(int position, String names) {
+		this.app.currentdownloads.put(Integer.valueOf(position), names);
+	}
+	public void deleteFromCurrentDownloads(int position) {
+		this.app.currentdownloads.remove(Integer.valueOf(position));
+	}
+	public boolean isInCurrentDownloads(int position) {
+		return (this.app.currentdownloads.containsKey(Integer.valueOf(position)));
+	}
+	public boolean isInCurrentDownloads(String names) {
+		return (this.app.currentdownloads.containsKey(names));
+	}
+	public Collection<String> getCurrentDownloads() {
+		return (this.app.currentdownloads.values());
+	}
+
+	//General Utils
+
 	public ArrayList<Wiki> getInstalledWikis(){
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		if (this.installed_wikis == null || this.refresh_installed_wikis) {
@@ -353,9 +489,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 
 		return res;
 	}
-	public Collection<String> getCurrentDownloads() {
-		return (this.app.currentdownloads.values());
-	}
+
 	public String getStorage() {
 		return this.storage;
 	}
@@ -383,4 +517,44 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		}
 		return res;
 	}
+
+
+
+	public ArrayList<String> getAvailableWikiTypes()  {
+		ArrayList<String> res = new ArrayList<String>();
+		InputStream xml;
+		try {
+			xml = copyXML(getString(R.string.available_xml_file));
+			for (Iterator<Wiki> iterator = WikiXMLParser.loadAvailableDBFromXML(this,xml).iterator(); iterator.hasNext();) {
+				Wiki wiki = (Wiki) iterator.next();
+				String wikitype = wiki.getType();
+				if (!res.contains(wikitype)) {
+					res.add(wikitype);
+				}
+			}
+		} catch (IOException e) {
+			Toast.makeText(this, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		}
+		return res ;
+	}
+
+	public ArrayList<Wiki> getAvailableWikiByTypes(String type) {
+		ArrayList<Wiki> res = new ArrayList<Wiki>();
+		InputStream xml;
+		try {
+			xml = copyXML(getString(R.string.available_xml_file));
+			for (Iterator<Wiki> iterator = WikiXMLParser.loadAvailableDBFromXML(this,xml).iterator(); iterator.hasNext();) {
+				Wiki wiki = (Wiki) iterator.next();
+				if (wiki.getType().equals(type)) {
+					res.add(wiki);
+				}
+			}
+		} catch (IOException e) {
+			Toast.makeText(this, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		}
+		return res;
+	}
+
 }
