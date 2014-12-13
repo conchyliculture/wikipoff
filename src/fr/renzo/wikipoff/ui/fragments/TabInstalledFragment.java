@@ -82,7 +82,6 @@ public class TabInstalledFragment extends SherlockFragment implements OnItemClic
 		} 
 	}
 
-
 	public void refreshList(int position) {
 		Wiki wiki = installedwikis.get(position);
 		String currseldb = config.getString(getString(R.string.config_key_selecteddbfiles), "");
