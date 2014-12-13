@@ -18,17 +18,17 @@ public class FragmentInstalledTypes extends SherlockListFragment {
 	private WikiManagerActivity manageractivity;
 	private ArrayList<String> wikitypes;
 
-	  @Override
-      public void onActivityCreated(Bundle savedInstanceState) {
-          super.onActivityCreated(savedInstanceState);
-          manageractivity = (WikiManagerActivity) getSherlockActivity();
-  		this.wikitypes = manageractivity.getWikiTypes();
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		manageractivity = (WikiManagerActivity) getSherlockActivity();
+		this.wikitypes = manageractivity.getWikiTypes();
 
-  		setListAdapter(new ArrayAdapter<String>(manageractivity,
-  				android.R.layout.simple_list_item_1,
-  				this.wikitypes)
-  				);
-      }
+		setListAdapter(new ArrayAdapter<String>(manageractivity,
+				android.R.layout.simple_list_item_1,
+				this.wikitypes)
+				);
+	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {

@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -36,37 +35,40 @@ import fr.renzo.wikipoff.ui.fragments.WikiManagerAvailableFragment;
 
 public class WikiManagerActivity extends SherlockFragmentActivity implements ActionBar.TabListener, OnQueryTextListener {
 
+	@SuppressWarnings("unused")
 	private static final String TAG = "WikiManagerActivity";
+	public static final int REQUEST_DELETE_CODE = 1001;
+
 	private WikipOff app;
 	private String storage;
-	
+
 	// god bless https://gist.github.com/andreynovikov/4619215
 	enum TabType
 	{
 		INSTALLED, AVAILABLE
 	}
- 
+
 	// Tab back stacks
 	private HashMap<TabType, Stack<String>> backStacks;
-	private boolean refresh_installed_wikis;
+	public boolean refresh_installed_wikis;
 	private ArrayList<Wiki> installed_wikis;
- 
+
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
- 
+
 		this.app = (WikipOff) getApplication();
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
 		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
 
 		setTitle(getString(R.string.title_manage_wikis));
-		
-		
+
+
 		// Initialize ActionBar
 		ActionBar bar = getSupportActionBar();
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
- 
+
 		// Set back stacks
 		if (savedInstanceState != null)
 		{
@@ -81,12 +83,12 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			backStacks.put(TabType.AVAILABLE, new Stack<String>());
 		}
 		this.installed_wikis = getInstalledWikis();
-		
+
 		// Create tabs
 		bar.addTab(bar.newTab().setTag(TabType.INSTALLED).setText("Installed").setTabListener(this));
 		bar.addTab(bar.newTab().setTag(TabType.AVAILABLE).setText("Available").setTabListener(this));
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -100,7 +102,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		return true;
 	}
- 
+
 	@Override
 	protected void onResume()
 	{
@@ -121,7 +123,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			}
 		}
 	}
- 
+
 	@Override
 	protected void onPause()
 	{
@@ -140,7 +142,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			ft.commit();
 		}
 	}
- 
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState)
 	{
@@ -150,7 +152,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		if (saved != getSupportActionBar().getSelectedNavigationIndex())
 			getSupportActionBar().setSelectedNavigationItem(saved);
 	}
- 
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState)
 	{
@@ -159,7 +161,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		outState.putInt("tab", getSupportActionBar().getSelectedNavigationIndex());
 		outState.putSerializable("stacks", backStacks);
 	}
- 
+
 	@Override
 	public void onBackPressed()
 	{
@@ -177,14 +179,14 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
 			// Animate return to previous fragment
-		//	ft.setCustomAnimations(R.anim.slide_from_right, R.anim.slide_to_left);
+			//	ft.setCustomAnimations(R.anim.slide_from_right, R.anim.slide_to_left);
 			// Remove topmost fragment from back stack and forget it
 			ft.remove(fragment);
 			showFragment(backStack, ft);
 			ft.commit();
 		}
 	}
- 
+
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft)
 	{
@@ -196,14 +198,14 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			Fragment fragment;
 			switch ((TabType) tab.getTag())
 			{
-				case INSTALLED:
-					fragment = Fragment.instantiate(this, FragmentInstalledTypes.class.getName());
-					break;
-				case AVAILABLE:
-					fragment = Fragment.instantiate(this, WikiManagerAvailableFragment.class.getName());
-					break;
-				default:
-					throw new java.lang.IllegalArgumentException("Unknown tab");
+			case INSTALLED:
+				fragment = Fragment.instantiate(this, FragmentInstalledTypes.class.getName());
+				break;
+			case AVAILABLE:
+				fragment = Fragment.instantiate(this, WikiManagerAvailableFragment.class.getName());
+				break;
+			default:
+				throw new java.lang.IllegalArgumentException("Unknown tab");
 			}
 			addFragment(fragment, backStack, ft);
 		}
@@ -213,7 +215,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			showFragment(backStack, ft);
 		}
 	}
- 
+
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft)
 	{
@@ -225,15 +227,15 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		// Detach it
 		ft.detach(fragment);
 	}
- 
+
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft)
 	{
 		// Select proper stack
 		Stack<String> backStack = backStacks.get(tab.getTag());
- 
-//		if (backStack.size() > 1)
-//			ft.setCustomAnimations(R.anim.slide_from_right, R.anim.slide_to_left);
+
+		//		if (backStack.size() > 1)
+		//			ft.setCustomAnimations(R.anim.slide_from_right, R.anim.slide_to_left);
 		// Clean the stack leaving only initial fragment
 		while (backStack.size() > 1)
 		{
@@ -245,16 +247,16 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		}
 		showFragment(backStack, ft);
 	}
- 
+
 	public void addFragment(Fragment fragment)
 	{
 		// Select proper stack
 		Tab tab = getSupportActionBar().getSelectedTab();
 		Stack<String> backStack = backStacks.get(tab.getTag());
- 
+
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		// Animate transfer to new fragment
-//		ft.setCustomAnimations(R.anim.slide_from_left, R.anim.slide_to_right);
+		//		ft.setCustomAnimations(R.anim.slide_from_left, R.anim.slide_to_right);
 		// Get topmost fragment
 		String tag = backStack.peek();
 		Fragment top = getSupportFragmentManager().findFragmentByTag(tag);
@@ -263,7 +265,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		addFragment(fragment, backStack, ft);
 		ft.commit();
 	}
- 
+
 	private void addFragment(Fragment fragment, Stack<String> backStack, FragmentTransaction ft)
 	{
 		// Add fragment to back stack with unique tag
@@ -271,7 +273,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		ft.add(android.R.id.content, fragment, tag);
 		backStack.push(tag);
 	}
- 
+
 	private void showFragment(Stack<String> backStack, FragmentTransaction ft)
 	{
 		// Peek topmost fragment from the stack
@@ -280,7 +282,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		// and attach it
 		ft.attach(fragment);		
 	}
-	
+
 	@Override
 	public boolean onQueryTextSubmit(String query) {
 		// TODO
@@ -293,7 +295,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		// TODO
 		return true;
 	}
-	
+
 	// Utils
 	public ArrayList<Wiki> getInstalledWikis(){
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
@@ -377,39 +379,8 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			Wiki wiki = (Wiki) iterator.next();
 			if (wiki.getType().equals(type)) {
 				res.add(wiki);
-			} else {
-				Log.d(TAG,wiki.getType()+" != "+type);
 			}
 		}
 		return res;
 	}
-
-
-//	// The following code shows how to properly open new fragment. It assumes
-//		// that parent fragment calls its activity via interface. This approach
-//		// is described in Android development guidelines.
-//		@Override
-//		public void onItemSelected(String item)
-//		{
-//			ItemFragment fragment = new ItemFragment();
-//			Bundle args = new Bundle();
-//			args.putString("item", item);
-//			fragment.setArguments(args);
-//			addFragment(fragment);
-//		}
-	
-//	@Override
-//	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//		// TODO Auto-generated method stub
-//		Log.d(TAG,"pute");
-//		
-//	}
-
-//	@Override
-//	public void onNothingSelected(AdapterView<?> parent) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
-	
 }

@@ -3,64 +3,69 @@ package fr.renzo.wikipoff.ui.fragments;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
+import fr.renzo.wikipoff.ui.activities.WikiActivity;
 import fr.renzo.wikipoff.ui.activities.WikiManagerActivity;
 
 public class FragmentInstalledWikis extends SherlockListFragment {
 
 	protected static final String TAG = "FragmentInstalledWikis";
-	private View wholeview;
 	private WikiManagerActivity manageractivity;
 	private ArrayList<Wiki> wikis;
+	private SharedPreferences config;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		String type = getArguments().getString("type","putepedia");
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		String type = getArguments().getString("type",null);
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
+		config= PreferenceManager.getDefaultSharedPreferences(manageractivity);
 		this.wikis = manageractivity.getWikiByTypes(type);
-		wholeview=inflater.inflate(R.layout.fragment_wiki_manager_installed,container, false);
-		
-		
-
 		setListAdapter(new InstalledWikisListViewAdapter(manageractivity,this.wikis));
-		
-		return wholeview;
 	}
+
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Log.d(TAG,"Clicked on "+position);
-		
+		Wiki wiki = wikis.get(position);
+
+		Intent myIntent = new Intent(getSherlockActivity(), WikiActivity.class);
+		myIntent.putExtra("wiki",  wiki);
+		myIntent.putExtra("position",position);
+		startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
 	}
-//	@Override
-//	public void onActivityCreated(Bundle savedInstanceState) {
-//		super.onActivityCreated(savedInstanceState);
-//		registerForContextMenu(getListView());
-//	}
-//	
-//	@Override
-//    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-//        super.onCreateContextMenu(menu, v, menuInfo);
-//        Log.d(TAG,"pute");
-//        getActivity().getMenuInflater().inflate(R.menu.installed_wiki_context_menu,  menu);
-//    }
-//	
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode >=0 && resultCode < wikis.size()) {
+			Wiki wiki = wikis.get(resultCode);
+			String currseldb = config.getString(getString(R.string.config_key_selecteddbfiles), "");
+			if (wiki.getFilenamesAsString().equals(currseldb)){
+				config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
+			}
+			config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
+			manageractivity.refresh_installed_wikis=true;
+		}
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		((InstalledWikisListViewAdapter) getListView().getAdapter()).notifyDataSetInvalidated();
+	}
+
 	public class InstalledWikisListViewAdapter extends BaseAdapter {
 		private LayoutInflater inflater;
 		private ArrayList<Wiki> data;
@@ -91,7 +96,7 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 			}
 		}
 
-		
+
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -109,9 +114,9 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 				rb.setText("\u2713");
 			}			
 			return convertView;
-			
+
 		}
-		
+
 	}
 
 }
