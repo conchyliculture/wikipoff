@@ -69,6 +69,7 @@ This file is part of WikipOff.
     <string name="title_installed_wikis">Downloaded Wikis</string>
     <string name="title_available_wikis">Available Wikis</string>
     <string name="title_about">About</string>
+    
 
     <!-- buttons -->
     <string name="yes">Yes</string>
@@ -79,6 +80,16 @@ This file is part of WikipOff.
     <!-- views -->
     <string name="randomsearch">Random Articles</string>
     <string name="searchhint">Search Article</string>
+    <string name="type">Type</string>
+    <string name="source">Source</string>
+    <string name="language">Language</string>
+    <string name="generationDate">Generation Date</string>
+    <string name="author">\" Author \"</string>
+    <string name="size">Size</string>
+    <string name="selectedforreading">Selected for reading</string>
+    <string name="sqlitefiles">Files</string>
+    <string name="deleteWiki">Delete Wiki</string>
+
 
     <!-- more text -->
     <string name="message_warning">Warning !</string>
@@ -101,5 +112,6 @@ This file is part of WikipOff.
     <string name="message_delete_db">Are you sure you want to delete %1$s ?</string>
     <string name="html_message_no_article">&lt;h2&gt;No article \'%1$s\' found =( &lt;/h2&gt;&lt;br/&gt;Article may not exist yet.</string>
     <string name="database_corrupted">DB is corrupted</string>
+    
 
 </resources>

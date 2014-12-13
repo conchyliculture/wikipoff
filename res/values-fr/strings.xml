@@ -49,6 +49,15 @@ This file is part of WikipOff.
     <!-- views -->
     <string name="randomsearch">Articles au hasard</string>
     <string name="searchhint">Recherche Article</string>
+    <string name="type">Type</string>
+    <string name="source">Source</string>
+    <string name="language">Langue</string>
+    <string name="generationDate">Date de création</string>
+    <string name="author">&lt;&lt; Auteur &gt;&gt;</string>
+    <string name="size">Taille</string>
+    <string name="selectedforreading">Selectioné pour lecture</string>
+    <string name="sqlitefiles">Fichiers</string>
+    <string name="deleteWiki">Supprimer</string>
 
     <!-- more text -->
     <string name="message_warning">Attention !</string>
