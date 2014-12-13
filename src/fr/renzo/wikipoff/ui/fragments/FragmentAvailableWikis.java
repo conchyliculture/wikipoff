@@ -19,6 +19,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
+import fr.renzo.wikipoff.ui.activities.WikiAvailableActivity;
 import fr.renzo.wikipoff.ui.activities.WikiInstalledActivity;
 import fr.renzo.wikipoff.ui.activities.WikiManagerActivity;
 
@@ -43,9 +44,8 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Wiki wiki = wikis.get(position);
 
-		Intent myIntent = new Intent(getSherlockActivity(), WikiInstalledActivity.class);
+		Intent myIntent = new Intent(getSherlockActivity(), WikiAvailableActivity.class);
 		myIntent.putExtra("wiki",  wiki);
-		myIntent.putExtra("position",position);
 		startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
 	}
 	public class AvailableWikisListViewAdapter extends BaseAdapter {
