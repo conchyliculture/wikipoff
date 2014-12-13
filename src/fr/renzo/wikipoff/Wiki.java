@@ -1,12 +1,12 @@
 package fr.renzo.wikipoff;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,25 +21,28 @@ public class Wiki implements Serializable {
 
 	private static final long serialVersionUID = -4809830901675667519L;
 	private static final String TAG = "WIKI";
-	
+
 	// Careful when changing those, you might break everything.
 	// Blame the poor original programmer
 	public static final int WIKINOTINSTALLED = 2;
 	public static final int WIKIEQUAL = 0;
 	public static final int WIKIOLDER = -1;
 	public static final int WIKINEWER = 1;
-	
+
 	private String type="";
 	private String langcode="";
 	private String langenglish="";
 	private String langlocal="";
 	private String version="";
+	private String author="";
+	private String source="";
 	public boolean corrupted=false;
 
 	private ArrayList<WikiDBFile> dbfiles=new ArrayList<WikiDBFile>();
 
-	private transient Context context; 
+	private transient Context context;
 	
+
 	public Wiki (Context context){
 		this.context=context;
 	}
@@ -87,7 +90,7 @@ public class Wiki implements Serializable {
 		} else {
 			Log.d(TAG,"not a sqlite file to load a Wiki from : "+sqlitefile);
 		}
-		
+
 	}
 
 	public ArrayList<WikiDBFile> getDBFiles(){
@@ -107,8 +110,6 @@ public class Wiki implements Serializable {
 	public String toString(){
 		return this.type+" "+this.langlocal+" "+this.getDateAsString();
 	}
-
-
 
 	private String getDateAsString() {
 		return this.dbfiles.get(0).getDateAsString();
@@ -228,7 +229,7 @@ public class Wiki implements Serializable {
 	public String getFilenamesAsString() {
 		return TextUtils.join("+", getDBFilesnamesAsList());
 	}
-	
+
 	public int compareWithWiki(Wiki w_tocheck) {
 		Log.d(TAG,"Comparing this: "+this.toString()+" with to_check: "+w_tocheck.toString());
 		if (this.getType().equals(w_tocheck.getType()) && this.getLangcode().equals(w_tocheck.getLangcode()) ){
@@ -239,5 +240,36 @@ public class Wiki implements Serializable {
 		return WIKINOTINSTALLED;
 	}
 
-	
+	public boolean hasIcon() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public FileInputStream getIcon() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setContext(Context ctx) {
+		this.context = ctx;
+		
+	}
+
+	public String getAuthor() {
+		if (!author.equals("")) {
+			return author;
+		} else {
+			return "Renzo @ https://github.com/conchyliculture/wikipoff-tools";
+		}
+	}
+
+	public String getSource() {
+		if (!source.equals("")) {
+			return source;
+		} else {
+			return "http://"+getLangcode()+".wikipedia.org";
+		}
+	}
+
+
 }
