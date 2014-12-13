@@ -83,6 +83,10 @@ public class WikiXMLParser {
 				wiki.setDBFiles(readDBFiles(parser));
 			} else if (name.equalsIgnoreCase("version")) {
 				wiki.setVersion(readVersion(parser));
+			} else if (name.equalsIgnoreCase("source")) {
+				wiki.setSource(readSource(parser));
+			} else if (name.equalsIgnoreCase("author")) {
+				wiki.setAuthor(readAuthor(parser));
 			} else {
 				Log.d(TAG,"WTF "+name);
 				skip(parser);
@@ -120,6 +124,18 @@ public class WikiXMLParser {
 		parser.require(XmlPullParser.START_TAG, ns, "version");
 		String version = readText(parser);
 		parser.require(XmlPullParser.END_TAG, ns, "version");
+		return version;
+	}
+	private static String readSource(XmlPullParser parser) throws XmlPullParserException, IOException {
+		parser.require(XmlPullParser.START_TAG, ns, "source");
+		String langlocal = readText(parser);
+		parser.require(XmlPullParser.END_TAG, ns, "source");
+		return langlocal;
+	}
+	private static String readAuthor(XmlPullParser parser) throws XmlPullParserException, IOException {
+		parser.require(XmlPullParser.START_TAG, ns, "author");
+		String version = readText(parser);
+		parser.require(XmlPullParser.END_TAG, ns, "author");
 		return version;
 	}
 

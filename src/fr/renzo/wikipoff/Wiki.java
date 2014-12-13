@@ -41,7 +41,7 @@ public class Wiki implements Serializable {
 	private ArrayList<WikiDBFile> dbfiles=new ArrayList<WikiDBFile>();
 
 	private transient Context context;
-	
+
 
 	public Wiki (Context context){
 		this.context=context;
@@ -77,6 +77,10 @@ public class Wiki implements Serializable {
 							wdbf.setGendate(v);
 						} else if (k.equals("version")) {
 							setVersion(v);
+						} else if (k.equals("source")) {
+							setSource(v);
+						} else if (k.equals("author")) {
+							setAuthor(v);
 						}
 					} while (c.moveToNext());
 				}
@@ -91,6 +95,14 @@ public class Wiki implements Serializable {
 			Log.d(TAG,"not a sqlite file to load a Wiki from : "+sqlitefile);
 		}
 
+	}
+
+	public void setAuthor(String v) {
+		this.author = v;
+	}
+
+	public void setSource(String v) {
+		this.source = v;
 	}
 
 	public ArrayList<WikiDBFile> getDBFiles(){
@@ -252,7 +264,7 @@ public class Wiki implements Serializable {
 
 	public void setContext(Context ctx) {
 		this.context = ctx;
-		
+
 	}
 
 	public String getAuthor() {
