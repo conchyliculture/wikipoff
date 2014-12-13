@@ -375,7 +375,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			} else {
 				Log.d(TAG, "dafuck file is there?");
 			}
-			
+
 			return new FileInputStream(outFile);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -420,7 +420,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			if (result!="") {
 				Toast.makeText(getApplicationContext(), "Error: "+result, Toast.LENGTH_LONG).show();
 			}
-			// LOL TODO		availableFragment.refreshList();
+			refresh_available_wikis=true;
 		}
 
 	}
@@ -506,10 +506,29 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 				}
 			}
 					);
+			refresh_installed_wikis = false;
 		} else {
 			res= this.installed_wikis;
 		}
 
+		return res;
+	}
+
+	public ArrayList<Wiki> getAvailableWikis() {
+		ArrayList<Wiki> res = new ArrayList<Wiki>();
+		if (this.available_wikis == null || this.refresh_available_wikis) {
+			InputStream xml;
+			try {
+				xml = copyXML(getString(R.string.available_xml_file));
+				res=  WikiXMLParser.loadAvailableDBFromXML(this,xml);
+			} catch (IOException e) {
+				Toast.makeText(this, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+			} 
+			refresh_available_wikis=false;
+		} else {
+			return this.available_wikis;
+		}
 		return res;
 	}
 
@@ -529,6 +548,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		}
 		return res;
 	}
+
 	public ArrayList<Wiki> getInstalledWikiByTypes(String type) {
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 
@@ -541,42 +561,28 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		return res;
 	}
 
-
-
 	public ArrayList<String> getAvailableWikiTypes()  {
 		ArrayList<String> res = new ArrayList<String>();
-		InputStream xml;
-		try {
-			xml = copyXML(getString(R.string.available_xml_file));
-			for (Iterator<Wiki> iterator = WikiXMLParser.loadAvailableDBFromXML(this,xml).iterator(); iterator.hasNext();) {
-				Wiki wiki = (Wiki) iterator.next();
-				String wikitype = wiki.getType();
-				if (!res.contains(wikitype)) {
-					res.add(wikitype);
-				}
+		for (Iterator<Wiki> iterator = getAvailableWikis().iterator(); iterator.hasNext();) {
+			Wiki wiki = (Wiki) iterator.next();
+			String wikitype = wiki.getType();
+			if (!res.contains(wikitype)) {
+				res.add(wikitype);
 			}
-		} catch (IOException e) {
-			Toast.makeText(this, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
-			e.printStackTrace();
 		}
+
 		return res ;
 	}
 
 	public ArrayList<Wiki> getAvailableWikiByTypes(String type) {
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
-		InputStream xml;
-		try {
-			xml = copyXML(getString(R.string.available_xml_file));
-			for (Iterator<Wiki> iterator = WikiXMLParser.loadAvailableDBFromXML(this,xml).iterator(); iterator.hasNext();) {
-				Wiki wiki = (Wiki) iterator.next();
-				if (wiki.getType().equals(type)) {
-					res.add(wiki);
-				}
+		for (Iterator<Wiki> iterator = getAvailableWikis().iterator(); iterator.hasNext();) {
+			Wiki wiki = (Wiki) iterator.next();
+			if (wiki.getType().equals(type)) {
+				res.add(wiki);
 			}
-		} catch (IOException e) {
-			Toast.makeText(this, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
-			e.printStackTrace();
 		}
+
 		return res;
 	}
 
