@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -361,7 +360,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			InputStream in = am.open(xml);
 			File outFile = new File(getStorage(),getString(R.string.available_xml_file_external_path));
 			if (!outFile.exists()) {
-				Log.d(TAG, "fqsdf");
 				FileOutputStream out = new FileOutputStream(outFile);
 
 				byte[] buffer = new byte[1024];
@@ -372,9 +370,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 				in.close();
 				out.flush();
 				out.close();
-			} else {
-				Log.d(TAG, "dafuck file is there?");
-			}
+			} 
 
 			return new FileInputStream(outFile);
 		} catch (IOException e) {
