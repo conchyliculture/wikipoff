@@ -42,8 +42,6 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 	private TextView msg;
 	private Button downloadbutton;
 
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,8 +54,6 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 		wiki.setContext(this);
 
 		setTitle(wiki.getType()+" - "+wiki.getLangcode());
-
-		//iconview = (CheckedTextView) findViewById(R.id.wikiSelectCheckbox);
 
 		setViews();
 
@@ -133,7 +129,7 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 
 	private void setIcon() {
 		ImageView iconview = (ImageView) findViewById(R.id.wikiIcon);
-		if (wiki.getIconURL()!=""){
+		if (wiki.hasIconURL()){
 			// TODO
 		} else {
 			AssetManager am = getAssets();

@@ -290,5 +290,10 @@ public class Wiki implements Serializable {
 		return iconURL;
 	}
 
+	public boolean hasIconURL() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 }
