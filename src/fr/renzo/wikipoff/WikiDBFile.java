@@ -63,7 +63,6 @@ public class WikiDBFile implements Serializable {
 		
 	}
 
-
 	public long getSize() {
 		return size;
 	}
@@ -71,4 +70,5 @@ public class WikiDBFile implements Serializable {
 	public void setSize(long size) {
 		this.size = size;
 	}
+
 }

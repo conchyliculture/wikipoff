@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,6 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.ui.activities.WikiAvailableActivity;
-import fr.renzo.wikipoff.ui.activities.WikiInstalledActivity;
 import fr.renzo.wikipoff.ui.activities.WikiManagerActivity;
 
 public class FragmentAvailableWikis extends SherlockListFragment {
@@ -28,14 +25,12 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 	protected static final String TAG = "FragmentAvailableWikis";
 	private WikiManagerActivity manageractivity;
 	private ArrayList<Wiki> wikis;
-	private SharedPreferences config;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		String type = getArguments().getString("type",null);
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
-		config= PreferenceManager.getDefaultSharedPreferences(manageractivity);
 		this.wikis = manageractivity.getAvailableWikiByTypes(type);
 		setListAdapter(new AvailableWikisListViewAdapter(manageractivity,this.wikis));
 	}
@@ -46,6 +41,7 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 
 		Intent myIntent = new Intent(getSherlockActivity(), WikiAvailableActivity.class);
 		myIntent.putExtra("wiki",  wiki);
+		myIntent.putExtra("storage", manageractivity.getStorage());
 		startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
 	}
 	public class AvailableWikisListViewAdapter extends BaseAdapter {
@@ -107,5 +103,5 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 			return convertView;
 		}
 	}
-	
+
 }

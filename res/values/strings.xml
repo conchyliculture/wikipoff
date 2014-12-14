@@ -89,6 +89,9 @@ This file is part of WikipOff.
     <string name="selectedforreading">Selected for reading</string>
     <string name="sqlitefiles">Files</string>
     <string name="deleteWiki">Delete Wiki</string>
+    <string name="downloadWiki">Download Wiki</string>
+    <string name="download_failed">Download failed</string>
+    <string name="download_finished">Download finished!</string>
 
 
     <!-- more text -->

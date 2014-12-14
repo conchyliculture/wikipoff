@@ -55,7 +55,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 
 	private WikipOff app;
 	private String storage;
-	
+
 	public boolean refresh_installed_wikis;
 	public boolean refresh_available_wikis;
 	private ArrayList<Wiki> installed_wikis;
@@ -70,8 +70,8 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 
 	// Tab back stacks
 	private HashMap<TabType, Stack<String>> backStacks;
-	
-	
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)

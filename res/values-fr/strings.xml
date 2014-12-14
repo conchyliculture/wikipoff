@@ -58,6 +58,9 @@ This file is part of WikipOff.
     <string name="selectedforreading">Selectioné pour lecture</string>
     <string name="sqlitefiles">Fichiers</string>
     <string name="deleteWiki">Supprimer</string>
+    <string name="downloadWiki">Télécharger</string>
+    <string name="download_failed">Téléchargement échoué</string>
+    <string name="download_finished">Téléchargement terminé!</string>
 
     <!-- more text -->
     <string name="message_warning">Attention !</string>
