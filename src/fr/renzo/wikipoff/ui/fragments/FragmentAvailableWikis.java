@@ -74,23 +74,24 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			Wiki w = data.get(position);
 			if(convertView == null){ 
-				convertView = this.inflater.inflate(R.layout.available_wiki, parent, false);
+				convertView = this.inflater.inflate(R.layout.available_wiki_item, parent, false);
 			}
 
 			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
 			header.setText(w.getLanglocal()+"("+w.getLangcode()+")"+" "+w.getType());
 			TextView bot = (TextView ) convertView.findViewById(R.id.availablewikifooter);
 			String bottext= w.getFilenamesAsString()+"("+w.getSizeReadable(true)+") "+w.getLocalizedGendate();
+			TextView infos = (TextView) convertView.findViewById(R.id.availablewikiinfo);
 			int isLocalWikiNewer = manageractivity.alreadyDownloaded(w);
 			switch (isLocalWikiNewer) {
 			case Wiki.WIKIEQUAL:
-				bottext = bottext + " *installed*";
+				infos.setText(" *installed*");
 				break;
 			case Wiki.WIKIOLDER:
-				bottext = bottext + " *updated*";
+				infos.setText(" *updated*");
 				break;
 			case Wiki.WIKINEWER:
-				bottext = bottext + " *older than yours*";
+				infos.setText(" *older than yours*");
 				break;
 			}
 			bot.setText(bottext);
