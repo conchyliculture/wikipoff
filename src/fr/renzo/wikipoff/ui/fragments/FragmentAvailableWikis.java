@@ -29,7 +29,7 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		String type = getArguments().getString("type",null);
+		String type = getArguments().getString("type");
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
 		this.wikis = manageractivity.getAvailableWikiByTypes(type);
 		setListAdapter(new AvailableWikisListViewAdapter(manageractivity,this.wikis));

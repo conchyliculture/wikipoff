@@ -31,7 +31,7 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		String type = getArguments().getString("type",null);
+		String type = getArguments().getString("type");
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
 		config= PreferenceManager.getDefaultSharedPreferences(manageractivity);
 		this.wikis = manageractivity.getInstalledWikiByTypes(type);
