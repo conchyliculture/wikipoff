@@ -36,9 +36,10 @@ public class WikiDownloadService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent workIntent) {
+		String link = workIntent.getStringExtra("url");
 		URL url;
 		try {
-			url = new URL(workIntent.getStringExtra("url"));
+			url = new URL(link);
 		String outputdir = workIntent.getStringExtra("outputdir");
 		String filename = workIntent.getStringExtra("filename");
 		long size = workIntent.getLongExtra("size",-1);
@@ -56,29 +57,29 @@ public class WikiDownloadService extends IntentService {
 		while ((count = input.read(data)) != -1) {
 			total += count;
 			
-			publishProgress((int) (total * 100 / size));
+			publishProgress(link,(int) (total * 100 / size));
 			output.write(data, 0, count);
 			
 		}
 		output.flush();
 		output.close();
 		input.close();
-		publishFinished();
+		publishFinished(link);
 		} catch (SocketTimeoutException e) {
 			Log.d(TAG,"Timeout...");
-			publishFailed("Timeout error");
+			publishFailed(link,"Timeout error");
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
 			Log.d(TAG,"MalformedURLException");
-			publishFailed("MalformedURLException");
+			publishFailed(link,"MalformedURLException");
 			e.printStackTrace();
 		} catch (IOException e) {
 			Log.d(TAG,"IOException"+e.getMessage());
-			publishFailed("IOException"+e.getMessage());
+			publishFailed(link,"IOException"+e.getMessage());
 			e.printStackTrace();
 		}
 	}
-	private void publishFailed(String error) {
+	private void publishFailed(String url,String error) {
 		/*create new intent to broadcast our processed data to our activity*/
 		Intent resultBroadCastIntent =new Intent();
 		/*set action here*/
@@ -89,11 +90,12 @@ public class WikiDownloadService extends IntentService {
 		/*add data to intent*/
 		resultBroadCastIntent.putExtra("whatsup", ProgressReceiver.DOWNLOAD_FAILED);
 		resultBroadCastIntent.putExtra("error", error);
+		resultBroadCastIntent.putExtra("url", url);
 		/*send broadcast */
 		sendBroadcast(resultBroadCastIntent);
 	}
 	
-	private void publishFinished() {
+	private void publishFinished(String url) {
 		/*create new intent to broadcast our processed data to our activity*/
 		Intent resultBroadCastIntent =new Intent();
 		/*set action here*/
@@ -103,11 +105,12 @@ public class WikiDownloadService extends IntentService {
  
 		/*add data to intent*/
 		resultBroadCastIntent.putExtra("whatsup", ProgressReceiver.DOWNLOAD_FINISHED);
+		resultBroadCastIntent.putExtra("url", url);
 		/*send broadcast */
 		sendBroadcast(resultBroadCastIntent);
 	}
 
-	private void publishProgress(int i) {
+	private void publishProgress(String url,int i) {
 		/*create new intent to broadcast our processed data to our activity*/
 		Intent resultBroadCastIntent =new Intent();
 		/*set action here*/
@@ -118,6 +121,7 @@ public class WikiDownloadService extends IntentService {
 		/*add data to intent*/
 		resultBroadCastIntent.putExtra("whatsup", ProgressReceiver.DOWNLOAD_PROGRESS);
 		resultBroadCastIntent.putExtra("download_progress", i);
+		resultBroadCastIntent.putExtra("url", url);
 		/*send broadcast */
 		sendBroadcast(resultBroadCastIntent);
 	}

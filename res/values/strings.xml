@@ -92,6 +92,7 @@ This file is part of WikipOff.
     <string name="downloadWiki">Download Wiki</string>
     <string name="download_failed">Download failed</string>
     <string name="download_finished">Download finished!</string>
+    <string name="downloading">Downloading file</string>
 
 
     <!-- more text -->

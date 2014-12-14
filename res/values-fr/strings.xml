@@ -61,6 +61,7 @@ This file is part of WikipOff.
     <string name="downloadWiki">Télécharger</string>
     <string name="download_failed">Téléchargement échoué</string>
     <string name="download_finished">Téléchargement terminé!</string>
+    <string name="downloading">Téléchargement de</string>
 
     <!-- more text -->
     <string name="message_warning">Attention !</string>

@@ -3,6 +3,7 @@ package fr.renzo.wikipoff.ui.activities;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,6 +36,7 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 	private Wiki wiki;
 
 	private String storage;
+	private ArrayList<String> urls_to_dl = new ArrayList<String>() ;
 	private ProgressBar pb;
 	private ProgressReceiver progressReceiver;
 	private TextView msg;
@@ -252,7 +254,7 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 		pb.setVisibility(View.VISIBLE);
 		downloadbutton.setVisibility(View.INVISIBLE);
 		for(WikiDBFile wdbf : wiki.getDBFiles()) {
-
+			this.urls_to_dl.add(wdbf.getUrl());
 			Intent myIntent= new Intent(WikiAvailableActivity.this,WikiDownloadService.class);
 			// add necessary  data to intent
 			myIntent.putExtra("url", wdbf.getUrl());
@@ -278,13 +280,19 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String whatsup = intent.getStringExtra("whatsup");
+			String link = intent.getStringExtra("url");
 			if (whatsup.equals(DOWNLOAD_PROGRESS)) {
 				int result =intent.getIntExtra("download_progress",-1);
 				pb.setProgress(result);
+				msg.setVisibility(View.VISIBLE);
+				msg.setText(getString(R.string.downloading)+" "+(urls_to_dl.indexOf(link)+1)+"/"+urls_to_dl.size());
 			} else if (whatsup.equals(DOWNLOAD_FINISHED)) {
-				pb.setVisibility(View.INVISIBLE);
-				msg.setText(getString(R.string.download_finished));
-				downloadbutton.setVisibility(View.VISIBLE);
+				msg.setVisibility(View.VISIBLE);
+				if (urls_to_dl.indexOf(link)+1==urls_to_dl.size()) {
+					pb.setVisibility(View.INVISIBLE);
+					msg.setText(getString(R.string.download_finished));
+					downloadbutton.setVisibility(View.VISIBLE);
+				}
 			} else if (whatsup.equals(DOWNLOAD_FAILED)) {
 				pb.setVisibility(View.INVISIBLE);
 				String error =intent.getStringExtra("error");
