@@ -26,7 +26,7 @@ public class WikiInstalledActivity extends Activity {
 	private static final String TAG = "WikiInstalledActivity";
 	private Wiki wiki;
 	private SharedPreferences config;
-	private CheckedTextView iconview;
+	private CheckedTextView selectedforreading;
 	private int position;
 
 
@@ -46,7 +46,7 @@ public class WikiInstalledActivity extends Activity {
 
 		setTitle(wiki.getType()+" - "+wiki.getLangcode());
 
-		iconview = (CheckedTextView) findViewById(R.id.wikiSelectCheckbox);
+		selectedforreading = (CheckedTextView) findViewById(R.id.wikiSelectCheckbox);
 
 		setViews();
 	}
@@ -124,6 +124,7 @@ public class WikiInstalledActivity extends Activity {
 	private void setIcon() {
 		ImageView iconview = (ImageView) findViewById(R.id.wikiIcon);
 		if (wiki.hasIcon()){
+			// TODO
 			iconview.setImageBitmap(BitmapFactory.decodeStream(wiki.getIcon()));
 		} else {
 			AssetManager am = getAssets();
@@ -139,8 +140,8 @@ public class WikiInstalledActivity extends Activity {
 	}
 
 	private void setSelected() {
-		iconview.setChecked(wiki.isSelected());
-		iconview.setOnClickListener(new OnClickListener() {
+		selectedforreading.setChecked(wiki.isSelected());
+		selectedforreading.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				String key = getString(R.string.config_key_selecteddbfiles);
@@ -148,7 +149,7 @@ public class WikiInstalledActivity extends Activity {
 				config.edit().putString(key ,TextUtils.join(",", namelist)).commit();
 				String key2 = getString(R.string.config_key_should_update_db);
 				config.edit().putBoolean(key2, true).commit();
-				iconview.setChecked(true);
+				selectedforreading.setChecked(true);
 			}
 		});
 	}
