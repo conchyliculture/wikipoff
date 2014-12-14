@@ -36,6 +36,7 @@ public class Wiki implements Serializable {
 	private String version="";
 	private String author="";
 	private String source="";
+	private String iconURL="";
 	public boolean corrupted=false;
 
 	private ArrayList<WikiDBFile> dbfiles=new ArrayList<WikiDBFile>();
@@ -103,6 +104,9 @@ public class Wiki implements Serializable {
 
 	public void setSource(String v) {
 		this.source = v;
+	}
+	public void setIconUrl(String v) {
+		this.iconURL = v;
 	}
 
 	public ArrayList<WikiDBFile> getDBFiles(){
@@ -281,6 +285,9 @@ public class Wiki implements Serializable {
 		} else {
 			return "http://"+getLangcode()+".wikipedia.org";
 		}
+	}
+	public String getIconURL() {
+		return iconURL;
 	}
 
 

@@ -87,6 +87,8 @@ public class WikiXMLParser {
 				wiki.setSource(readSource(parser));
 			} else if (name.equalsIgnoreCase("author")) {
 				wiki.setAuthor(readAuthor(parser));
+			} else if (name.equalsIgnoreCase("iconUrl")) {
+					wiki.setAuthor(readIconURL(parser));
 			} else {
 				Log.d(TAG,"WTF "+name);
 				skip(parser);
@@ -136,6 +138,12 @@ public class WikiXMLParser {
 		parser.require(XmlPullParser.START_TAG, ns, "author");
 		String version = readText(parser);
 		parser.require(XmlPullParser.END_TAG, ns, "author");
+		return version;
+	}
+	private static String readIconURL(XmlPullParser parser) throws XmlPullParserException, IOException {
+		parser.require(XmlPullParser.START_TAG, ns, "iconUrl");
+		String version = readText(parser);
+		parser.require(XmlPullParser.END_TAG, ns, "iconUrl");
 		return version;
 	}
 
