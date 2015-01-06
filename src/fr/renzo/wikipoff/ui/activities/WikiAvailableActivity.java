@@ -224,7 +224,12 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 		new AlertDialog.Builder(this)
 		.setTitle(getString(R.string.message_warning))
 		.setMessage(msg)
-		.setNegativeButton(getString(R.string.no), null)
+		.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				urls_to_dl.clear();
+			}
+		})
 		.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
