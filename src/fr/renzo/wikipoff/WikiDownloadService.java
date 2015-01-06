@@ -17,6 +17,9 @@ import android.util.Log;
 import fr.renzo.wikipoff.ui.activities.WikiAvailableActivity.ProgressReceiver;
 
 public class WikiDownloadService extends IntentService {
+	
+	//TODO Check if mode avion/ on a internet
+	
 	public final class Constants {
 	    // Defines a custom Intent action
 	    public static final String BROADCAST_ACTION =
