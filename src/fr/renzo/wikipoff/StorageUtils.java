@@ -48,12 +48,20 @@ public class StorageUtils {
 		public String getDisplayName(Context c) {
 			StringBuilder res = new StringBuilder();
 			if (!removable) {
-				res.append(c.getString(R.string.message_internal_sd_card));
+				if (path.endsWith("/files")) {
+					res.append(c.getString(R.string.message_internal_android_storage));
+				} else {
+					res.append(c.getString(R.string.message_internal_sd_card));
+				}
 			} else if (number > 1) {
 				res.append(c.getString(R.string.message_sd_card_n,number));
 			} else {
 				if (path.contains("emulated")) {
-					res.append(c.getString(R.string.message_internal_sd_card));
+					if (path.endsWith("/files")) {
+						res.append(c.getString(R.string.message_internal_android_storage));
+					} else {
+						res.append(c.getString(R.string.message_internal_sd_card));
+					}
 				} else if (path.endsWith("/files")) {
 					res.append(c.getString(R.string.message_external_android_storage));
 				} else {
