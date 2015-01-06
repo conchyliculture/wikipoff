@@ -49,6 +49,8 @@ This file is part of WikipOff.
     <string name="config_key_downloadid">config_key_downloadid</string>
     <string name="config_key_should_update_db">config_key_should_update_db</string>
     <string name="config_key_storage">config_key_storage</string>
+    <string name="config_key_storage_warning">config_key_storage_warning</string>
+    <string name="config_key_storage_category">config_key_storage_category</string>
 
     <!-- Text strings in GUI -->
     <!-- menus -->
@@ -69,6 +71,7 @@ This file is part of WikipOff.
     <string name="title_installed_wikis">Downloaded Wikis</string>
     <string name="title_available_wikis">Available Wikis</string>
     <string name="title_about">About</string>
+    <string name="title_storage_category">Manage storage</string>
     
 
     <!-- buttons -->
@@ -116,6 +119,7 @@ This file is part of WikipOff.
     <string name="message_no_selected_database">No selected database</string>
     <string name="message_cant_create_in_storage">Couldn\'t create %1$s. Please select an external storage.</string>
     <string name="message_delete_db">Are you sure you want to delete %1$s ?</string>
+    <string name="message_storage_warning">If you modifying this setting, you may have to move your already installed Wikis by hand (with adb, or a File Manager App), or Wikipoff won\'t be able to find them.</string>
     <string name="html_message_no_article">&lt;h2&gt;No article \'%1$s\' found =( &lt;/h2&gt;&lt;br/&gt;Article may not exist yet.</string>
     <string name="database_corrupted">DB is corrupted</string>
     

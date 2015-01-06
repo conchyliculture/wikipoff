@@ -39,6 +39,7 @@ This file is part of WikipOff.
     <string name="title_installed_wikis">Wikis installés</string>
     <string name="title_available_wikis">Wikis disponibles</string>
     <string name="title_about">À propos</string>
+    <string name="title_storage_category">Localisation du stockage</string>
 
     <!-- buttons -->
     <string name="yes">Oui</string>
@@ -82,6 +83,8 @@ This file is part of WikipOff.
     <string name="message_no_selected_database">Aucun Wiki sélectionné</string>
     <string name="message_cant_create_in_storage">Impossible de créer %1$s. Merci de sélectionner un autre point de stockage.</string>
     <string name="message_delete_db">Êtes-vous sûr de vouloir supprimer %1$s ?</string>
+    <string name="message_storage_warning">Si vous modifiez ce paramètre, vous devrez certainement déplacer les Wikis déjà installés manuellement (avec adb ou un gestionnaire de fichier), ou Wikipoff ne pourra plus les trouver.</string>
+    
     <string name="html_message_no_article">&lt;h2&gt;Impossible de trouver l\'article \'%1$s\' =( &lt;/h2&gt;&lt;br/&gt;La page Wiki correspondante n\'a peut-être pas été créée.</string>
 
 </resources>
