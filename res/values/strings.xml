@@ -107,8 +107,10 @@ This file is part of WikipOff.
     <string name="message_wiki_already_installed">The wiki is already installed</string>
     <string name="message_read_only_sd_card"> (Read only)</string>
     <string name="message_sd_card">SD card</string>
-    <string name="message_sd_card_n">SD card %d</string>
+    <string name="message_sd_card_n">Removeable SD card %d</string>
     <string name="message_internal_sd_card">Internal SD card</string>
+    <string name="message_external_sd_card">External SD card</string>
+    <string name="message_external_android_storage">Android Default Storage (Ext. SD)</string>
     <string name="message_stop_download">Are you sure you want to stop this download?</string>
     <string name="message_overwrite_file">"Are you sure you want to overwrite current %1$s file ?"</string>
     <string name="message_no_selected_database">No selected database</string>

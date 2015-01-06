@@ -52,12 +52,17 @@ public class SettingsActivity extends PreferenceActivity {
 		config = PreferenceManager.getDefaultSharedPreferences(this);
 
 		List<StorageInfo> availablestorageslist= new ArrayList<StorageInfo>();
+		// Add default external storage
+		ArrayList<StorageInfo> extsdlist = StorageUtils.getDefaultStorageInfo(this);
+		availablestorageslist.addAll(extsdlist);
 
 		List<StorageInfo> allstorageslist = StorageUtils.getStorageList();
 		for (Iterator<StorageInfo> iterator = allstorageslist.iterator(); iterator.hasNext();) {
 			StorageInfo storageInfo = iterator.next();
 			if (testWriteable(storageInfo.path)){
-				availablestorageslist.add(storageInfo);
+				if (!availablestorageslist.contains(storageInfo)) {
+					availablestorageslist.add(storageInfo);
+				}
 				Log.d(TAG,storageInfo.path +" is writeable");
 			} else {
 				Log.d(TAG,storageInfo.path +" is not writeable");
@@ -72,7 +77,7 @@ public class SettingsActivity extends PreferenceActivity {
 			storage_paths[i] = availablestorageslist.get(i).path;
 		}
 
-		currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
 
 		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
 		myPref.setEntries(storage_names);
@@ -83,11 +88,9 @@ public class SettingsActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				String newStorage = (String)newValue;
-				if (! newStorage.equals(currentStorage)) {
-					myPref.setSummary(newStorage);
-					config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
-					config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
-				}
+				myPref.setSummary(newStorage);
+				config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
+				config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
 				return true;
 			}
 		});

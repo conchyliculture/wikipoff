@@ -88,7 +88,7 @@ public class MainActivity extends SherlockActivity {
 
 	}
 	private void setStorage() {
-		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
 		dbdir= new File(storage_root_path,getString(R.string.DBDir));
 		createEnv();
 	}

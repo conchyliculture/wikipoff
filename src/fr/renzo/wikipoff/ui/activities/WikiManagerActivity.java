@@ -80,7 +80,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 
 		this.app = (WikipOff) getApplication();
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
-		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
 
 		setTitle(getString(R.string.title_manage_wikis));
 

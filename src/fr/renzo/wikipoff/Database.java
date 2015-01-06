@@ -48,7 +48,7 @@ public class Database   {
 	public Database(Context context, ArrayList<String> databasefilespaths) throws DatabaseException {
 		this.context=context;
 		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
-		String storage= config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		String storage= config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(context));
 		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
 
 		for (String filename : databasefilespaths) {

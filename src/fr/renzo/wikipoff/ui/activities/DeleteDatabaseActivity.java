@@ -67,7 +67,7 @@ public class DeleteDatabaseActivity extends Activity {
 
 	public void deleteDb(String dbtodelete) {
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
-		String storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		String storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
 		File root=new File(storage,this.getString(R.string.DBDir));
 		File db=new File(root,dbtodelete);
 		if (db.exists()) {

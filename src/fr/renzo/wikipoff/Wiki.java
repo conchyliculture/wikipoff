@@ -169,7 +169,7 @@ public class Wiki implements Serializable {
 
 	public boolean isMissing() throws WikiException {
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(context);
-		String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage());
+		String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(context));
 
 		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
 		ArrayList<File> allpaths = new ArrayList<File>(Arrays.asList(rootDbDir.listFiles()));
