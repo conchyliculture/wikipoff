@@ -70,6 +70,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 
 	// Tab back stacks
 	private HashMap<TabType, Stack<String>> backStacks;
+	private SharedPreferences config;
 
 
 
@@ -79,7 +80,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		super.onCreate(savedInstanceState);
 
 		this.app = (WikipOff) getApplication();
-		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(this);
+		config= PreferenceManager.getDefaultSharedPreferences(this);
 		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
 
 		setTitle(getString(R.string.title_manage_wikis));
@@ -134,12 +135,21 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			Intent i2 = new Intent(this, AboutActivity.class);
 			startActivity(i2);
 			return true;
+		case R.id.action_deselect_all_wikis:
+			deSelectAllWilis();
+			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
+	public void deSelectAllWilis() {
+		// TODO: refresh views
+		String key = getString(R.string.config_key_selecteddbfiles);
+		config.edit().putString(key ,null).commit();
+		finish();startActivity(getIntent());
+	}
 
 
 	@Override

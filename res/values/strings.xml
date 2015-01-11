@@ -66,6 +66,8 @@ This file is part of WikipOff.
     <string name="action_manage_databases">Manage Databases/Wikis</string>
     <string name="action_manage_wikis">Manage Wikis</string>
     <string name="action_update_available_wikis_xml">Update Available Wikis from Web</string>
+    <string name="action_deselect_all_wikis">Deselect all Wikis</string>
+    
     <!-- Activity Titles -->
     <string name="title_manage_wikis">Manage your Wikis</string>
     <string name="title_installed_wikis">Downloaded Wikis</string>

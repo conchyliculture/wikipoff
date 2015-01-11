@@ -26,6 +26,12 @@ This file is part of WikipOff.
         android:title="@string/action_update_available_wikis_xml"/>
     
     <item
+        android:id="@+id/action_deselect_all_wikis"
+        android:orderInCategory="150"
+        android:showAsAction="never"
+        android:title="@string/action_deselect_all_wikis"/>
+    
+    <item
         android:id="@+id/action_about"
         android:orderInCategory="200"
         android:showAsAction="never"

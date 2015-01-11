@@ -34,6 +34,8 @@ This file is part of WikipOff.
     <string name="action_about">À propos</string>
     <string name="action_manage_databases">Gérer les Wikis</string>
     <string name="action_update_available_wikis_xml">Actualiser les Wikis disponibles</string>
+    <string name="action_deselect_all_wikis">Déselectionner tous les Wikis</string>
+    
     <!-- Activity Titles -->
     <string name="title_manage_wikis">Gérer les Wikis</string>
     <string name="title_installed_wikis">Wikis installés</string>
