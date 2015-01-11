@@ -27,7 +27,6 @@ import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.WikiDBFile;
 import fr.renzo.wikipoff.WikiDownloadService;
-import fr.renzo.wikipoff.WikiException;
 
 public class WikiAvailableActivity extends Activity implements OnClickListener {
 	@SuppressWarnings("unused")
