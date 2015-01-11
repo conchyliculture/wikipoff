@@ -29,7 +29,7 @@ This file is part of WikipOff.
     <string name="pref_storage_summ">none</string>
     <string name="action_settings">Paramètres</string>
     <string name="action_search">Recherche</string>
-    <string name="action_set_database">Selection du Wiki</string>
+    <string name="action_set_database">Sélection du Wiki</string>
     <string name="action_webbrowser">Accéder à l\'article en ligne</string>
     <string name="action_about">À propos</string>
     <string name="action_manage_databases">Gérer les Wikis</string>
@@ -58,7 +58,7 @@ This file is part of WikipOff.
     <string name="generationDate">Date de création</string>
     <string name="author">&lt;&lt; Auteur &gt;&gt;</string>
     <string name="size">Taille</string>
-    <string name="selectedforreading">Selectioné pour lecture</string>
+    <string name="selectedforreading">Selectionné pour lecture</string>
     <string name="sqlitefiles">Fichiers</string>
     <string name="deleteWiki">Supprimer</string>
     <string name="downloadWiki">Télécharger</string>
