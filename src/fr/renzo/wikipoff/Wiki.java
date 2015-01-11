@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -183,14 +184,8 @@ public class Wiki implements Serializable {
 	public boolean isSelected() {
 		String key =context.getString(R.string.config_key_selecteddbfiles);
 		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
-		ArrayList<String> sel_db=new ArrayList<String>(Arrays.asList(config.getString(key, "").split(",")));
-		if (sel_db.isEmpty())
-			return false;
-		if (sel_db.equals(getDBFilesnamesAsList())) {
-			return true;
-		} else {
-			return false;
-		}
+		HashSet<String> sel_db=new HashSet<String>(Arrays.asList(config.getString(key, "").split(",")));
+		return sel_db.containsAll(getDBFilesnamesAsList());
 	}
 
 	public String getLocalizedGendate() {

@@ -3,6 +3,9 @@ package fr.renzo.wikipoff.ui.activities;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -68,7 +71,7 @@ public class WikiInstalledActivity extends Activity {
 		if(requestCode == WikiManagerActivity.REQUEST_DELETE_CODE) {
 			setResult(resultCode);
 			finish();
-		} 
+		}  
 	}
 
 	private void setDelete() {
@@ -145,11 +148,31 @@ public class WikiInstalledActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				String key = getString(R.string.config_key_selecteddbfiles);
-				ArrayList<String> namelist = wiki.getDBFilesnamesAsList();
-				config.edit().putString(key ,TextUtils.join(",", namelist)).commit();
+				String curseldbs=config.getString(key, null);
+				String newseldbs=config.getString(key, null);
+				ArrayList<String> thisseldbs=wiki.getDBFilesnamesAsList();
+				if (wiki.isSelected()) {
+					selectedforreading.setChecked(false);
+					if (curseldbs != null) {
+						Set<String> curseldbstab = new HashSet<String>(Arrays.asList(curseldbs.split(",")));
+						curseldbstab.removeAll(thisseldbs);
+						newseldbs=TextUtils.join(",",curseldbstab);
+					}
+
+				} else {
+					selectedforreading.setChecked(true);
+					if (curseldbs != null) {
+						Set<String> curseldbstab = new HashSet<String>(Arrays.asList(curseldbs.split(",")));
+						curseldbstab.addAll(thisseldbs);
+						newseldbs=TextUtils.join(",",curseldbstab);
+					} else {
+						newseldbs=TextUtils.join(",",thisseldbs);
+					}
+				}
+
+				config.edit().putString(key ,newseldbs).commit();
 				String key2 = getString(R.string.config_key_should_update_db);
 				config.edit().putBoolean(key2, true).commit();
-				selectedforreading.setChecked(true);
 			}
 		});
 	}
