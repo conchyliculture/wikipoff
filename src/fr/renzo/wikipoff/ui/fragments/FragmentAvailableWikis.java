@@ -19,6 +19,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.ui.activities.WikiAvailableActivity;
+import fr.renzo.wikipoff.ui.activities.WikiInstalledActivity;
 import fr.renzo.wikipoff.ui.activities.WikiManagerActivity;
 
 public class FragmentAvailableWikis extends SherlockListFragment {
@@ -47,7 +48,13 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Wiki wiki = wikis.get(position);
 
-		Intent myIntent = new Intent(getSherlockActivity(), WikiAvailableActivity.class);
+		Intent myIntent;
+		if (wiki.isMissing()) {
+			myIntent = new Intent(getSherlockActivity(), WikiAvailableActivity.class);
+		} else {
+			myIntent = new Intent(getSherlockActivity(), WikiInstalledActivity.class);
+		}
+		
 		myIntent.putExtra("wiki",  wiki);
 		myIntent.putExtra("storage", manageractivity.getStorage());
 		startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
@@ -84,6 +91,7 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 			if(convertView == null){ 
 				convertView = this.inflater.inflate(R.layout.available_wiki_item, parent, false);
 			}
+			
 
 			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
 			header.setText(w.getLanglocal()+"("+w.getLangcode()+")"+" "+w.getType());
