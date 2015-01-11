@@ -146,13 +146,7 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View arg0) {
 
-		boolean missing=true;
-		try {
-			missing = wiki.isMissing();
-		} catch (WikiException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		boolean missing = wiki.isMissing();
 
 		if (missing) {
 			// We can't file the files, so it's not there, we can d/l

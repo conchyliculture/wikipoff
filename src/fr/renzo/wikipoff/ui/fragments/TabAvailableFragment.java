@@ -134,14 +134,10 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		final int index = position;
 		Wiki wiki = this.availablewikis.get(index);
 
-		boolean missing=true;
+		boolean missing = wiki.isMissing();;
 
 		if (! context.isInCurrentDownloads(Integer.valueOf(position))) {
-			try {
-				missing = wiki.isMissing();
-			} catch (WikiException e) {
-				Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-			}
+			
 			if (missing) {
 				// We can't file the files, so it's not there, we can d/l
 				download(index);

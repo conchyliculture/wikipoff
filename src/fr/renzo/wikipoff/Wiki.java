@@ -168,7 +168,7 @@ public class Wiki implements Serializable {
 		return sqlh;
 	}
 
-	public boolean isMissing() throws WikiException {
+	public boolean isMissing() {
 		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(context);
 		String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(context));
 
