@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +24,12 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 	protected static final String TAG = "FragmentInstalledWikis";
 	private WikiManagerActivity manageractivity;
 	private ArrayList<Wiki> wikis;
-	private SharedPreferences config;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		String type = getArguments().getString("type");
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
-		config= PreferenceManager.getDefaultSharedPreferences(manageractivity);
 		this.wikis = manageractivity.getInstalledWikiByTypes(type);
 		setListAdapter(new InstalledWikisListViewAdapter(manageractivity,this.wikis));
 	}
@@ -83,8 +79,6 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 				return -1;
 			}
 		}
-
-
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
