@@ -52,6 +52,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 
 	private View wholeview;
 	private DownloadFile downloadFile;
+	private AvailableWikisListViewAdapter adapter;
 
 	private static int ERROR_URL_NOT_FOUND=0;
 
@@ -61,11 +62,7 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 		context=(ManageDatabasesActivity) getActivity();
 		wholeview=inflater.inflate(R.layout.fragment_tab_available,container, false);
 		//if (savedInstanceState==null) {
-		try {
-			this.availablewikis=loadAvailableDB();
-		} catch (IOException e) {
-			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
-		}
+		
 		availablewikislistview= (ListView) wholeview.findViewById(R.id.availablewikislistview);
 		availablewikislistview.setOnItemClickListener(this);
 		availablewikislistview.setOnItemLongClickListener(new OnItemLongClickListener() {
@@ -81,12 +78,29 @@ public class TabAvailableFragment extends Fragment implements OnItemClickListene
 				return true;
 			}
 		});
-		AvailableWikisListViewAdapter adapter = new AvailableWikisListViewAdapter(getActivity(),  this.availablewikis); 
-		availablewikislistview.setAdapter(adapter);
+		try {
+			this.availablewikis=loadAvailableDB();
+		} catch (IOException e) {
+			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+			adapter = new AvailableWikisListViewAdapter(getActivity(),  this.availablewikis); 
 		//	}
 		return wholeview ;
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		Log.d(TAG,"resumed");
+		try {
+			this.availablewikis=loadAvailableDB();
+		} catch (IOException e) {
+			Toast.makeText(context, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+		this.adapter.notifyDataSetChanged();
+	}
+	
+	
 	private ArrayList<Wiki> loadAvailableDB() throws IOException {
 		InputStream xml = copyXML(getActivity().getString(R.string.available_xml_file));
 		return WikiXMLParser.loadAvailableDBFromXML(context,xml);
