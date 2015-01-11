@@ -52,6 +52,9 @@ public class Database   {
 		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
 
 		for (String filename : databasefilespaths) {
+			if (filename.equals("")) {
+				continue;
+			}
 			this.seldatabasefilespaths.add(new File(rootDbDir,filename).getAbsolutePath());
 		}
 
