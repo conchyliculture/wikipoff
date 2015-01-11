@@ -169,7 +169,9 @@ public class WikiInstalledActivity extends Activity {
 						newseldbs=TextUtils.join(",",thisseldbs);
 					}
 				}
-
+				if (newseldbs.equals("") || newseldbs.equals(",")) {
+					newseldbs = null;
+				}
 				config.edit().putString(key ,newseldbs).commit();
 				String key2 = getString(R.string.config_key_should_update_db);
 				config.edit().putBoolean(key2, true).commit();
