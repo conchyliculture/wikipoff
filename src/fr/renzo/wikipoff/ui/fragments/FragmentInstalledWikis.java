@@ -49,10 +49,6 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 	}
 
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-			manageractivity.refresh_installed_wikis=true;
-	}
-	@Override
 	public void onResume() {
 		super.onResume();
 		((InstalledWikisListViewAdapter) getListView().getAdapter()).notifyDataSetInvalidated();

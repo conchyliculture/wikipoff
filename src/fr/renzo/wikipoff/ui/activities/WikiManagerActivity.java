@@ -56,11 +56,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	private WikipOff app;
 	private String storage;
 
-	public boolean refresh_installed_wikis;
-	public boolean refresh_available_wikis;
-	private ArrayList<Wiki> installed_wikis;
-	private ArrayList<Wiki> available_wikis;
-
 	// god bless https://gist.github.com/andreynovikov/4619215
 	// All this is fragment managing related stuff
 	enum TabType
@@ -103,7 +98,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			backStacks.put(TabType.INSTALLED, new Stack<String>());
 			backStacks.put(TabType.AVAILABLE, new Stack<String>());
 		}
-		this.installed_wikis = getInstalledWikis();
 
 		// Create tabs
 		bar.addTab(bar.newTab().setTag(TabType.INSTALLED).setText("Installed").setTabListener(this));
@@ -150,7 +144,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		config.edit().putString(key ,null).commit();
 		finish();startActivity(getIntent());
 	}
-
 
 	@Override
 	protected void onResume()
@@ -426,9 +419,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			if (result!="") {
 				Toast.makeText(getApplicationContext(), "Error: "+result, Toast.LENGTH_LONG).show();
 			}
-			refresh_available_wikis=true;
 		}
-
 	}
 
 	// current download management
@@ -464,77 +455,67 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 
 	public ArrayList<Wiki> getInstalledWikis(){
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
-		if (this.installed_wikis == null || this.refresh_installed_wikis) {
-			HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
+		HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
 
-			Collection<String> currendl = getCurrentDownloads();
-			for (File f : new File(getStorage(),getString(R.string.DBDir)).listFiles()) {
-				if (! f.getName().endsWith(".sqlite")) {
-					continue;
-				}
-				String name = f.getName();
-				if (name.indexOf("-")>0) {
-					String root_wiki=name.substring(0, name.indexOf("-"));
-					if (multiwikis.containsKey(root_wiki)){
-						Wiki w = multiwikis.get(root_wiki);
-						w.addDBFile(f);
-					} else {
-						try {
-							Wiki w = new Wiki(this, f);
-							multiwikis.put(root_wiki,w);
-						} catch (WikiException e) {
-							Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-						}
-					}
+		Collection<String> currendl = getCurrentDownloads();
+		for (File f : new File(getStorage(),getString(R.string.DBDir)).listFiles()) {
+			if (! f.getName().endsWith(".sqlite")) {
+				continue;
+			}
+			String name = f.getName();
+			if (name.indexOf("-")>0) {
+				String root_wiki=name.substring(0, name.indexOf("-"));
+				if (multiwikis.containsKey(root_wiki)){
+					Wiki w = multiwikis.get(root_wiki);
+					w.addDBFile(f);
 				} else {
 					try {
-						if (! currendl.contains(f.getName())) {
-							Wiki w = new Wiki(this,f);
-							res.add(w);
-						}
+						Wiki w = new Wiki(this, f);
+						multiwikis.put(root_wiki,w);
 					} catch (WikiException e) {
 						Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 					}
 				}
-			}
-			for (Wiki w : multiwikis.values()) {
-				if (! currendl.contains(w.getFilenamesAsString()))
-					res.add(w);
-			}
-
-			Collections.sort(res, new Comparator<Wiki>() {
-				public int compare(Wiki w1, Wiki w2) {
-					if (w1.getLangcode().equals(w2.getLangcode())) {
-						return w1.getGendateAsDate().compareTo(w2.getGendateAsDate());
-					} else {
-						return w1.getLangcode().compareToIgnoreCase(w2.getLangcode());
+			} else {
+				try {
+					if (! currendl.contains(f.getName())) {
+						Wiki w = new Wiki(this,f);
+						res.add(w);
 					}
+				} catch (WikiException e) {
+					Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
 				}
 			}
-					);
-			refresh_installed_wikis = false;
-		} else {
-			res= this.installed_wikis;
 		}
+		for (Wiki w : multiwikis.values()) {
+			if (! currendl.contains(w.getFilenamesAsString()))
+				res.add(w);
+		}
+
+		Collections.sort(res, new Comparator<Wiki>() {
+			public int compare(Wiki w1, Wiki w2) {
+				if (w1.getLangcode().equals(w2.getLangcode())) {
+					return w1.getGendateAsDate().compareTo(w2.getGendateAsDate());
+				} else {
+					return w1.getLangcode().compareToIgnoreCase(w2.getLangcode());
+				}
+			}
+		});
 
 		return res;
 	}
 
 	public ArrayList<Wiki> getAvailableWikis() {
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
-		if (this.available_wikis == null || this.refresh_available_wikis) {
-			InputStream xml;
-			try {
-				xml = copyXML(getString(R.string.available_xml_file));
-				res=  WikiXMLParser.loadAvailableDBFromXML(this,xml);
-			} catch (IOException e) {
-				Toast.makeText(this, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
-				e.printStackTrace();
-			} 
-			refresh_available_wikis=false;
-		} else {
-			return this.available_wikis;
-		}
+		InputStream xml;
+		try {
+			xml = copyXML(getString(R.string.available_xml_file));
+			res=  WikiXMLParser.loadAvailableDBFromXML(this,xml);
+		} catch (IOException e) {
+			Toast.makeText(this, "Problem opening available databases file: "+e.getMessage(), Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		} 
+
 		return res;
 	}
 

@@ -23,7 +23,6 @@ public class FragmentInstalledTypes extends SherlockListFragment {
 		super.onActivityCreated(savedInstanceState);
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
 		this.wikitypes = manageractivity.getInstalledWikiTypes();
-
 		setListAdapter(new ArrayAdapter<String>(manageractivity,
 				android.R.layout.simple_list_item_1,
 				this.wikitypes)
@@ -38,5 +37,4 @@ public class FragmentInstalledTypes extends SherlockListFragment {
 		fragment.setArguments(args);
 		manageractivity.addFragment(fragment);
 	}
-
 }

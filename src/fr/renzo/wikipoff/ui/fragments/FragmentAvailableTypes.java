@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
@@ -21,8 +22,16 @@ public class FragmentAvailableTypes extends SherlockListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
-		this.wikitypes = manageractivity.getAvailableWikiTypes();
+	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		setAdapter();
+	}
+
+	private void setAdapter(){
+		this.wikitypes = manageractivity.getAvailableWikiTypes();
 		setListAdapter(new ArrayAdapter<String>(manageractivity,
 				android.R.layout.simple_list_item_1,
 				this.wikitypes)

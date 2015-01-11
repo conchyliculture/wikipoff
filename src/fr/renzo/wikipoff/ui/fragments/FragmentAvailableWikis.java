@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +26,19 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 	protected static final String TAG = "FragmentAvailableWikis";
 	private WikiManagerActivity manageractivity;
 	private ArrayList<Wiki> wikis;
+	private String type;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		String type = getArguments().getString("type");
+		type = getArguments().getString("type");
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
+	}
+
+	@Override
+	public void onResume() {
+		Log.d(TAG,"resumed");
+		super.onResume();
 		this.wikis = manageractivity.getAvailableWikiByTypes(type);
 		setListAdapter(new AvailableWikisListViewAdapter(manageractivity,this.wikis));
 	}
