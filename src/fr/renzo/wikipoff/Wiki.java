@@ -243,7 +243,7 @@ public class Wiki implements Serializable {
 
 	public int compareWithWiki(Wiki w_tocheck) {
 		Log.d(TAG,"Comparing this: "+this.toString()+" with to_check: "+w_tocheck.toString());
-		if (this.getType().equals(w_tocheck.getType()) && this.getLangcode().equals(w_tocheck.getLangcode()) ){
+		if (this.getType().equalsIgnoreCase(w_tocheck.getType()) && this.getLangcode().equalsIgnoreCase(w_tocheck.getLangcode()) ){
 			// w_tocheck is the same wikicode (lang + type)
 			int res=this.getGendateAsDate().compareTo(w_tocheck.getGendateAsDate());
 			return res;
