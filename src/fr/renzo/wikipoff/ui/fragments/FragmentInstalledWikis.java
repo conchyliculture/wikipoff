@@ -50,15 +50,7 @@ public class FragmentInstalledWikis extends SherlockListFragment {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode >=0 && resultCode < wikis.size()) {
-			Wiki wiki = wikis.get(resultCode);
-			String currseldb = config.getString(getString(R.string.config_key_selecteddbfiles), "");
-			if (wiki.getFilenamesAsString().equals(currseldb)){
-				config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
-			}
-			config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
 			manageractivity.refresh_installed_wikis=true;
-		}
 	}
 	@Override
 	public void onResume() {
