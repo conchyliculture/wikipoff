@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -131,6 +132,9 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			return true;
 		case R.id.action_deselect_all_wikis:
 			deSelectAllWilis();
+			return true;
+		case  android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
 			return true;
 
 		default:
