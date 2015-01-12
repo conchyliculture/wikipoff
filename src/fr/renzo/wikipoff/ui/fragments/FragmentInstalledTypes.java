@@ -3,38 +3,58 @@ package fr.renzo.wikipoff.ui.fragments;
 import java.util.ArrayList;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.app.SherlockFragment;
 
+import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.ui.activities.WikiManagerActivity;
 
-public class FragmentInstalledTypes extends SherlockListFragment {
+public class FragmentInstalledTypes extends SherlockFragment {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "FragmentInstalledTypes";
 	private WikiManagerActivity manageractivity;
 	private ArrayList<String> wikitypes;
-
+	private TextView header;
+	private ListView listView;
+	
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
-		this.wikitypes = manageractivity.getInstalledWikiTypes();
-		setListAdapter(new ArrayAdapter<String>(manageractivity,
+		wikitypes = manageractivity.getInstalledWikiTypes();
+		View resultview = inflater.inflate(R.layout.installed_wiki_fragment, container, false);
+		
+		header =(TextView) resultview.findViewById(R.id.installedHeader);
+		header.setText(manageractivity.getString(R.string.message_select_wiki_type));
+		
+		listView = (ListView) resultview.findViewById(R.id.installedListView);
+		listView.setAdapter(new ArrayAdapter<String>(manageractivity,
 				android.R.layout.simple_list_item_1,
-				this.wikitypes)
+				wikitypes)
 				);
-	}
+		
+		listView.setOnItemClickListener(new OnItemClickListener() {
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		FragmentInstalledWikis fragment = new FragmentInstalledWikis();
-		Bundle args = new Bundle();
-		args.putString("type", this.wikitypes.get(position));
-		fragment.setArguments(args);
-		manageractivity.addFragment(fragment);
-	}
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				FragmentInstalledWikis fragment = new FragmentInstalledWikis();
+				Bundle args = new Bundle();
+				args.putString("type", wikitypes.get(position));
+				fragment.setArguments(args);
+				manageractivity.addFragment(fragment);
+				
+			}
+		});
+		
+        return resultview;
+    }
+
 }

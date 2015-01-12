@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.app.SherlockFragment;
 
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
@@ -21,42 +23,55 @@ import fr.renzo.wikipoff.ui.activities.WikiAvailableActivity;
 import fr.renzo.wikipoff.ui.activities.WikiInstalledActivity;
 import fr.renzo.wikipoff.ui.activities.WikiManagerActivity;
 
-public class FragmentAvailableWikis extends SherlockListFragment {
+public class FragmentAvailableWikis extends SherlockFragment {
 
 	protected static final String TAG = "FragmentAvailableWikis";
 	private WikiManagerActivity manageractivity;
 	private ArrayList<Wiki> wikis;
 	private String type;
+	private TextView header;
+	private ListView listView;
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		type = getArguments().getString("type");
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
+		View resultview = inflater.inflate(R.layout.available_wiki_fragment, container, false);
+
+		header =(TextView) resultview.findViewById(R.id.avaialbleHeader);
+		header.setText(manageractivity.getString(R.string.message_select_wiki));
+
+		listView = (ListView) resultview.findViewById(R.id.availableListView);
+
+		return resultview;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		this.wikis = manageractivity.getAvailableWikiByTypes(type);
-		setListAdapter(new AvailableWikisListViewAdapter(manageractivity,this.wikis));
+		listView.setAdapter(new AvailableWikisListViewAdapter(manageractivity,this.wikis));
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Wiki wiki = wikis.get(position);
+
+				Intent myIntent;
+				if (wiki.isMissing()) {
+					myIntent = new Intent(getSherlockActivity(), WikiAvailableActivity.class);
+				} else {
+					myIntent = new Intent(getSherlockActivity(), WikiInstalledActivity.class);
+				}
+
+				myIntent.putExtra("wiki",  wiki);
+				myIntent.putExtra("storage", manageractivity.storage);
+				startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
+
+			}
+		});
 	}
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		Wiki wiki = wikis.get(position);
-
-		Intent myIntent;
-		if (wiki.isMissing()) {
-			myIntent = new Intent(getSherlockActivity(), WikiAvailableActivity.class);
-		} else {
-			myIntent = new Intent(getSherlockActivity(), WikiInstalledActivity.class);
-		}
-		
-		myIntent.putExtra("wiki",  wiki);
-		myIntent.putExtra("storage", manageractivity.storage);
-		startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
-	}
 	public class AvailableWikisListViewAdapter extends BaseAdapter {
 		private LayoutInflater inflater;
 		private ArrayList<Wiki> data;
@@ -89,7 +104,6 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 			if(convertView == null){ 
 				convertView = this.inflater.inflate(R.layout.available_wiki_item, parent, false);
 			}
-			
 
 			TextView header = (TextView ) convertView.findViewById(R.id.availablewikiheader);
 			header.setText(w.getLanglocal()+"("+w.getLangcode()+")"+" "+w.getType());

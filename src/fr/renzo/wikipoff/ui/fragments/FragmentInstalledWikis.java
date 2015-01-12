@@ -8,46 +8,53 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.app.SherlockFragment;
 
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.ui.activities.WikiInstalledActivity;
 import fr.renzo.wikipoff.ui.activities.WikiManagerActivity;
 
-public class FragmentInstalledWikis extends SherlockListFragment {
+public class FragmentInstalledWikis extends SherlockFragment {
 
 	protected static final String TAG = "FragmentInstalledWikis";
 	private WikiManagerActivity manageractivity;
 	private ArrayList<Wiki> wikis;
+	private String type;
+	private TextView header;
+	private ListView listView;
+
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		String type = getArguments().getString("type");
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		type = getArguments().getString("type");
 		manageractivity = (WikiManagerActivity) getSherlockActivity();
-		this.wikis = manageractivity.getInstalledWikiByTypes(type);
-		setListAdapter(new InstalledWikisListViewAdapter(manageractivity,this.wikis));
-	}
+		wikis = manageractivity.getInstalledWikiByTypes(type);
+		View resultview = inflater.inflate(R.layout.installed_wiki_fragment, container, false);
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		Wiki wiki = wikis.get(position);
+		header =(TextView) resultview.findViewById(R.id.installedHeader);
+		header.setText(manageractivity.getString(R.string.message_select_wiki));
 
-		Intent myIntent = new Intent(getSherlockActivity(), WikiInstalledActivity.class);
-		myIntent.putExtra("wiki",  wiki);
-		myIntent.putExtra("position",position);
-		startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
-	}
+		listView = (ListView) resultview.findViewById(R.id.installedListView);
+		listView.setAdapter(new InstalledWikisListViewAdapter(manageractivity,wikis));
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Wiki wiki = wikis.get(position);
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		((InstalledWikisListViewAdapter) getListView().getAdapter()).notifyDataSetInvalidated();
+				Intent myIntent = new Intent(getSherlockActivity(), WikiInstalledActivity.class);
+				myIntent.putExtra("wiki",  wiki);
+				myIntent.putExtra("position",position);
+				startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
+			}
+		});
+		return resultview;
 	}
 
 	public class InstalledWikisListViewAdapter extends BaseAdapter {
