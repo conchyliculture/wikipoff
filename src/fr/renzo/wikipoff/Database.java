@@ -182,6 +182,7 @@ public class Database   {
 	}
 
 	public List<String> getRandomTitles() throws DatabaseException {
+		// TODO settings for R.integer.def_random_list_nb
 		int nb=context.getResources().getInteger(R.integer.def_random_list_nb);
 		return getRandomTitles(nb);
 	}
