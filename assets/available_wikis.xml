@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
     <wiki>
-        <type>wikipedia</type>
+        <type>Wikipedia</type>
         <lang-code>fr</lang-code>
         <lang-english>French</lang-english>
         <lang-local>Français</lang-local>
@@ -18,7 +18,7 @@
         
     </wiki>
     <wiki>
-        <type>wikipedia</type>
+        <type>Wikipedia</type>
         <lang-code>eu</lang-code>
         <lang-english>Basque</lang-english>
         <lang-local>Euskara</lang-local>
@@ -51,7 +51,7 @@
         <version>2.5</version>
     </wiki>
     <wiki>
-        <type>wikipedia</type>
+        <type>Wikipedia</type>
         <lang-code>it</lang-code>
         <lang-english>Italian</lang-english>
         <lang-local>Italiano</lang-local>
@@ -67,7 +67,7 @@
         <version>2.5</version>
     </wiki>
     <wiki>
-        <type>wikipedia</type>
+        <type>Wikipedia</type>
         <lang-code>en</lang-code>
         <lang-english>English</lang-english>
         <lang-local>English</lang-local>
