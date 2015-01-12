@@ -111,14 +111,18 @@ public class MainActivity extends SherlockActivity {
 
 	} 
 
+	private void startArticleActivity(CharSequence title) {
+		Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
+		myIntent.putExtra("article_title",  title);
+//		myIntent.putExtra("wikisource",  wikisource); no can do =(
+		MainActivity.this.startActivity(myIntent);
+	}
 
 	public class RandomItemClickListener implements OnItemClickListener {
 		// Handles clicks on an item in the random article list
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
-			myIntent.putExtra("article_title",  (String) randomlistview.getItemAtPosition(position));
-			MainActivity.this.startActivity(myIntent);
+			startArticleActivity((String) randomlistview.getItemAtPosition(position));
 		}
 	}
 
@@ -127,18 +131,12 @@ public class MainActivity extends SherlockActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Cursor c = (Cursor) parent.getItemAtPosition(position);
-			displayArticle(c.getString(1));
-		}
-
-		private void displayArticle(String q){
-			Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
-			myIntent.putExtra("article_title",q );
-			MainActivity.this.startActivity(myIntent);
+			startArticleActivity(c.getString(1));
 		}
 
 		@Override
 		public boolean onEditorAction(TextView view, int arg1, KeyEvent arg2) {
-			displayArticle(view.getText().toString());
+			startArticleActivity(view.getText());
 			return true;
 		}
 	}
