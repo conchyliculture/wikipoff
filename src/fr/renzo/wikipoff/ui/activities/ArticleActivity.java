@@ -88,8 +88,8 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_manage_databases:
-			Intent ami = new Intent(this, ManageDatabasesActivity.class);
+		case R.id.action_manage_wikis:
+			Intent ami = new Intent(this, WikiManagerActivity.class);
 			startActivity(ami);
 			return true;
 		case R.id.action_settings:

@@ -83,7 +83,7 @@ public class WikiInstalledActivity extends Activity {
 				Intent outputintent = new Intent(WikiInstalledActivity.this, DeleteDatabaseActivity.class);
 				outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
 				outputintent.putExtra("dbtodeleteposition", position);
-				startActivityForResult(outputintent,ManageDatabasesActivity.REQUEST_DELETE_CODE);
+				startActivityForResult(outputintent,WikiManagerActivity.REQUEST_DELETE_CODE);
 
 			}
 		});

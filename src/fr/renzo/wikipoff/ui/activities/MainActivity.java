@@ -190,10 +190,6 @@ public class MainActivity extends SherlockActivity {
 			Intent i = new Intent(this, SettingsActivity.class);
 			startActivity(i);
 			return true;
-		case R.id.action_manage_databases:
-			Intent i1 = new Intent(this, ManageDatabasesActivity.class);
-			startActivity(i1);
-			return true;
 		case R.id.action_manage_wikis:
 			Intent i3 = new Intent(this, WikiManagerActivity.class);
 			startActivity(i3);

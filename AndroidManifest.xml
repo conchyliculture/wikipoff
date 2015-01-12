@@ -80,11 +80,6 @@ This file is part of WikipOff.
             android:label="aboutactivity" >
         </activity>
         <activity
-            android:name="fr.renzo.wikipoff.ui.activities.StopDownloadActivity"
-            android:theme="@android:style/Theme.Dialog"
-            android:label="stopdownloadactivity" >
-        </activity>
-        <activity
             android:name="fr.renzo.wikipoff.ui.activities.DeleteDatabaseActivity"
             android:theme="@android:style/Theme.Dialog"
             android:label="deletedatabaseactivity" >
