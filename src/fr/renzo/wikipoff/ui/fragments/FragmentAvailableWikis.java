@@ -54,7 +54,7 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 		}
 		
 		myIntent.putExtra("wiki",  wiki);
-		myIntent.putExtra("storage", manageractivity.getStorage());
+		myIntent.putExtra("storage", manageractivity.storage);
 		startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
 	}
 	public class AvailableWikisListViewAdapter extends BaseAdapter {

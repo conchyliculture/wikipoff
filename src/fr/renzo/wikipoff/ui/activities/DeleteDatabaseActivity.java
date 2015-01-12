@@ -16,24 +16,24 @@ import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.StorageUtils;
 
 public class DeleteDatabaseActivity extends Activity {
-	
+
 	@SuppressWarnings("unused")
 	private static final String TAG = "DeleteDatabaseActivity";
 	private ArrayList<String> dbtodelete;
 	private int dbtodeleteposition;
 	private SharedPreferences config;
-	
+
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		config = PreferenceManager.getDefaultSharedPreferences(this);
-		
+
 		Intent i =getIntent();
 		if (i.getExtras()!= null) {
 			this.dbtodelete = i.getStringArrayListExtra("dbtodelete");
 			this.dbtodeleteposition = i.getIntExtra("dbtodeleteposition", -1);
 		}
-		
+
 		setTitle(getString(R.string.message_warning));
 		setContentView(R.layout.alert_dialog);
 		TextView msg = (TextView) findViewById(R.id.message);
@@ -45,10 +45,10 @@ public class DeleteDatabaseActivity extends Activity {
 		bno.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				byebye();
+				finish();
 			}
 		});
-		
+
 		Button byes = (Button) findViewById(R.id.okbutton);
 		byes.setText(getString(R.string.yes));
 		byes.setOnClickListener(new OnClickListener() {
@@ -59,7 +59,7 @@ public class DeleteDatabaseActivity extends Activity {
 					deleteDb(db);
 				setResult(dbtodeleteposition);
 				config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
-				byebye();
+				finish();
 			}
 		});
 
@@ -73,10 +73,6 @@ public class DeleteDatabaseActivity extends Activity {
 		if (db.exists()) {
 			db.delete();
 		}
-		
-	}
-	private void byebye(){
-		
-		this.finish();
+
 	}
 }

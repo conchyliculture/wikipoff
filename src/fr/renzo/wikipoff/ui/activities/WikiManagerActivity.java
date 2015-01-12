@@ -55,7 +55,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	public static final int REQUEST_DELETE_CODE = 1001;
 
 	private WikipOff app;
-	private String storage;
+	public String storage;
 
 	// god bless https://gist.github.com/andreynovikov/4619215
 	// All this is fragment managing related stuff
@@ -143,7 +143,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	}
 
 	public void deSelectAllWilis() {
-		// TODO: refresh views
 		String key = getString(R.string.config_key_selecteddbfiles);
 		config.edit().putString(key ,null).commit();
 		finish();startActivity(getIntent());
@@ -365,7 +364,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		AssetManager am = getAssets();
 		try {
 			InputStream in = am.open(xml);
-			File outFile = new File(getStorage(),getString(R.string.available_xml_file_external_path));
+			File outFile = new File(storage,getString(R.string.available_xml_file_external_path));
 			if (!outFile.exists()) {
 				FileOutputStream out = new FileOutputStream(outFile);
 
@@ -462,7 +461,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
 
 		Collection<String> currendl = getCurrentDownloads();
-		for (File f : new File(getStorage(),getString(R.string.DBDir)).listFiles()) {
+		for (File f : new File(storage,getString(R.string.DBDir)).listFiles()) {
 			if (! f.getName().endsWith(".sqlite")) {
 				continue;
 			}
@@ -521,10 +520,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		} 
 
 		return res;
-	}
-
-	public String getStorage() {
-		return this.storage;
 	}
 
 	public ArrayList<String> getInstalledWikiTypes() {
