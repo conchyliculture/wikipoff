@@ -64,6 +64,14 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 		/* registering our Broadcast receiver to listen action*/
 		registerReceiver(progressReceiver, intentFilter);
 	}
+	
+
+	@Override
+	protected void onStop()
+	{
+	    unregisterReceiver(progressReceiver);
+	    super.onStop();
+	}
 
 	private void setViews() {
 		setIcon();
