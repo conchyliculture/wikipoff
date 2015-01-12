@@ -47,7 +47,7 @@ This file is part of WikipOff.
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:gravity="center_vertical"
-                android:text="BBOF" />
+                android:text="" />
         </RelativeLayout>
 
         <LinearLayout
