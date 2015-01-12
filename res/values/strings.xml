@@ -128,5 +128,6 @@ This file is part of WikipOff.
     <string name="message_available_wiki_equal">installed</string>
     <string name="message_available_wiki_older">update available</string>
     <string name="message_available_wiki_newer">installed (current is newer)</string>
-
+    <string name="message_select_wiki_type">Select Wiki type :</string>
+    <string name="message_select_wiki">Select Wiki :</string>
 </resources>
