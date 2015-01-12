@@ -58,19 +58,16 @@ This file is part of WikipOff.
             android:name="android.support.PARENT_ACTIVITY"
             android:value="fr.renzo.wikipoff.ui.activities.MainActivity" />
         </activity>
-         <activity
-            android:name="fr.renzo.wikipoff.ui.activities.ManageDatabasesActivity"
-            android:label="managedatabasesactivity">
-        </activity>
+
         <activity
             android:name="fr.renzo.wikipoff.ui.activities.WikiManagerActivity"
             android:label="wikimanageractivity"
-             android:parentActivityName="fr.renzo.wikipoff.ui.activities.MainActivity">
+            android:parentActivityName="fr.renzo.wikipoff.ui.activities.MainActivity">
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value="fr.renzo.wikipoff.ui.activities.MainActivity" />
-            <meta-data android:name="android.support.UI_OPTIONS"
-           android:value="splitActionBarWhenNarrow" />
+            <!--  meta-data android:name="android.support.UI_OPTIONS"
+           android:value="splitActionBarWhenNarrow" /-->
             
         </activity>
                 

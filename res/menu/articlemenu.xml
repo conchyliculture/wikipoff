@@ -20,7 +20,7 @@ This file is part of WikipOff.
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_manage_databases"
+        android:id="@+id/action_manage_wikis"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_manage_databases"/>
