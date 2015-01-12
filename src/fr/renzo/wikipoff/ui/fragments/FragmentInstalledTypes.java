@@ -33,7 +33,7 @@ public class FragmentInstalledTypes extends SherlockFragment {
 		View resultview = inflater.inflate(R.layout.installed_wiki_fragment, container, false);
 		
 		header =(TextView) resultview.findViewById(R.id.installedHeader);
-		header.setText(manageractivity.getString(R.string.message_select_wiki_type));
+		header.setText(manageractivity.getString(R.string.message_select_installed_wiki_type));
 		
 		listView = (ListView) resultview.findViewById(R.id.installedListView);
 		listView.setAdapter(new ArrayAdapter<String>(manageractivity,

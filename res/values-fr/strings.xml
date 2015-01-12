@@ -86,6 +86,13 @@ This file is part of WikipOff.
     <string name="message_cant_create_in_storage">Impossible de créer %1$s. Merci de sélectionner un autre point de stockage.</string>
     <string name="message_delete_db">Êtes-vous sûr de vouloir supprimer %1$s ?</string>
     <string name="message_storage_warning">Si vous modifiez ce paramètre, vous devrez certainement déplacer les Wikis déjà installés manuellement (avec adb ou un gestionnaire de fichier), ou Wikipoff ne pourra plus les trouver.</string>
+    <string name="message_available_wiki_equal">installé</string>
+    <string name="message_available_wiki_older">mise à jour dispo.</string>
+    <string name="message_available_wiki_newer">installé (et plus récent)</string>
+    <string name="message_select_available_wiki_type">Choisir un type de Wiki à installer :</string>
+    <string name="message_select_available_wiki">Choisir un Wiki à installer :</string>
+    <string name="message_select_installed_wiki_type">Choisir un type de Wiki :</string>
+    <string name="message_select_installed_wiki">Choisir un type de Wiki :</string>
     
     <string name="html_message_no_article">&lt;h2&gt;Impossible de trouver l\'article \'%1$s\' =( &lt;/h2&gt;&lt;br/&gt;La page Wiki correspondante n\'a peut-être pas été créée.</string>
 

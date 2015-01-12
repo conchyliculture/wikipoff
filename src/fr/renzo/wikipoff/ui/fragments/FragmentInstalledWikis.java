@@ -39,7 +39,7 @@ public class FragmentInstalledWikis extends SherlockFragment {
 		View resultview = inflater.inflate(R.layout.installed_wiki_fragment, container, false);
 
 		header =(TextView) resultview.findViewById(R.id.installedHeader);
-		header.setText(manageractivity.getString(R.string.message_select_wiki));
+		header.setText(manageractivity.getString(R.string.message_select_installed_wiki));
 
 		listView = (ListView) resultview.findViewById(R.id.installedListView);
 		listView.setAdapter(new InstalledWikisListViewAdapter(manageractivity,wikis));

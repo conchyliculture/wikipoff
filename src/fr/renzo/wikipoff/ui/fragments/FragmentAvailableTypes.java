@@ -31,7 +31,7 @@ public class FragmentAvailableTypes extends SherlockFragment {
 		View resultview = inflater.inflate(R.layout.available_wiki_fragment, container, false);
 		
 		header =(TextView) resultview.findViewById(R.id.avaialbleHeader);
-		header.setText(manageractivity.getString(R.string.message_select_wiki_type));
+		header.setText(manageractivity.getString(R.string.message_select_available_wiki_type));
 		
 		listView = (ListView) resultview.findViewById(R.id.availableListView);
 		

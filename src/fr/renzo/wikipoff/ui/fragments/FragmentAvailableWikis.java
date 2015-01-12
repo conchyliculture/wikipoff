@@ -39,7 +39,7 @@ public class FragmentAvailableWikis extends SherlockFragment {
 		View resultview = inflater.inflate(R.layout.available_wiki_fragment, container, false);
 
 		header =(TextView) resultview.findViewById(R.id.avaialbleHeader);
-		header.setText(manageractivity.getString(R.string.message_select_wiki));
+		header.setText(manageractivity.getString(R.string.message_select_available_wiki));
 
 		listView = (ListView) resultview.findViewById(R.id.availableListView);
 
