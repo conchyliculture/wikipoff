@@ -99,13 +99,13 @@ public class FragmentAvailableWikis extends SherlockListFragment {
 			int isLocalWikiNewer = manageractivity.alreadyDownloaded(w);
 			switch (isLocalWikiNewer) {
 			case Wiki.WIKIEQUAL:
-				infos.setText(" *installed*");
+				infos.setText(" *"+manageractivity.getString(R.string.message_available_wiki_equal)+"*");
 				break;
-			case Wiki.WIKIOLDER:
-				infos.setText(" *updated*");
+			case Wiki.WIKIOLDER: // Wiki on SD is older
+				infos.setText(" *"+manageractivity.getString(R.string.message_available_wiki_older)+"*");
 				break;
-			case Wiki.WIKINEWER:
-				infos.setText(" *older than yours*");
+			case Wiki.WIKINEWER: // Wiki on SD is newer
+				infos.setText(" *"+manageractivity.getString(R.string.message_available_wiki_newer)+"*");
 				break;
 			}
 			bot.setText(bottext);

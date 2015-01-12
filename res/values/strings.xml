@@ -125,6 +125,8 @@ This file is part of WikipOff.
     <string name="message_storage_warning">If you modifying this setting, you may have to move your already installed Wikis by hand (with adb, or a File Manager App), or Wikipoff won\'t be able to find them.</string>
     <string name="html_message_no_article">&lt;h2&gt;No article \'%1$s\' found =( &lt;/h2&gt;&lt;br/&gt;Article may not exist yet.</string>
     <string name="database_corrupted">DB is corrupted</string>
-    
+    <string name="message_available_wiki_equal">installed</string>
+    <string name="message_available_wiki_older">update available</string>
+    <string name="message_available_wiki_newer">installed (current is newer)</string>
 
 </resources>
