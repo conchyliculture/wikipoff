@@ -168,19 +168,10 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 			})
 			.setIcon(android.R.drawable.ic_dialog_alert)
 			.show();
-			//			} else {
-			//				Toast.makeText(this, getString(R.string.message_wiki_already_installed), Toast.LENGTH_LONG).show();
-			//			}
-
 		}
-
 	}
 
 	private void download() {
-		//		if (context.isInCurrentDownloads(Integer.valueOf(position))) {
-		//			Toast.makeText(context, getString(R.string.message_download_already_running), Toast.LENGTH_LONG).show();
-		//		} else {
-
 		ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		int nb_of_files= wiki.getFilenamesAsString().split("\\+").length;
@@ -236,14 +227,6 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 
 	}
 	private void do_download() {
-		//View v = availablewikislistview.getChildAt(position);
-		//		context.addToCurrentDownloads(Integer.valueOf(position),wiki.getFilenamesAsString());
-		//		if (v!=null) {
-		//			ProgressBar pb = (ProgressBar) v.findViewById(R.id.downloadprogress);
-		//			pb.setVisibility(View.VISIBLE);
-		//		}
-		//		this.downloadFile = new DownloadFile();
-		//		downloadFile.execute(wiki,Integer.valueOf(position));
 		pb.setVisibility(View.VISIBLE);
 		downloadbutton.setVisibility(View.INVISIBLE);
 		for(WikiDBFile wdbf : wiki.getDBFiles()) {
@@ -295,6 +278,4 @@ public class WikiAvailableActivity extends Activity implements OnClickListener {
 			}
 		}
 	};
-
-
 }

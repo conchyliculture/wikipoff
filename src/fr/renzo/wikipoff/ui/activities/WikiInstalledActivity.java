@@ -32,8 +32,6 @@ public class WikiInstalledActivity extends Activity {
 	private CheckedTextView selectedforreading;
 	private int position;
 
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -138,7 +136,6 @@ public class WikiInstalledActivity extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
 	}
 

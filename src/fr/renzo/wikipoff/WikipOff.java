@@ -65,7 +65,6 @@ public class WikipOff extends Application {
 						this.dbHandler = new Database(this,seldb);
 					} catch (DatabaseException e) {
 						Builder b = e.alertUser(context);
-						b.setCancelable(false);
 						b.setOnCancelListener(new OnCancelListener() {
 							@Override
 							public void onCancel(DialogInterface dialog) {

@@ -107,8 +107,4 @@ public class SettingsActivity extends PreferenceActivity {
 		return res;
 	}
 
-
-
-
-
 }
