@@ -28,6 +28,13 @@ This file is part of WikipOff.
         android:id="@+id/article_webview"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="ifContentScrolls" />
+        android:overScrollMode="ifContentScrolls"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
 </LinearLayout>

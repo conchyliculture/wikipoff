@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -75,9 +76,14 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 
 		Intent source_intent = getIntent();
 		wanted_title = source_intent.getStringExtra("article_title");
-		this.article = dbHandler.searchArticleFromTitle(wanted_title);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				article = dbHandler.searchArticleFromTitle(wanted_title);
+				updateViews();
+			} 	
+		}).start();
 
-		showHTML();
 	}
 
 	private void displayNewArticle(String title) {
@@ -139,6 +145,14 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 		return true;
 	}
 
+	private void updateViews() {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				showHTML();
+			}
+		});
+	}
 
 
 	private void showHTML() {
@@ -175,6 +189,7 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 		}
 		data+="</body></html>";
 		this.webview.loadDataWithBaseURL("file:///android-assets", data, "text/html","UTF-8",null);
+		this.webview.setVisibility(View.VISIBLE);
 	}
 
 	private String capitalize(String text){
@@ -186,5 +201,6 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 		}
 		return res;
 	}
+
 
 }
