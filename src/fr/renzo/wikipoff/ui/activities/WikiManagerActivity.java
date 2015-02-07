@@ -39,6 +39,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
 import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 
+import fr.renzo.wikipoff.ConfigManager;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.StorageUtils;
 import fr.renzo.wikipoff.Wiki;
@@ -143,9 +144,9 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	}
 
 	public void deSelectAllWilis() {
-		String key = getString(R.string.config_key_selecteddbfiles);
-		config.edit().putString(key ,null).commit();
-		finish();startActivity(getIntent());
+		ConfigManager.clearSelectedDBFiles(this);
+		finish();
+		startActivity(getIntent());
 	}
 
 	@Override

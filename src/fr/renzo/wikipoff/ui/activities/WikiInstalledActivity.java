@@ -2,25 +2,19 @@ package fr.renzo.wikipoff.ui.activities;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import fr.renzo.wikipoff.ConfigManager;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 
@@ -28,7 +22,6 @@ public class WikiInstalledActivity extends Activity {
 	@SuppressWarnings("unused")
 	private static final String TAG = "WikiInstalledActivity";
 	private Wiki wiki;
-	private SharedPreferences config;
 	private CheckedTextView selectedforreading;
 	private int position;
 
@@ -36,8 +29,6 @@ public class WikiInstalledActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_installed_wiki);
-
-		config = PreferenceManager.getDefaultSharedPreferences(this);
 
 		Intent intent = getIntent();
 		this.position = intent.getIntExtra("position", -1);
@@ -82,6 +73,7 @@ public class WikiInstalledActivity extends Activity {
 				outputintent.putStringArrayListExtra("dbtodelete", wiki.getDBFilesnamesAsList());
 				outputintent.putExtra("dbtodeleteposition", position);
 				startActivityForResult(outputintent,WikiManagerActivity.REQUEST_DELETE_CODE);
+				ConfigManager.removeFromSelectedDBs(WikiInstalledActivity.this, wiki);
 
 			}
 		});
@@ -140,38 +132,17 @@ public class WikiInstalledActivity extends Activity {
 	}
 
 	private void setSelected() {
-		selectedforreading.setChecked(wiki.isSelected());
+		selectedforreading.setChecked(ConfigManager.isInSelectedDBs(WikiInstalledActivity.this,wiki));
 		selectedforreading.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String key = getString(R.string.config_key_selecteddbfiles);
-				String curseldbs=config.getString(key, null);
-				String newseldbs=config.getString(key, null);
-				ArrayList<String> thisseldbs=wiki.getDBFilesnamesAsList();
-				if (wiki.isSelected()) {
+				if (ConfigManager.isInSelectedDBs(WikiInstalledActivity.this,wiki)) {
 					selectedforreading.setChecked(false);
-					if (curseldbs != null) {
-						Set<String> curseldbstab = new HashSet<String>(Arrays.asList(curseldbs.split(",")));
-						curseldbstab.removeAll(thisseldbs);
-						newseldbs=TextUtils.join(",",curseldbstab);
-					}
-
+					ConfigManager.removeFromSelectedDBs(WikiInstalledActivity.this, wiki);
 				} else {
 					selectedforreading.setChecked(true);
-					if (curseldbs != null) {
-						Set<String> curseldbstab = new HashSet<String>(Arrays.asList(curseldbs.split(",")));
-						curseldbstab.addAll(thisseldbs);
-						newseldbs=TextUtils.join(",",curseldbstab);
-					} else {
-						newseldbs=TextUtils.join(",",thisseldbs);
-					}
+					ConfigManager.addToSelectedDBs(WikiInstalledActivity.this, wiki);
 				}
-				if (newseldbs.equals("") || newseldbs.equals(",")) {
-					newseldbs = null;
-				}
-				config.edit().putString(key ,newseldbs).commit();
-				String key2 = getString(R.string.config_key_should_update_db);
-				config.edit().putBoolean(key2, true).commit();
 			}
 		});
 	}

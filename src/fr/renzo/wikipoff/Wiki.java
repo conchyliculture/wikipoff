@@ -181,12 +181,6 @@ public class Wiki implements Serializable {
 		return (! allnames.containsAll(getDBFilesnamesAsList()));
 	}
 
-	public boolean isSelected() {
-		String key =context.getString(R.string.config_key_selecteddbfiles);
-		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
-		HashSet<String> sel_db=new HashSet<String>(Arrays.asList(config.getString(key, "").split(",")));
-		return sel_db.containsAll(getDBFilesnamesAsList());
-	}
 
 	public String getLocalizedGendate() {
 		DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);

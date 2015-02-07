@@ -34,6 +34,7 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import fr.renzo.wikipoff.ConfigManager;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.StorageUtils;
 import fr.renzo.wikipoff.StorageUtils.StorageInfo;
@@ -89,8 +90,7 @@ public class SettingsActivity extends PreferenceActivity {
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				String newStorage = (String)newValue;
 				myPref.setSummary(newStorage);
-				config.edit().putBoolean(getString(R.string.config_key_should_update_db), true).commit();
-				config.edit().remove(getString(R.string.config_key_selecteddbfiles)).commit();
+				ConfigManager.clearSelectedDBFiles(SettingsActivity.this);
 				return true;
 			}
 		});

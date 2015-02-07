@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import fr.renzo.wikipoff.ConfigManager;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.ui.activities.WikiInstalledActivity;
@@ -99,7 +100,7 @@ public class FragmentInstalledWikis extends SherlockFragment {
 			TextView bot = (TextView ) convertView.findViewById(R.id.installedwikifooter);
 			bot.setText(w.getFilenamesAsString()+" "+w.getLocalizedGendate());
 			TextView rb = (TextView) convertView.findViewById(R.id.checked);
-			if (w.isSelected()){
+			if (ConfigManager.isInSelectedDBs(manageractivity, w)){
 				rb.setText("\u2713");
 			}			
 			return convertView;

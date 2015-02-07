@@ -18,7 +18,7 @@ This file is part of WikipOff.
     You should have received a copy of the GNU General Public License
     along with WikipOff.  If not, see <http://www.gnu.org/licenses/>.
 
-*/
+ */
 package fr.renzo.wikipoff;
 
 import java.io.File;
@@ -37,50 +37,48 @@ import fr.renzo.wikipoff.Database.DatabaseException;
 
 public class WikipOff extends Application {
 
-    @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private static final String TAG = "WikipOff";
-    public static SharedPreferences config;
+	public static SharedPreferences config;
 	public File DBDir;
 	private Database dbHandler;
 	public HashMap<Integer,String> currentdownloads=new HashMap<Integer,String>();
-	
-    public void onCreate(){
-    	super.onCreate();
-    	
-    	
-    	config = PreferenceManager.getDefaultSharedPreferences(this);  	
-    }
-    
-    public Database getDatabaseHandler(Context context) {
 
-			String tosplit = config.getString(s(R.string.config_key_selecteddbfiles),null );
+	public void onCreate(){
+		super.onCreate();
 
-			if (tosplit!=null) {
-				ArrayList<String> seldb = new ArrayList<String>(Arrays.asList(tosplit.split(",")));
-				boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
-				if ((this.dbHandler == null ) || (new_db)){
-					if (this.dbHandler!=null)
-						this.dbHandler.close();
-					try {
-						this.dbHandler = new Database(this,seldb);
-					} catch (DatabaseException e) {
-						Builder b = e.alertUser(context);
-						b.setOnCancelListener(new OnCancelListener() {
-							@Override
-							public void onCancel(DialogInterface dialog) {
-								
-							}  //onCancel
-						}); //setOnCancelListener
-					}
-					config.edit().remove(s(R.string.config_key_should_update_db)).commit();
+
+		config = PreferenceManager.getDefaultSharedPreferences(this);  	
+	}
+
+	public Database getDatabaseHandler(Context context) {
+
+		ArrayList<String> seldb = ConfigManager.getSelectedDBFilesAsList(context);
+		
+		if (seldb==null) {
+			return null;
+		} else {
+			boolean new_db = config.getBoolean(s(R.string.config_key_should_update_db), false);
+			if ((this.dbHandler == null ) || (new_db)){
+				if (this.dbHandler!=null)
+					this.dbHandler.close();
+				try {
+					this.dbHandler = new Database(this,seldb);
+				} catch (DatabaseException e) {
+					Builder b = e.alertUser(context);
+					b.setOnCancelListener(new OnCancelListener() {
+						@Override
+						public void onCancel(DialogInterface dialog) {}
+					});
 				}
-			}	else {
-				return null;
+				config.edit().remove(s(R.string.config_key_should_update_db)).commit();
 			}
+		}
+		
 		return this.dbHandler;
-    }
-	
-    private  String s(int i) {
+	}
+
+	private  String s(int i) {
 		return this.getString(i);
 	}
 }
