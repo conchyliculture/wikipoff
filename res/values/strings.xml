@@ -132,4 +132,5 @@ This file is part of WikipOff.
     <string name="message_select_available_wiki">Select a new Wiki :</string>
     <string name="message_select_installed_wiki_type">Select installed Wiki type :</string>
     <string name="message_select_installed_wiki">Select installed Wiki :</string>
+    <string name="message_no_installed_wiki_type">No installed Wiki found</string>
 </resources>

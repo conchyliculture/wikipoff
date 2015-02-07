@@ -93,6 +93,8 @@ This file is part of WikipOff.
     <string name="message_select_available_wiki">Choisir un Wiki à installer :</string>
     <string name="message_select_installed_wiki_type">Choisir un type de Wiki :</string>
     <string name="message_select_installed_wiki">Choisir un type de Wiki :</string>
+    <string name="message_no_installed_wiki_type">Aucun Wiki installé</string>
+    
     
     <string name="html_message_no_article">&lt;h2&gt;Impossible de trouver l\'article \'%1$s\' =( &lt;/h2&gt;&lt;br/&gt;La page Wiki correspondante n\'a peut-être pas été créée.</string>
 
