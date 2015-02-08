@@ -58,14 +58,16 @@ public class FragmentAvailableWikis extends SherlockFragment {
 				Wiki wiki = wikis.get(position);
 
 				Intent myIntent;
-				if (wiki.isMissing()) {
-					myIntent = new Intent(getSherlockActivity(), WikiAvailableActivity.class);
-				} else {
+				boolean installed = manageractivity.isInstalledWiki(wiki);
+				if ( installed ) {
 					myIntent = new Intent(getSherlockActivity(), WikiInstalledActivity.class);
+				} else {
+					myIntent = new Intent(getSherlockActivity(), WikiAvailableActivity.class);
 				}
 
 				myIntent.putExtra("wiki",  wiki);
 				myIntent.putExtra("storage", manageractivity.storage);
+				myIntent.putExtra("installed", manageractivity.isInstalledWiki(wiki));
 				startActivityForResult(myIntent,WikiManagerActivity.REQUEST_DELETE_CODE);
 
 			}
@@ -123,6 +125,8 @@ public class FragmentAvailableWikis extends SherlockFragment {
 				break;
 			}
 			bot.setText(bottext);
+			if (manageractivity.isInCurrentDownloads(w.getFilenamesAsString()))
+				bot.setText("*dlingù");
 
 			ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.downloadprogress);
 			if (manageractivity.isInCurrentDownloads(Integer.valueOf(position))) {

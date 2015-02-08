@@ -41,12 +41,10 @@ public class WikipOff extends Application {
 	public static SharedPreferences config;
 	public File DBDir;
 	private Database dbHandler;
-	public HashMap<Integer,String> currentdownloads=new HashMap<Integer,String>();
+	public HashMap<Long,String> currentdownloads=new HashMap<Long,String>();
 
 	public void onCreate(){
 		super.onCreate();
-
-
 		config = PreferenceManager.getDefaultSharedPreferences(this);  	
 	}
 
@@ -80,4 +78,5 @@ public class WikipOff extends Application {
 	private  String s(int i) {
 		return this.getString(i);
 	}
+	
 }

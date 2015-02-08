@@ -7,7 +7,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.Iterator;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -172,19 +172,27 @@ public class Wiki implements Serializable {
 		SQLiteDatabase sqlh=SQLiteDatabase.openDatabase(sqlitefile.getAbsolutePath(), null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS );
 		return sqlh;
 	}
-
-	public boolean isMissing() {
-		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(context);
-		String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(context));
-
-		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
-		ArrayList<File> allpaths = new ArrayList<File>(Arrays.asList(rootDbDir.listFiles()));
-		ArrayList<String> allnames = new ArrayList<String>();
-		for(File i : allpaths) {
-			allnames.add(i.getName());
-		}
-		return (! allnames.containsAll(getDBFilesnamesAsList()));
-	}
+//
+//	public boolean isMissing() {
+//		SharedPreferences config= PreferenceManager.getDefaultSharedPreferences(context);
+//		String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(context));
+//
+//		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
+//		ArrayList<File> allpaths = new ArrayList<File>(Arrays.asList(rootDbDir.listFiles()));
+//		ArrayList<String> allnames = new ArrayList<String>();
+//		for(File i : allpaths) {
+//			allnames.add(i.getName());
+//		}
+//		if (! allnames.containsAll(getDBFilesnamesAsList()))
+//			return false;
+//		for (Iterator iterator = getDBFilesasFilesList().iterator(); iterator.hasNext();) {
+//			File file = (File) iterator.next();
+//			this.openDB(file);
+//			Log.d(TAG,"opened "+file);
+//		}
+//		Log.d(TAG,"all is well");
+//		return true;
+//	}
 
 
 	public String getLocalizedGendate() {
@@ -286,6 +294,19 @@ public class Wiki implements Serializable {
 	public boolean hasIconURL() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		
+		if(o instanceof Wiki){
+			Wiki w = (Wiki) o;
+			return (w.getType().equalsIgnoreCase(getType()) 
+					&& w.getFilenamesAsString().equals(getFilenamesAsString())
+					);
+        }
+		return false;
+		
 	}
 
 

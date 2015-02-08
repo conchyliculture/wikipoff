@@ -27,6 +27,7 @@ import android.widget.TextView;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.WikiDBFile;
+import fr.renzo.wikipoff.WikipOff;
 import fr.renzo.wikipoff.WikiDownloadService;
 
 public class WikiAvailableActivity extends Activity{
@@ -35,6 +36,7 @@ public class WikiAvailableActivity extends Activity{
 	public static final String DOWNLOAD_PROGRESS = "DOWNLOAD_PROGRESS";
 	private Wiki wiki;
 
+	private WikipOff app;
 	private String storage;
 	private ArrayList<String> urls_to_dl = new ArrayList<String>() ;
 	private ProgressBar pb;
@@ -42,15 +44,18 @@ public class WikiAvailableActivity extends Activity{
 	private TextView msg;
 	private Button downloadbutton;
 	private Button stopdownloadbutton;
+	public boolean installed;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_available_wiki);
-
+		this.app =(WikipOff) getApplication();
 		Intent intent = getIntent();
 		this.storage = intent.getStringExtra("storage");
 		this.wiki = (Wiki) intent.getExtras().getSerializable("wiki");
+		this.installed = intent.getBooleanExtra("installed", false);
+		Log.d(TAG,"is installed "+installed);
 		// WARNING Wiki needs a context, it was lost on serializing...
 		wiki.setContext(this);
 
@@ -350,9 +355,7 @@ public class WikiAvailableActivity extends Activity{
 		@Override
 		public void onClick(View arg0) {
 
-			boolean missing = wiki.isMissing();
-
-			if (missing) {
+			if (!installed) {
 				// We can't file the files, so it's not there, we can d/l
 				download();
 

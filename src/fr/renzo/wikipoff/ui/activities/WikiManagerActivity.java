@@ -69,8 +69,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	private HashMap<TabType, Stack<String>> backStacks;
 	private SharedPreferences config;
 
-
-
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -81,7 +79,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
 
 		setTitle(getString(R.string.title_manage_wikis));
-
 
 		// Initialize ActionBar
 		ActionBar bar = getSupportActionBar();
@@ -439,19 +436,14 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		}
 		return res;
 	}
-	public void addToCurrentDownloads(int position, String names) {
-		this.app.currentdownloads.put(Integer.valueOf(position), names);
+
+	public boolean isInCurrentDownloads(long lid) {
+		return (this.app.currentdownloads.containsKey(Long.valueOf(lid)));
 	}
-	public void deleteFromCurrentDownloads(int position) {
-		this.app.currentdownloads.remove(Integer.valueOf(position));
+	public boolean isInCurrentDownloads(String paths) {
+		return (this.app.currentdownloads.containsKey(paths));
 	}
-	public boolean isInCurrentDownloads(int position) {
-		return (this.app.currentdownloads.containsKey(Integer.valueOf(position)));
-	}
-	public boolean isInCurrentDownloads(String names) {
-		return (this.app.currentdownloads.containsKey(names));
-	}
-	public Collection<String> getCurrentDownloads() {
+	public Collection<String> getCurrentDownloadsFilenames() {
 		return (this.app.currentdownloads.values());
 	}
 
@@ -460,8 +452,8 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	public ArrayList<Wiki> getInstalledWikis(){
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
-
-		Collection<String> currendl = getCurrentDownloads();
+		
+		Collection<String> currendl = getCurrentDownloadsFilenames();
 		for (File f : new File(storage,getString(R.string.DBDir)).listFiles()) {
 			if (! f.getName().endsWith(".sqlite")) {
 				continue;
@@ -482,8 +474,8 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 				}
 			} else {
 				try {
-					if (! currendl.contains(f.getName())) {
-						Wiki w = new Wiki(this,f);
+					Wiki w = new Wiki(this,f);
+					if (! currendl.contains(w.getFilenamesAsString())) {
 						res.add(w);
 					}
 				} catch (WikiException e) {
@@ -571,6 +563,10 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		}
 
 		return res;
+	}
+
+	public boolean isInstalledWiki(Wiki wiki) {
+		return getInstalledWikis().contains(wiki);
 	}
 
 }
