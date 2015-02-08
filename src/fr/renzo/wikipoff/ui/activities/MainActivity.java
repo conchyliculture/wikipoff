@@ -69,6 +69,7 @@ public class MainActivity extends SherlockActivity {
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
 	private File dbdir;
+	private Button goSelectWikiButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class MainActivity extends SherlockActivity {
 		randomlistview= (ListView) findViewById(R.id.randomView);
 		rndbutton = (Button) findViewById(R.id.buttonRandom);
 		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
-
+		goSelectWikiButton = (Button) findViewById(R.id.goSelectWikiButton);
 	}
 	private void setStorage() {
 		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
@@ -108,6 +109,7 @@ public class MainActivity extends SherlockActivity {
 		searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.getDatabaseHandler(context)));
 		searchtextview.setOnItemClickListener(new SearchClickListener());
 		searchtextview.setOnEditorActionListener(new SearchClickListener());
+		goSelectWikiButton.setOnClickListener(new GoSelectWikiListener());
 
 	} 
 
@@ -160,6 +162,15 @@ public class MainActivity extends SherlockActivity {
 			} catch (DatabaseException e) {e.alertUser(context);}
 		}
 	}
+	
+	public class GoSelectWikiListener implements OnClickListener {
+		@Override
+		public void onClick(View arg0) {
+			Intent i3 = new Intent(MainActivity.this, WikiManagerActivity.class);
+			startActivity(i3);
+		}
+	}
+	
 	private void createEnv() {
 		if (! dbdir.exists()) {
 			createDir(dbdir);
@@ -209,12 +220,12 @@ public class MainActivity extends SherlockActivity {
 		if (dbHandler != null) {
 			showViews();
 			toggleAllViews(true);
-
+			goSelectWikiButton.setVisibility(View.GONE);
+			
 		} else {
 			toggleAllViews(false);
 			clearViewData();
-			Toast.makeText(getApplicationContext(), getString(R.string.message_no_selected_database), 
-					Toast.LENGTH_LONG).show();
+			goSelectWikiButton.setVisibility(View.VISIBLE);
 		}		
 	}
 
