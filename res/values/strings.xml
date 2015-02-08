@@ -95,9 +95,11 @@ This file is part of WikipOff.
     <string name="sqlitefiles">Files</string>
     <string name="deleteWiki">Delete Wiki</string>
     <string name="downloadWiki">Download Wiki</string>
+    <string name="stopdownloadWiki">Stop Download</string>
     <string name="download_failed">Download failed</string>
     <string name="download_finished">Download finished!</string>
     <string name="downloading">Downloading file</string>
+    <string name="downloading_eta">time left</string>
 
 
     <!-- more text -->

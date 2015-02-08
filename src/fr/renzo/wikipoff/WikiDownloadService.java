@@ -17,10 +17,11 @@ import android.util.Log;
 import fr.renzo.wikipoff.ui.activities.WikiAvailableActivity.ProgressReceiver;
 
 public class WikiDownloadService extends IntentService {
-	
+
 	//TODO Check if mode avion/ on a internet
 
 	private static final String TAG = "WikiDownloadService";
+
 	public WikiDownloadService() {
 		super("WikiDownloadService");
 	}
@@ -34,31 +35,32 @@ public class WikiDownloadService extends IntentService {
 		URL url;
 		try {
 			url = new URL(link);
-		String outputdir = workIntent.getStringExtra("outputdir");
-		String filename = workIntent.getStringExtra("filename");
-		long size = workIntent.getLongExtra("size",-1);
-		
-		HttpURLConnection con = (HttpURLConnection)url.openConnection();
-		con.connect();
-		InputStream input = new BufferedInputStream(con.getInputStream());
+			String outputdir = workIntent.getStringExtra("outputdir");
+			String filename = workIntent.getStringExtra("filename");
+			long size = workIntent.getLongExtra("size",-1);
 
-		File file = new File(outputdir,filename);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.connect();
+			InputStream input = new BufferedInputStream(con.getInputStream());
 
-		OutputStream output = new FileOutputStream(file);
-		byte data[] = new byte[8192];
-		long total = 0;
-		int count;
-		while ((count = input.read(data)) != -1) {
-			total += count;
-			
-			publishProgress(link,(int) (total * 100 / size));
-			output.write(data, 0, count);
-			
-		}
-		output.flush();
-		output.close();
-		input.close();
-		publishFinished(link);
+			File file = new File(outputdir,filename);
+
+			OutputStream output = new FileOutputStream(file);
+			byte data[] = new byte[8192];
+			long progress = 0;
+			int count;
+			while ((count = input.read(data)) != -1) {
+
+				progress += count;
+
+				publishProgress(link,progress,size);
+				output.write(data, 0, count);
+
+			}
+			output.flush();
+			output.close();
+			input.close();
+			publishFinished(link);
 		} catch (SocketTimeoutException e) {
 			Log.d(TAG,"Timeout...");
 			publishFailed(link,"Timeout error");
@@ -72,6 +74,7 @@ public class WikiDownloadService extends IntentService {
 			publishFailed(link,"IOException"+e.getMessage());
 			e.printStackTrace();
 		}
+
 	}
 	private void publishFailed(String url,String error) {
 		/*create new intent to broadcast our processed data to our activity*/
@@ -80,7 +83,7 @@ public class WikiDownloadService extends IntentService {
 		resultBroadCastIntent.setAction(ProgressReceiver.ACTION_DOWNLOAD_INFO);
 		/*set intent category as default*/
 		resultBroadCastIntent.addCategory(Intent.CATEGORY_DEFAULT);
- 
+
 		/*add data to intent*/
 		resultBroadCastIntent.putExtra("whatsup", ProgressReceiver.DOWNLOAD_FAILED);
 		resultBroadCastIntent.putExtra("error", error);
@@ -88,7 +91,7 @@ public class WikiDownloadService extends IntentService {
 		/*send broadcast */
 		sendBroadcast(resultBroadCastIntent);
 	}
-	
+
 	private void publishFinished(String url) {
 		/*create new intent to broadcast our processed data to our activity*/
 		Intent resultBroadCastIntent =new Intent();
@@ -96,7 +99,7 @@ public class WikiDownloadService extends IntentService {
 		resultBroadCastIntent.setAction(ProgressReceiver.ACTION_DOWNLOAD_INFO);
 		/*set intent category as default*/
 		resultBroadCastIntent.addCategory(Intent.CATEGORY_DEFAULT);
- 
+
 		/*add data to intent*/
 		resultBroadCastIntent.putExtra("whatsup", ProgressReceiver.DOWNLOAD_FINISHED);
 		resultBroadCastIntent.putExtra("url", url);
@@ -104,17 +107,18 @@ public class WikiDownloadService extends IntentService {
 		sendBroadcast(resultBroadCastIntent);
 	}
 
-	private void publishProgress(String url,int i) {
+	private void publishProgress(String url,long progress, long size) {
 		/*create new intent to broadcast our processed data to our activity*/
 		Intent resultBroadCastIntent =new Intent();
 		/*set action here*/
 		resultBroadCastIntent.setAction(ProgressReceiver.ACTION_DOWNLOAD_INFO);
 		/*set intent category as default*/
 		resultBroadCastIntent.addCategory(Intent.CATEGORY_DEFAULT);
- 
+
 		/*add data to intent*/
 		resultBroadCastIntent.putExtra("whatsup", ProgressReceiver.DOWNLOAD_PROGRESS);
-		resultBroadCastIntent.putExtra("download_progress", i);
+		resultBroadCastIntent.putExtra("download_progress", progress);
+		resultBroadCastIntent.putExtra("download_size", size);
 		resultBroadCastIntent.putExtra("url", url);
 		/*send broadcast */
 		sendBroadcast(resultBroadCastIntent);
