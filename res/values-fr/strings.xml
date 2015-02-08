@@ -63,7 +63,7 @@ This file is part of WikipOff.
     <string name="sqlitefiles">Fichiers</string>
     <string name="deleteWiki">Supprimer</string>
     <string name="downloadWiki">Télécharger</string>
-    <string name="stopdownloadWiki">Stop</string>
+    <string name="stopdownloadWiki">Arrêter le téléchargement</string>
     <string name="download_failed">Téléchargement échoué</string>
     <string name="download_finished">Téléchargement terminé!</string>
     <string name="downloading">Téléchargement de</string>
