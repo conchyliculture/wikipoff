@@ -132,7 +132,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			startActivity(i2);
 			return true;
 		case R.id.action_deselect_all_wikis:
-			deSelectAllWilis();
+			deSelectAllWikis();
 			return true;
 		case  android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
@@ -143,7 +143,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		}
 	}
 
-	public void deSelectAllWilis() {
+	public void deSelectAllWikis() {
 		ConfigManager.clearSelectedDBFiles(this);
 		finish();
 		startActivity(getIntent());
