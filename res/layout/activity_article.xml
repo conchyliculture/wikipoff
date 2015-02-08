@@ -35,6 +35,7 @@ This file is part of WikipOff.
         android:id="@+id/progressBar1"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingTop="50dp" />
 
 </LinearLayout>
