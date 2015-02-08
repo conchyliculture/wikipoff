@@ -4,31 +4,35 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.app.DownloadManager.Query;
+import android.app.DownloadManager.Request;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.WikiDBFile;
 import fr.renzo.wikipoff.WikipOff;
-import fr.renzo.wikipoff.WikiDownloadService;
 
 public class WikiAvailableActivity extends Activity{
 	@SuppressWarnings("unused")
@@ -37,13 +41,12 @@ public class WikiAvailableActivity extends Activity{
 	private Wiki wiki;
 
 	private WikipOff app;
+	
 	private String storage;
 	private ArrayList<String> urls_to_dl = new ArrayList<String>() ;
-	private ProgressBar pb;
-	private ProgressReceiver progressReceiver;
-	private TextView msg;
 	private Button downloadbutton;
 	private Button stopdownloadbutton;
+	private DownloadCompleteReceiver downloadComplete;
 	public boolean installed;
 
 	@Override
@@ -58,25 +61,24 @@ public class WikiAvailableActivity extends Activity{
 		Log.d(TAG,"is installed "+installed);
 		// WARNING Wiki needs a context, it was lost on serializing...
 		wiki.setContext(this);
-
+		
 		setTitle(wiki.getType()+" - "+wiki.getLangcode());
-
 		setViews();
 
-		/*create filter for exact intent what we want from other intent*/
-		IntentFilter intentFilter =new IntentFilter(ProgressReceiver.ACTION_DOWNLOAD_INFO);
-		intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-		/* create new broadcast receiver*/
-		progressReceiver=new ProgressReceiver();
-		/* registering our Broadcast receiver to listen action*/
-		registerReceiver(progressReceiver, intentFilter);
 	}
 
+	@Override
+	protected void onStart() {
+		downloadComplete = new DownloadCompleteReceiver();
+		registerReceiver(downloadComplete, new IntentFilter(
+                DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+		super.onStart();
+	}
 
 	@Override
 	protected void onStop()
 	{
-		unregisterReceiver(progressReceiver);
+		unregisterReceiver(downloadComplete);
 		super.onStop();
 	}
 
@@ -91,8 +93,10 @@ public class WikiAvailableActivity extends Activity{
 		setFiles();
 		setDowload();
 		setStopDowload();
-		this.pb = (ProgressBar) findViewById(R.id.downloadprogress);
-		this.msg = (TextView) findViewById(R.id.message);
+		if (app.currentdownloads.values().contains(wiki.getFilenamesAsString())) {
+			stopdownloadbutton.setVisibility(View.VISIBLE);
+			downloadbutton.setVisibility(View.GONE);
+		}
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -216,170 +220,82 @@ public class WikiAvailableActivity extends Activity{
 		})
 		.setIcon(android.R.drawable.ic_dialog_alert)
 		.show();
-
-		//		}
-
 	}
-	private void do_download() {
-		pb.setVisibility(View.VISIBLE);
+
+	private void do_download() { 
+		DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+		for(WikiDBFile wdbf : wiki.getDBFiles()) {
+			Request request = new Request(
+					Uri.parse(wdbf.getUrl()));
+			String destinationPath = new File(
+					new File(storage,getString(R.string.DBDir)),
+					wdbf.getFilename()).getAbsolutePath();
+			request.setDestinationUri(Uri.parse("file://"+destinationPath));
+			long lid = dm.enqueue(request);
+			app.currentdownloads.put(lid,wiki.getFilenamesAsString());
+		}
 		downloadbutton.setVisibility(View.GONE);
 		stopdownloadbutton.setVisibility(View.VISIBLE);
-		for(WikiDBFile wdbf : wiki.getDBFiles()) {
-			this.urls_to_dl.add(wdbf.getUrl());
-			Intent myIntent= new Intent(WikiAvailableActivity.this,WikiDownloadService.class);
-			// add necessary  data to intent
-			myIntent.putExtra("url", wdbf.getUrl());
-			myIntent.putExtra("outputdir",  new File(storage,getString(R.string.DBDir)).getAbsolutePath());
-			myIntent.putExtra("filename", wdbf.getFilename());
-			myIntent.putExtra("size", wdbf.getSize());
-			// start service
-			startService(myIntent);
-		}
 
 	}
-	private void stop_download() {
-		pb.setVisibility(View.INVISIBLE);
+	
+	private void stop_download() { 
+		DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+		for (Map.Entry<Long, String> entry : app.currentdownloads.entrySet()) {
+			long lid = (long) entry.getKey();
+			String paths = (String) entry.getValue();
+			if (wiki.getFilenamesAsString().equals(paths)) {
+				dm.remove(lid);
+				app.currentdownloads.remove(lid);
+			}
+		}
 		downloadbutton.setVisibility(View.VISIBLE);
 		stopdownloadbutton.setVisibility(View.GONE);
-		for(WikiDBFile wdbf : wiki.getDBFiles()) {
-			this.urls_to_dl.add(wdbf.getUrl());
-			Intent myIntent= new Intent(WikiAvailableActivity.this,WikiDownloadService.class);
-			// add necessary  data to intent
-			myIntent.putExtra("url", wdbf.getUrl());
-			myIntent.putExtra("outputdir",  new File(storage,getString(R.string.DBDir)).getAbsolutePath());
-			myIntent.putExtra("filename", wdbf.getFilename());
-			myIntent.putExtra("size", wdbf.getSize());
-			// start service
-			startService(myIntent);
+	}
+
+	public class DownloadCompleteReceiver extends BroadcastReceiver {
+		
+		@Override
+		public void onReceive(Context arg0, Intent intent) {
+			String action = intent.getAction();
+			DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+			if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
+				long downloadId = intent.getLongExtra(
+						DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+				Query query = new Query();
+
+
+				query.setFilterById(downloadId);
+				Cursor c = dm.query(query);
+				while (c.moveToNext()) {
+					int columnIndex = c
+							.getColumnIndex(DownloadManager.COLUMN_STATUS);
+					if (DownloadManager.STATUS_SUCCESSFUL == c
+							.getInt(columnIndex)) {
+						
+							// We've finished all downloads;
+							stopdownloadbutton.setVisibility(View.GONE);					
+					}
+					Log.d(TAG,"removed");
+					app.currentdownloads.remove(downloadId);
+				}
+			}
 		}
 	}
 
-
-	public class ProgressReceiver extends BroadcastReceiver {
-		/**
-		 * action string for our broadcast receiver to get notified
-		 */
-		public final static String ACTION_DOWNLOAD_INFO= "fr.renzo.wikipoff.download.DOWNLOAD_INFO";
-
-		public final static String DOWNLOAD_PROGRESS= "fr.renzo.wikipoff.download.DOWNLOAD_PROGRESS";
-		public final static String DOWNLOAD_FAILED= "fr.renzo.wikipoff.download.DOWNLOAD_FAILED";
-		public final static String DOWNLOAD_FINISHED= "fr.renzo.wikipoff.download.DOWNLOAD_FINISHED";
-
-		private long last_progress;
-		private long last_update=System.nanoTime();
-		private long last_speed=-1;
-		@Override
-		public void onReceive(Context context, Intent intent) {
-
-			String whatsup = intent.getStringExtra("whatsup");
-			String link = intent.getStringExtra("url");
-			if (whatsup.equals(DOWNLOAD_PROGRESS)) {
-				long progress =intent.getLongExtra("download_progress",-1);
-				long size =intent.getLongExtra("download_size",-1);
-				int percentage = (int) ((100 * progress)/size);
-
-				long now = System.nanoTime();
-				if (((now-last_update)/1000000000.0 >= 1)) {
-					long speed = 1000000000 * (progress - last_progress)/(now-last_update);
-					last_update=now;
-					last_progress=progress;
-
-					pb.setProgress(percentage);
-					msg.setVisibility(View.VISIBLE);
-					stopdownloadbutton.setVisibility(View.VISIBLE);
-					downloadbutton.setVisibility(View.GONE);
-					String txtmsg = String.format("%s %s/%s (%s/s) = %d%% (%s : %s/%d)",
-							getString(R.string.downloading),
-							getSizeReadable(progress),
-							getSizeReadable(size),
-							getSizeReadable(speed),
-							percentage,
-							getString(R.string.downloading_eta),
-							timeLeft((size-progress)/average(speed)),
-							(long)(size-progress)/average(speed)
-							);
-					msg.setText(txtmsg);
-				} 
-
-			} else if (whatsup.equals(DOWNLOAD_FINISHED)) {
-				msg.setVisibility(View.VISIBLE);
-				if (urls_to_dl.indexOf(link)+1==urls_to_dl.size()) {
-					pb.setVisibility(View.INVISIBLE);
-					msg.setText(getString(R.string.download_finished));
-					downloadbutton.setVisibility(View.VISIBLE);
-					stopdownloadbutton.setVisibility(View.GONE);
-				}
-			} else if (whatsup.equals(DOWNLOAD_FAILED)) {
-				pb.setVisibility(View.INVISIBLE);
-				String error =intent.getStringExtra("error");
-				msg.setText(getString(R.string.download_failed)+" "+error);
-				msg.setVisibility(View.VISIBLE);
-				downloadbutton.setVisibility(View.VISIBLE);
-				stopdownloadbutton.setVisibility(View.GONE);
-				urls_to_dl.remove(link);
-			}
-		}
-		private String getSizeReadable(long size) {
-			return getSizeReadable(size, true);
-		}
-
-		private String getSizeReadable(long size, boolean si) {
-
-			int unit = si ? 1000 : 1024;
-			if (size < unit) {
-				return Long.toString(size) + " B";
-			}
-			int exp = (int) (Math.log(size) / Math.log(unit));
-			String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
-			return String.format("%.1f %sB", size / Math.pow(unit, exp), pre);
-		}
-
-		private long average(long value) {
-			if (last_speed == -1) {
-				last_speed = value;
-				return value;
-			}
-			double newValue = last_speed + 0.7 * (value - last_speed);
-			last_speed = (long) newValue;
-			return (long) newValue;
-		}
-		private String timeLeft(long seconds) {
-			int h = (int) Math.floor((seconds %= 86400) / 3600);
-		    int m = (int) Math.floor((seconds %= 3600) / 60);
-		    int s = (int) (seconds % 60);
-		    return String.format("%s:%s:%s", h,m,s);
-		}
-	};
-
 	public class downloadOnClickListener implements OnClickListener {
+
 		@Override
 		public void onClick(View arg0) {
 
 			if (!installed) {
 				// We can't file the files, so it's not there, we can d/l
 				download();
-
-			} else {
-				// There are files already, is it an older copy of the wiki?
-				//			if (context.olderPresent(wiki)) {
-				// IT is ! Let's be sure the user wants to overwrite it
-				new AlertDialog.Builder(WikiAvailableActivity.this)
-				.setTitle(getString(R.string.message_warning))
-				.setMessage(getString(R.string.message_validate_download_olderpresent))
-				.setNegativeButton(getString(R.string.no), null )
-				.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						download();
-					}
-				})
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.show();
 			}
+			// TODO check if newer wiki is installed to prevent overwriting
 		}
 	};
-	
+
 	public class stopDownloadOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View arg0) {
