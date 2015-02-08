@@ -113,7 +113,7 @@ public class MainActivity extends SherlockActivity {
 
 	} 
 
-	private void startArticleActivity(CharSequence title) {
+	private void startArticleActivity(String title) {
 		Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
 		myIntent.putExtra("article_title",  title);
 //		myIntent.putExtra("wikisource",  wikisource); no can do =(
@@ -138,7 +138,7 @@ public class MainActivity extends SherlockActivity {
 
 		@Override
 		public boolean onEditorAction(TextView view, int arg1, KeyEvent arg2) {
-			startArticleActivity(view.getText());
+			startArticleActivity(view.getText().toString());
 			return true;
 		}
 	}
