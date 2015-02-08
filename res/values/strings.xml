@@ -81,6 +81,7 @@ This file is part of WikipOff.
     <string name="no">No</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="goSelectWikiButton">Select a Wiki</string>
 
     <!-- views -->
     <string name="randomsearch">Random Articles</string>
