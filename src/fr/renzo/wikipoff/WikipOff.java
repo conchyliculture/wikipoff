@@ -23,7 +23,6 @@ package fr.renzo.wikipoff;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import android.app.AlertDialog.Builder;
