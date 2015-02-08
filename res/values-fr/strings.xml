@@ -82,7 +82,7 @@ This file is part of WikipOff.
     <string name="message_sd_card">Carte SD</string>
     <string name="message_sd_card_n">Carte SD %d</string>
     <string name="message_internal_sd_card">Carte SD interne</string>
-    <string name="message_stop_download">Êtes-vous sûr de vouloir arrête ce téléchargement?</string>
+    <string name="message_stop_download">Êtes-vous sûr de vouloir arrêter ce téléchargement?</string>
     <string name="message_overwrite_file">Êtes-vous sûr de vouloir écraser %1$s file ?"</string>
     <string name="message_no_selected_database">Aucun Wiki sélectionné</string>
     <string name="message_cant_create_in_storage">Impossible de créer %1$s. Merci de sélectionner un autre point de stockage.</string>
