@@ -110,6 +110,12 @@ public class Database   {
 		Cursor c = myRawQuery("SELECT value FROM metadata WHERE key ='lang-code'");
 		if (c.moveToFirst()){
 			res= c.getString(0);
+		} else { 
+			// patch for some old db
+			c = myRawQuery("SELECT value FROM metadata WHERE key ='lang'");
+			if (c.moveToFirst()){
+				res= c.getString(0);
+			} 
 		}
 		c.close();
 		return res;
