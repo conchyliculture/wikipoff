@@ -66,7 +66,7 @@ This file is part of WikipOff.
     <string name="stopdownloadWiki">Arrêter le téléchargement</string>
     <string name="download_failed">Téléchargement échoué</string>
     <string name="download_finished">Téléchargement terminé!</string>
-    <string name="downloading">Téléchargement de</string>
+    <string name="downloading">En cours de téléchargement</string>
     <string name="downloading_eta">reste</string>
 
     <!-- more text -->

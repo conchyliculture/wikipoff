@@ -99,7 +99,7 @@ This file is part of WikipOff.
     <string name="stopdownloadWiki">Stop Download</string>
     <string name="download_failed">Download failed</string>
     <string name="download_finished">Download finished!</string>
-    <string name="downloading">Downloading file</string>
+    <string name="downloading">currently downloading</string>
     <string name="downloading_eta">time left</string>
 
 
