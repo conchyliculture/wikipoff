@@ -38,6 +38,7 @@
         android:layout_gravity="right"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:textStyle="italic"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     
