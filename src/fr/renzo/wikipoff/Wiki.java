@@ -5,17 +5,13 @@ import java.io.FileInputStream;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseCorruptException;
 import android.database.sqlite.SQLiteException;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -89,11 +85,9 @@ public class Wiki implements Serializable {
 				}
 				sqlh.close();
 			} catch (SQLiteDatabaseCorruptException e ){
-				e.printStackTrace();
 				this.corrupted=true;
 				//throw new WikiException("Database file : "+sqlitefile.getName()+" is corrupted. Please delete it or wait for transfer to finish!");
 			} catch (SQLiteException e ){
-				e.printStackTrace();
 				this.corrupted=true;
 				//throw new WikiException("Database file : "+sqlitefile.getName()+" is corrupted. Please delete it or wait for transfer to finish!");
 			}
@@ -290,6 +284,7 @@ public class Wiki implements Serializable {
 	public String getIconURL() {
 		return iconURL;
 	}
+	
 
 	public boolean hasIconURL() {
 		// TODO Auto-generated method stub

@@ -19,7 +19,6 @@ import java.util.StringTokenizer;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 
 public class StorageUtils {
 
@@ -73,11 +72,6 @@ public class StorageUtils {
 			}
 			return res.toString();
 		}
-
-		//        public String toString() {
-		//        	String res=this.getDisplayName()+" ("+path+", ro:"+readonly+", rm:"+removable+", num:"+number+")";
-		//        	return res;
-		//        }
 	}
 
 	public static String getDefaultStorage(Context ctx) {	
