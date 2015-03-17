@@ -14,9 +14,9 @@ Everything here has mostly been written by copy-pasting code from stackoverflow.
 
 ## Getting Started
 1. `git clone https://github.com/conchyliculture/wikipoff.git`
-2. `cd wikipoff` 
-3. `export ANDROID_HOME=<path/to/sdk>; export PATH=<path/to/gradle-2.2.1/bin>:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH`
-4. `gradle installDebug`
+2. Add project in eclipse
+3. Manage to make it work and compile and stuff
+4. Rage because it's a huge PIA to build anything from source in any of the hype IDEs.
 5. Download some already available wikis from the app, or [Build one yourself](https://github.com/conchyliculture/wikipoff-tools).
 6. enjoy
 
