@@ -20,7 +20,15 @@ public class ConfigManager {
 	public static ArrayList<String> getSelectedDBFilesAsList(Context ctx) {
 		String key =ctx.getString(R.string.config_key_selecteddbfiles);
 		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(ctx);
-		String seldbs = config.getString(key, null);
+		
+		String seldbs=null;
+		try {
+			// This is ugly, but prevent crashs on app upgrade
+			seldbs = config.getString(key, null);
+		} catch (ClassCastException e) {
+			config.edit().remove(key).commit();
+		}
+		
 		if (seldbs == null ) {
 			return null;
 		} else {
