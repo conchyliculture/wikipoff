@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,16 +22,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import fr.renzo.wikipoff.DownloadUtils;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.WikiDBFile;
-import fr.renzo.wikipoff.WikipOff;
 
 public class WikiAvailableActivity extends Activity{
 	@SuppressWarnings("unused")
@@ -40,7 +38,6 @@ public class WikiAvailableActivity extends Activity{
 	public static final String DOWNLOAD_PROGRESS = "DOWNLOAD_PROGRESS";
 	private Wiki wiki;
 
-	private WikipOff app;
 	
 	private String storage;
 	private ArrayList<String> urls_to_dl = new ArrayList<String>() ;
@@ -53,12 +50,10 @@ public class WikiAvailableActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_available_wiki);
-		this.app =(WikipOff) getApplication();
 		Intent intent = getIntent();
 		this.storage = intent.getStringExtra("storage");
 		this.wiki = (Wiki) intent.getExtras().getSerializable("wiki");
 		this.installed = intent.getBooleanExtra("installed", false);
-		Log.d(TAG,"is installed "+installed);
 		// WARNING Wiki needs a context, it was lost on serializing...
 		wiki.setContext(this);
 		
@@ -93,7 +88,7 @@ public class WikiAvailableActivity extends Activity{
 		setFiles();
 		setDowload();
 		setStopDowload();
-		if (app.currentdownloads.values().contains(wiki.getFilenamesAsString())) {
+		if (DownloadUtils.isInCurrentDownloads(wiki,this)) {
 			stopdownloadbutton.setVisibility(View.VISIBLE);
 			downloadbutton.setVisibility(View.GONE);
 		}
@@ -231,8 +226,7 @@ public class WikiAvailableActivity extends Activity{
 					new File(storage,getString(R.string.DBDir)),
 					wdbf.getFilename()).getAbsolutePath();
 			request.setDestinationUri(Uri.parse("file://"+destinationPath));
-			long lid = dm.enqueue(request);
-			app.currentdownloads.put(lid,wiki.getFilenamesAsString());
+			dm.enqueue(request);
 		}
 		downloadbutton.setVisibility(View.GONE);
 		stopdownloadbutton.setVisibility(View.VISIBLE);
@@ -240,15 +234,7 @@ public class WikiAvailableActivity extends Activity{
 	}
 	
 	private void stop_download() { 
-		DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-		for (Map.Entry<Long, String> entry : app.currentdownloads.entrySet()) {
-			long lid = (long) entry.getKey();
-			String paths = (String) entry.getValue();
-			if (wiki.getFilenamesAsString().equals(paths)) {
-				dm.remove(lid);
-				app.currentdownloads.remove(lid);
-			}
-		}
+		DownloadUtils.delete(wiki,this);
 		downloadbutton.setVisibility(View.VISIBLE);
 		stopdownloadbutton.setVisibility(View.GONE);
 	}
@@ -264,7 +250,6 @@ public class WikiAvailableActivity extends Activity{
 						DownloadManager.EXTRA_DOWNLOAD_ID, 0);
 				Query query = new Query();
 
-
 				query.setFilterById(downloadId);
 				Cursor c = dm.query(query);
 				while (c.moveToNext()) {
@@ -272,12 +257,9 @@ public class WikiAvailableActivity extends Activity{
 							.getColumnIndex(DownloadManager.COLUMN_STATUS);
 					if (DownloadManager.STATUS_SUCCESSFUL == c
 							.getInt(columnIndex)) {
-						
 							// We've finished all downloads;
 							stopdownloadbutton.setVisibility(View.GONE);					
 					}
-					Log.d(TAG,"removed");
-					app.currentdownloads.remove(downloadId);
 				}
 			}
 		}
@@ -294,7 +276,7 @@ public class WikiAvailableActivity extends Activity{
 			}
 			// TODO check if newer wiki is installed to prevent overwriting
 		}
-	};
+	}
 
 	public class stopDownloadOnClickListener implements OnClickListener {
 		@Override

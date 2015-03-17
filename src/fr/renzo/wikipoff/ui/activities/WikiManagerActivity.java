@@ -40,12 +40,12 @@ import com.actionbarsherlock.widget.SearchView;
 import com.actionbarsherlock.widget.SearchView.OnQueryTextListener;
 
 import fr.renzo.wikipoff.ConfigManager;
+import fr.renzo.wikipoff.DownloadUtils;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.StorageUtils;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.WikiException;
 import fr.renzo.wikipoff.WikiXMLParser;
-import fr.renzo.wikipoff.WikipOff;
 import fr.renzo.wikipoff.ui.fragments.FragmentAvailableTypes;
 import fr.renzo.wikipoff.ui.fragments.FragmentInstalledTypes;
 
@@ -55,7 +55,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	private static final String TAG = "WikiManagerActivity";
 	public static final int REQUEST_DELETE_CODE = 1001;
 
-	private WikipOff app;
 	public String storage;
 
 	// god bless https://gist.github.com/andreynovikov/4619215
@@ -74,7 +73,6 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	{
 		super.onCreate(savedInstanceState);
 
-		this.app = (WikipOff) getApplication();
 		config= PreferenceManager.getDefaultSharedPreferences(this);
 		this.storage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
 
@@ -437,23 +435,11 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 		return res;
 	}
 
-	public boolean isInCurrentDownloads(long lid) {
-		return (this.app.currentdownloads.containsKey(Long.valueOf(lid)));
-	}
-	public boolean isInCurrentDownloads(String paths) {
-		return (this.app.currentdownloads.containsKey(paths));
-	}
-	public Collection<String> getCurrentDownloadsFilenames() {
-		return (this.app.currentdownloads.values());
-	}
-
-	//General Utils
-
 	public ArrayList<Wiki> getInstalledWikis(){
 		ArrayList<Wiki> res = new ArrayList<Wiki>();
 		HashMap<String, Wiki> multiwikis = new HashMap<String, Wiki>();
-		
-		Collection<String> currendl = getCurrentDownloadsFilenames();
+
+		Collection<String> currendl = DownloadUtils.getCurrentDownloads(this).values();
 		for (File f : new File(storage,getString(R.string.DBDir)).listFiles()) {
 			if (! f.getName().endsWith(".sqlite")) {
 				continue;
@@ -475,7 +461,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			} else {
 				try {
 					Wiki w = new Wiki(this,f);
-					if (! currendl.contains(w.getFilenamesAsString())) {
+					if (! currendl.containsAll(w.getDBFilesnamesAsList())) {
 						res.add(w);
 					}
 				} catch (WikiException e) {
@@ -484,7 +470,7 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 			}
 		}
 		for (Wiki w : multiwikis.values()) {
-			if (! currendl.contains(w.getFilenamesAsString()))
+			if (! currendl.contains(w.getDBFilesnamesAsList()))
 				res.add(w);
 		}
 
@@ -517,12 +503,13 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 
 	public ArrayList<String> getInstalledWikiTypes() {
 		ArrayList<String> res = new ArrayList<String>();
-
 		for (Iterator<Wiki> iterator = getInstalledWikis().iterator(); iterator.hasNext();) {
 			Wiki wiki = (Wiki) iterator.next();
 			String wikitype = wiki.getType();
 			if (!res.contains(wikitype)) {
-				res.add(wikitype);
+				if (!DownloadUtils.isInCurrentDownloads(wiki,this)) {
+					res.add(wikitype);
+				}
 			}
 		}
 		return res;
@@ -568,5 +555,4 @@ public class WikiManagerActivity extends SherlockFragmentActivity implements Act
 	public boolean isInstalledWiki(Wiki wiki) {
 		return getInstalledWikis().contains(wiki);
 	}
-
 }

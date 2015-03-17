@@ -23,7 +23,6 @@ package fr.renzo.wikipoff;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.app.AlertDialog.Builder;
 import android.app.Application;
@@ -41,7 +40,6 @@ public class WikipOff extends Application {
 	public static SharedPreferences config;
 	public File DBDir;
 	private Database dbHandler;
-	public HashMap<Long,String> currentdownloads=new HashMap<Long,String>();
 
 	public void onCreate(){
 		super.onCreate();

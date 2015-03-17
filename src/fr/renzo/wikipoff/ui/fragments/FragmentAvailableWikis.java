@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import fr.renzo.wikipoff.DownloadUtils;
 import fr.renzo.wikipoff.R;
 import fr.renzo.wikipoff.Wiki;
 import fr.renzo.wikipoff.ui.activities.WikiAvailableActivity;
@@ -125,14 +126,9 @@ public class FragmentAvailableWikis extends SherlockFragment {
 				break;
 			}
 			bot.setText(bottext);
-			if (manageractivity.isInCurrentDownloads(w.getFilenamesAsString()))
-				bot.setText("*dlingù");
-
-			ProgressBar pb = (ProgressBar) convertView.findViewById(R.id.downloadprogress);
-			if (manageractivity.isInCurrentDownloads(Integer.valueOf(position))) {
-				pb.setVisibility(View.VISIBLE);
+			if (DownloadUtils.isInCurrentDownloads(w,getSherlockActivity())){
+				infos.setText(R.string.downloading);
 			}
-
 			return convertView;
 		}
 	}
