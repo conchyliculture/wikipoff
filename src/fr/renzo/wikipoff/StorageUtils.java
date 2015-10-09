@@ -80,8 +80,11 @@ public class StorageUtils {
 			File[] array = ctx.getExternalFilesDirs(null);
 			for (int i = 0; i < array.length; i++) {
 				path = array[i].getAbsolutePath();
-				if (path.contains("sdcard_ext"))
-					break;
+                if (array[i]!=null){
+                    path = array[i].getAbsolutePath();
+                    if (path.contains("sdcard_ext"))
+                        break;
+                }
 			}
 		} else {
 			path=ctx.getExternalFilesDir(null).getAbsolutePath();
@@ -89,9 +92,9 @@ public class StorageUtils {
 		return path;
 	}
 
-	public static File[] getDefaultStorageList(Context ctx) {		
-		return ctx.getExternalFilesDirs(null);
-	}
+//	public static File[] getDefaultStorageList(Context ctx) {		
+//		return ctx.getExternalFilesDirs(null);
+//	}
 
 	public static ArrayList<StorageInfo> getDefaultStorageInfo(Context ctx) {
 		ArrayList<StorageInfo> list = new ArrayList<StorageInfo>();
