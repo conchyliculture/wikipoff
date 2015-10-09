@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
@@ -74,12 +75,11 @@ public class StorageUtils {
 		}
 	}
 
-	public static String getDefaultStorage(Context ctx) {	
+	@SuppressLint("NewApi") public static String getDefaultStorage(Context ctx) {	
 		String path=null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			File[] array = ctx.getExternalFilesDirs(null);
 			for (int i = 0; i < array.length; i++) {
-				path = array[i].getAbsolutePath();
                 if (array[i]!=null){
                     path = array[i].getAbsolutePath();
                     if (path.contains("sdcard_ext"))
@@ -96,7 +96,7 @@ public class StorageUtils {
 //		return ctx.getExternalFilesDirs(null);
 //	}
 
-	public static ArrayList<StorageInfo> getDefaultStorageInfo(Context ctx) {
+	@SuppressLint("NewApi") public static ArrayList<StorageInfo> getDefaultStorageInfo(Context ctx) {
 		ArrayList<StorageInfo> list = new ArrayList<StorageInfo>();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
