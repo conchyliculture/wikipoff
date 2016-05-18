@@ -42,6 +42,7 @@ This file is part of WikipOff.
     <string name="title_available_wikis">Wikis disponibles</string>
     <string name="title_about">À propos</string>
     <string name="title_storage_category">Localisation du stockage</string>
+    <string name="title_misc_category">Divers</string>
 
     <!-- buttons -->
     <string name="yes">Oui</string>
@@ -88,7 +89,7 @@ This file is part of WikipOff.
     <string name="message_no_selected_database">Aucun Wiki sélectionné</string>
     <string name="message_cant_create_in_storage">Impossible de créer %1$s. Merci de sélectionner un autre point de stockage.</string>
     <string name="message_delete_db">Êtes-vous sûr de vouloir supprimer %1$s ?</string>
-    <string name="message_storage_warning">Si vous modifiez ce paramètre, vous devrez certainement déplacer les Wikis déjà installés manuellement (avec adb ou un gestionnaire de fichier), ou Wikipoff ne pourra plus les trouver.</string>
+    <string name="message_storage_warning">Si vous modifiez ce paramètre, vous devrez certainement déplacer les Wikis déjà installés manuellement (avec adb ou un gestionnaire de fichier), ou Wikipoff ne pourra plus les trouver. Notez également que les stockages marqués "Android Default Storage" seront effacés lors de la suppression de l\'App.</string>
     <string name="message_available_wiki_equal">installé</string>
     <string name="message_available_wiki_older">mise à jour dispo.</string>
     <string name="message_available_wiki_newer">installé (et plus récent)</string>
