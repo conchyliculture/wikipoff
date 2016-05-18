@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -52,48 +54,67 @@ public class SettingsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.preferences);
 		config = PreferenceManager.getDefaultSharedPreferences(this);
 
+        String[] storage_names;
+        String[] storage_paths;
+
 		List<StorageInfo> availablestorageslist= new ArrayList<StorageInfo>();
 		// Add default external storage
 		ArrayList<StorageInfo> extsdlist = StorageUtils.getDefaultStorageInfo(this);
-		availablestorageslist.addAll(extsdlist);
+		if (extsdlist.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Warning, no external storage detected")
+                    .setMessage("Unfortunately, I coudln't get access to your external Android Storage. I don't know how to work in this case =(. Please send the author some info about your device if you want him to fix it.")
 
-		List<StorageInfo> allstorageslist = StorageUtils.getStorageList();
-		for (Iterator<StorageInfo> iterator = allstorageslist.iterator(); iterator.hasNext();) {
-			StorageInfo storageInfo = iterator.next();
-			if (testWriteable(storageInfo.path)){
-				if (!availablestorageslist.contains(storageInfo)) {
-					availablestorageslist.add(storageInfo);
-				}
-				Log.d(TAG,storageInfo.path +" is writeable");
-			} else {
-				Log.d(TAG,storageInfo.path +" is not writeable");
+                    .setPositiveButton("Okay...", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-			}
-		}
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        } else {
+            availablestorageslist.addAll(extsdlist);
 
-		String[] storage_names= new String[availablestorageslist.size()];
-		String[] storage_paths= new String[availablestorageslist.size()];
-		for (int i = 0; i < availablestorageslist.size(); i++) {
-			storage_names[i] = availablestorageslist.get(i).getDisplayName(this);
-			storage_paths[i] = availablestorageslist.get(i).path;
-		}
+            List<StorageInfo> allstorageslist = StorageUtils.getStorageList();
+            for (Iterator<StorageInfo> iterator = allstorageslist.iterator(); iterator.hasNext(); ) {
+                StorageInfo storageInfo = iterator.next();
+                if (testWriteable(storageInfo.path)) {
+                    if (!availablestorageslist.contains(storageInfo)) {
+                        availablestorageslist.add(storageInfo);
+                    }
+                    Log.d(TAG, storageInfo.path + " is writeable");
+                } else {
+                    Log.d(TAG, storageInfo.path + " is not writeable");
 
-		currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
+                }
+            }
 
-		myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
-		myPref.setEntries(storage_names);
-		myPref.setEntryValues(storage_paths);
-		myPref.setSummary(currentStorage);
-		myPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+            storage_names = new String[availablestorageslist.size()];
+            storage_paths = new String[availablestorageslist.size()];
+            for (int i = 0; i < availablestorageslist.size(); i++) {
+                storage_names[i] = availablestorageslist.get(i).getDisplayName(this);
+                storage_paths[i] = availablestorageslist.get(i).path;
+            }
 
-			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				String newStorage = (String)newValue;
-				myPref.setSummary(newStorage);
-				ConfigManager.clearSelectedDBFiles(SettingsActivity.this);
-				return true;
-			}
-		});
+
+            currentStorage = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
+
+            myPref = (ListPreference) findPreference(getString(R.string.config_key_storage));
+            myPref.setEntries(storage_names);
+            myPref.setEntryValues(storage_paths);
+            myPref.setSummary(currentStorage);
+            myPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    String newStorage = (String) newValue;
+                    myPref.setSummary(newStorage);
+                    ConfigManager.clearSelectedDBFiles(SettingsActivity.this);
+                    return true;
+                }
+            });
+        }
 	}
 
 	private boolean testWriteable(String path) {

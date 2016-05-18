@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 
 public class StorageUtils {
 
@@ -92,17 +93,13 @@ public class StorageUtils {
 		return path;
 	}
 
-//	public static File[] getDefaultStorageList(Context ctx) {		
-//		return ctx.getExternalFilesDirs(null);
-//	}
-
 	@SuppressLint("NewApi") public static ArrayList<StorageInfo> getDefaultStorageInfo(Context ctx) {
 		ArrayList<StorageInfo> list = new ArrayList<StorageInfo>();
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			File[] array = ctx.getExternalFilesDirs(null);
-
 			for (int i = 0; i < array.length; i++) {
+				if (array[i]==null)	continue;
 				String path = array[i].getAbsolutePath();
 				list.add(new StorageInfo(path, false, true, 0 - i));
 			}
@@ -110,7 +107,6 @@ public class StorageUtils {
 			String path = ctx.getExternalFilesDir(null).getAbsolutePath();
 			list.add(new StorageInfo(path, false, true, -1));
 		}
-
 		return list;
 	}
 
