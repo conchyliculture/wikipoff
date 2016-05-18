@@ -92,10 +92,6 @@ This file is part of WikipOff.
             android:name="fr.renzo.wikipoff.ui.activities.WikiAvailableActivity"
             android:label="wikiavailableactivity" >
         </activity>
-        <service
-            android:name="fr.renzo.wikipoff.WikiDownloadService"
-            android:enabled="true"
-            android:exported="false"/>
         
     </application>
 
