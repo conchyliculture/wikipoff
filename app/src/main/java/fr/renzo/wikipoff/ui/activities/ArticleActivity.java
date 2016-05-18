@@ -104,7 +104,11 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 			return true;
 		case R.id.action_webbrowser:
 			Intent webIntent = new Intent( Intent.ACTION_VIEW );
-			webIntent.setData( Uri.parse("http://"+dbHandler.lang+".wikipedia.org/wiki/"+this.article.title) );
+            String uri_title=wanted_title;
+			if (this.article!=null) {
+                uri_title=this.article.title;
+            }
+            webIntent.setData(Uri.parse("http://" + dbHandler.lang + ".wikipedia.org/wiki/" + uri_title));
 			startActivity( webIntent );
 			return true;
 		case R.id.action_about:
