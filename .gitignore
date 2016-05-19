@@ -34,3 +34,4 @@ tools/managedb.py
 tools/*.rb
 build
 .gradle
+gfx
