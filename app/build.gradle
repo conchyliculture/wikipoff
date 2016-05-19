@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+lintOptions {
+    /**
+    * Set whether lint should check for fatal errors during release builds. Default is true.
+    * If issues with severity "fatal" are found, the release build is aborted.
+    */
+    checkReleaseBuilds false
+}
+
 android {
     compileSdkVersion 19
     buildToolsVersion "23.0.3"
