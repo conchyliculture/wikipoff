@@ -21,8 +21,6 @@ This file is part of WikipOff.
 */
 package fr.renzo.wikipoff;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -32,6 +30,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+
 import fr.renzo.wikipoff.Database.DatabaseException;
 
 public class SearchCursorAdapter extends CursorAdapter {
@@ -73,18 +74,17 @@ public class SearchCursorAdapter extends CursorAdapter {
 		if (constraint == null)
 			return null;
 		try {
+			String searchquery = "*"+constraint+"*";
 			ArrayList<Cursor> cursors = new ArrayList<Cursor>();
 			for (int i = 0; i < this.dbhs.length; i++) {
 				Database dbh=dbhs[i];
-			
-				Cursor c = dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY length(title), title limit 500 ", (String) constraint);
+				Cursor c = dbh.myRawQuery("SELECT _id,title FROM searchTitles WHERE title MATCH ? ORDER BY length(title), title limit 500 ", searchquery);
 				cursors.add(c);
 			}
 			MatrixCursor extras = new MatrixCursor(new String[] { "_id", "title" });
 			extras.addRow(new String[] { "-1", (String) constraint });
 			
 			Cursor[] arraycursors = new Cursor[cursors.size()+1];
-
 			for (int i = 0; i < cursors.size(); i++) {
 				arraycursors[i] = cursors.get(i);
 			}

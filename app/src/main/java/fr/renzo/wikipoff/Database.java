@@ -21,10 +21,6 @@ This file is part of WikipOff.
  */
 package fr.renzo.wikipoff;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -36,6 +32,10 @@ import android.database.sqlite.SQLiteException;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Database   {
 	private static final String TAG = "Database";
