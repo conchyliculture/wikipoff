@@ -28,7 +28,7 @@ This file is part of WikipOff.
     <string name="DBDir">fr.renzo.wikipoff/databases</string>
     <string name="available_xml_file">available_wikis.xml</string>
     <string name="available_xml_file_external_path">fr.renzo.wikipoff/available_wikis.xml</string>
-    <string name="available_xml_web_url">https://raw.githubusercontent.com/conchyliculture/wikipoff/master/assets/available_wikis.xml</string>
+    <string name="available_xml_web_url">https://raw.githubusercontent.com/conchyliculture/wikipoff/master/app/src/main/assets/available_wikis.xml</string>
     <!-- SQL values to build queries -->
     <!--
     No. Let's not do that. 
