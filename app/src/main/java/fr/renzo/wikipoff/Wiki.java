@@ -275,11 +275,19 @@ public class Wiki implements Serializable {
 	}
 
 	public String getSource() {
-		if (!source.equals("")) {
-			return source;
-		} else {
-			return "http://"+getLangcode()+".wikipedia.org";
+        String res="";
+		if (source.equals("")) {
+            res= "http://"+getLangcode()+"."+getType()+".org/wiki/";
+        } else {
+            if(source.endsWith("/wiki/")){
+                // ex : https://en.wikipedia.org/wiki/
+                res= source;
+            } else {
+                // ex : https://en.wikipedia.org/wiki/Main_Page
+                res=source.replaceFirst("/wiki/.*$","/wiki/");
+            }
 		}
+        return res;
 	}
 	public String getIconURL() {
 		return iconURL;
@@ -305,4 +313,11 @@ public class Wiki implements Serializable {
 	}
 
 
+	public String getOnlineURL() {
+		return getSource();
+	}
+
+	public String getName() {
+		return this.type+"/"+this.langcode;
+	}
 }

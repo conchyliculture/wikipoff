@@ -226,6 +226,7 @@ public class WikiAvailableActivity extends Activity{
 					new File(storage,getString(R.string.DBDir)),
 					wdbf.getFilename()).getAbsolutePath();
 			request.setDestinationUri(Uri.parse("file://"+destinationPath));
+			request.setTitle(wdbf.getFilename());
 			dm.enqueue(request);
 		}
 		downloadbutton.setVisibility(View.GONE);

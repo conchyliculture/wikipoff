@@ -139,5 +139,8 @@ This file is part of WikipOff.
     <string name="message_select_installed_wiki_type">Select installed Wiki type :</string>
     <string name="message_select_installed_wiki">Select installed Wiki :</string>
     <string name="message_no_installed_wiki_type">No installed Wiki found</string>
+    <string name="intent_article_extra_key_title">article_title</string>
+    <string name="intent_article_extra_key_url">onlineURL</string>
+    <string name="bundle_key_dbname">dbname</string>
 
 </resources>

@@ -29,14 +29,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class Article {
+	public Wiki wiki;
 	public String title;
 	public int id_;
 	public String text;
 
-	public  Article(int id_, String title, byte[] coded) {
+	public  Article(int id_, String title, byte[] coded, Wiki wiki) {
 		this.id_ = id_;
 		this.title = title;
 		this.text = decodeBlob(coded);
+		this.wiki = wiki;
 	}
 	
 	private String decodeBlob(byte[]coded) {

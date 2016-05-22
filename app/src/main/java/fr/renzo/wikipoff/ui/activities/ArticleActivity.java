@@ -21,9 +21,6 @@ This file is part of WikipOff.
  */
 package fr.renzo.wikipoff.ui.activities;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -40,6 +38,9 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import fr.renzo.wikipoff.Article;
 import fr.renzo.wikipoff.Database;
@@ -55,6 +56,7 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 	private WebView webview;
 	private Article article;
 	private String wanted_title;
+    private String onlineURL;
 	private SharedPreferences config;
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -75,20 +77,21 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 		this.webview.getSettings().setJavaScriptEnabled(true);
 
 		Intent source_intent = getIntent();
-		wanted_title = source_intent.getStringExtra("article_title");
+		wanted_title = source_intent.getStringExtra(getString(R.string.intent_article_extra_key_title));
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				article = dbHandler.searchArticleFromTitle(wanted_title);
 				updateViews();
-			} 	
+			}
 		}).start();
 
 	}
 
 	private void displayNewArticle(String title) {
 		Intent myIntent = new Intent(this, ArticleActivity.class);
-		myIntent.putExtra("article_title", title);
+		myIntent.putExtra(getString(R.string.intent_article_extra_key_title), title);
 		startActivity(myIntent);
 	}
 
@@ -104,11 +107,11 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 			return true;
 		case R.id.action_webbrowser:
 			Intent webIntent = new Intent( Intent.ACTION_VIEW );
-            String uri_title=wanted_title;
+            Uri uri=Uri.parse("https://www.google.com/search?q="+wanted_title);
 			if (this.article!=null) {
-                uri_title=this.article.title;
-            }
-            webIntent.setData(Uri.parse("http://" + dbHandler.lang + ".wikipedia.org/wiki/" + uri_title));
+				uri = Uri.parse(this.article.wiki.getOnlineURL() + this.article.title);
+			}
+            webIntent.setData(uri);
 			startActivity( webIntent );
 			return true;
 		case R.id.action_about:
@@ -164,15 +167,15 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				String article_title=url;
 				if (url.startsWith("file:///")) {
-					article_title=url.substring(8);					
+					article_title=url.substring(8);
 				}
 				try {
 					displayNewArticle(URLDecoder.decode(article_title, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-				return true;  
-			} 
+				return true;
+			}
 		});
 
 		String data ="<html><head>\n";
