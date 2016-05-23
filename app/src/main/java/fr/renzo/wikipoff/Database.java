@@ -37,45 +37,44 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Database   {
+
+public class Database {
 	private static final String TAG = "Database";
-	public ArrayList<String> seldatabasefilespaths=new ArrayList<String>();
+	public ArrayList<String> seldatabasefilespaths = new ArrayList<String>();
 	private Context context;
-	public ArrayList<SQLiteDatabase> sqlh=new ArrayList<SQLiteDatabase>();
-	public String lang;
+	public ArrayList<SQLiteDatabase> sqlh = new ArrayList<SQLiteDatabase>();
 	private long maxId;
 
+
 	public Database(Context context, ArrayList<String> databasefilespaths) throws DatabaseException {
-		this.context=context;
+		this.context = context;
 		SharedPreferences config = PreferenceManager.getDefaultSharedPreferences(context);
-		String storage= config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(context));
-		File rootDbDir= new File(storage,context.getString(R.string.DBDir));
+		String storage = config.getString(context.getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(context));
+		File rootDbDir = new File(storage, context.getString(R.string.DBDir));
 
 		for (String filename : databasefilespaths) {
 			if (filename.equals("")) {
 				continue;
 			}
-			this.seldatabasefilespaths.add(new File(rootDbDir,filename).getAbsolutePath());
+			this.seldatabasefilespaths.add(new File(rootDbDir, filename).getAbsolutePath());
 		}
 
 
 		String error = checkDatabaseHealth();
-		if ( !error.equals("")) {
+		if (!error.equals("")) {
 			throw (new DatabaseException(error));
 		}
 
 
 		for (String dbfile : this.seldatabasefilespaths) {
 			try {
-				SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(dbfile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS );
+				SQLiteDatabase sqlh = SQLiteDatabase.openDatabase(dbfile, null, SQLiteDatabase.OPEN_READONLY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 				this.sqlh.add(sqlh);
+			} catch (SQLiteException e) {
+				throw (new DatabaseException("Problem opening database '" + dbfile + "'" + e.getMessage()));
 			}
-			catch (SQLiteException e) {
-				throw (new DatabaseException("Problem opening database '"+dbfile+"'"+e.getMessage()));
-			} 
 		}
-		this.maxId=getMaxId();
-		this.lang=getDbLang();
+		this.maxId = getMaxId();
 	}
 
 	public Cursor myRawQuery(String query) throws DatabaseException {
@@ -105,40 +104,24 @@ public class Database   {
 		return (Cursor) new MergeCursor(arraycursors);
 	}
 
-	private String getDbLang() throws DatabaseException {
-		String res="";
-		Cursor c = myRawQuery("SELECT value FROM metadata WHERE key ='lang-code'");
-		if (c.moveToFirst()){
-			res= c.getString(0);
-		} else { 
-			// patch for some old db
-			c = myRawQuery("SELECT value FROM metadata WHERE key ='lang'");
-			if (c.moveToFirst()){
-				res= c.getString(0);
-			} 
-		}
-		c.close();
-		return res;
-	}
-
-	public String checkDatabaseHealth(){
-		String error="";
+	public String checkDatabaseHealth() {
+		String error = "";
 		// TODO could add more checks
 		for (String p : seldatabasefilespaths) {
 			File dbfile = new File(p);
 			if (!dbfile.exists()) {
-				return "Unable to find '"+p+"'";
+				return "Unable to find '" + p + "'";
 			}
-			if (dbfile.length()==0) {
-				return "Database file '"+p+"' is an empty file";
-			} 
+			if (dbfile.length() == 0) {
+				return "Database file '" + p + "' is an empty file";
+			}
 		}
 		return error;
 	}
 
-	public int getMaxId() throws DatabaseException{
-		Cursor c= myRawQuery("SELECT MAX(_id) FROM articles");
-		if (c.moveToFirst()){
+	public int getMaxId() throws DatabaseException {
+		Cursor c = myRawQuery("SELECT MAX(_id) FROM articles");
+		if (c.moveToFirst()) {
 			return c.getInt(0);
 		}
 		c.close();
@@ -148,7 +131,7 @@ public class Database   {
 	public List<String> getRandomTitles(int nb) throws DatabaseException {
 		long[] rnd_ids = new long[nb];
 		for (int i = 0; i < rnd_ids.length; i++) {
-			rnd_ids[i]=0;
+			rnd_ids[i] = 0;
 		}
 		long max = this.maxId;
 
@@ -162,18 +145,17 @@ public class Database   {
 					break;
 				}
 			}
-			if (!found){
-				rnd_ids[idx]=ir;
-				idx+=1;
+			if (!found) {
+				rnd_ids[idx] = ir;
+				idx += 1;
 			}
 		}
 
 		ArrayList<String> res = new ArrayList<String>();
-		String q="("+rnd_ids[0];
+		String q = "(" + rnd_ids[0];
 		for (int i = 1; i < rnd_ids.length; i++) {
-			q = q+", "+String.valueOf(rnd_ids[i]);
+			q = q + ", " + String.valueOf(rnd_ids[i]);
 		}
-		q = q +" )";
 
 		Cursor c = myRawQuery("SELECT title FROM articles WHERE _id IN "+q);
 		if (c.moveToFirst()) {
@@ -207,46 +189,46 @@ public class Database   {
 
 
 	public Article searchArticleFromTitle(String title) {
-		Article res=null;
+		Article res = null;
 		try {
 			// First, let's try the easy way
-			res=getArticleFromTitle(title);
-			if (res==null) {
+			res = getArticleFromTitle(title);
+			if (res == null) {
 				// *sigh* maybe there's a redirect
 				String redirtitle = getRedirectArticleTitle(title);
-				if (redirtitle!="") {
-					res=getArticleFromTitle(Html.fromHtml(redirtitle).toString());
+				if (!redirtitle.equals("")) {
+					res = getArticleFromTitle(Html.fromHtml(redirtitle).toString());
 				}
-				if (res==null) {
+				if (res == null) {
 					// WTF who failed that much?
 					// Maybe just a case-sensitivity issue
 					Cursor c;
-					c = myRawQuery("SELECT title FROM searchTitles WHERE title match ?",title);
+					c = myRawQuery("SELECT title FROM searchTitles WHERE title match ?", title);
 					if (c.moveToFirst()) {
 						res = getArticleFromTitle(c.getString(0));
-					} 
+					}
 					c.close();
 				}
-			} 
+			}
 		} catch (DatabaseException e) {
 			e.alertUser(context);
 		}
-		if (res==null) {
-			Log.d(TAG,"No article found for title '"+title+"'");
+		if (res == null) {
+			Log.d(TAG, "No article found for title '" + title + "'");
 		}
 		return res;
 	}
 
 	public String getRedirectArticleTitle(String title) {
-		String uppertitle=title.substring(0, 1).toUpperCase() + title.substring(1);
+		String uppertitle = title.substring(0, 1).toUpperCase() + title.substring(1);
 		Cursor c;
-		String res="";
+		String res = "";
 		try {
 			c = myRawQuery("SELECT title_to FROM redirects WHERE title_from= ? or title_from =?", new String[]{title, uppertitle});
 			if (c.moveToFirst()) {
 				res = c.getString(0);
 			} else {
-				Log.d(TAG,"No redirect found for title '"+title+"'");
+				Log.d(TAG, "No redirect found for title '" + title + "'");
 			}
 			c.close();
 		} catch (DatabaseException e) {
@@ -255,17 +237,19 @@ public class Database   {
 		return res;
 	}
 
+
 	public class DatabaseException extends Exception {
 
 		private static final long serialVersionUID = -4015796136387495698L;
-		private static final String TAG="DatabaseException";
+		private static final String TAG = "DatabaseException";
+
 		public DatabaseException(String message) {
 			super(message);
-			Log.e(TAG,"Error: "+message);
+			Log.e(TAG, "Error: " + message);
 		}
 
-		public Builder alertUser(Context context){
-			AlertDialog.Builder dialog = new AlertDialog.Builder(context); 
+		public Builder alertUser(Context context) {
+			AlertDialog.Builder dialog = new AlertDialog.Builder(context);
 			dialog.setTitle("Database Error:");
 			dialog.setMessage(this.toString());
 			dialog.setNeutralButton("Ok", null);

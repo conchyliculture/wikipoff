@@ -21,9 +21,6 @@ This file is part of WikipOff.
  */
 package fr.renzo.wikipoff.ui.activities;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +28,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -40,6 +38,9 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import fr.renzo.wikipoff.Article;
 import fr.renzo.wikipoff.Database;
@@ -164,15 +165,15 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				String article_title=url;
 				if (url.startsWith("file:///")) {
-					article_title=url.substring(8);					
+					article_title=url.substring(8);
 				}
 				try {
 					displayNewArticle(URLDecoder.decode(article_title, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-				return true;  
-			} 
+				return true;
+			}
 		});
 
 		String data ="<html><head>\n";

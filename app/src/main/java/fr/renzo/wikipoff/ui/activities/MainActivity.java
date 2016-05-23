@@ -21,9 +21,6 @@ This file is part of WikipOff.
  */
 package fr.renzo.wikipoff.ui.activities;
 
-import java.io.File;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +28,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,6 +40,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -49,6 +49,8 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
+import java.io.File;
 
 import fr.renzo.wikipoff.Database;
 import fr.renzo.wikipoff.Database.DatabaseException;
@@ -64,7 +66,7 @@ public class MainActivity extends SherlockActivity {
 	private WikipOff app;
 	private AutoCompleteTextView searchtextview;
 	private ListView randomlistview;
-	private Context context=this;
+	private Context context = this;
 	private SharedPreferences config;
 	private ImageButton clearSearchButton;
 	private Button rndbutton;
@@ -75,48 +77,50 @@ public class MainActivity extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		this.config=PreferenceManager.getDefaultSharedPreferences(this);
-		this.app= (WikipOff) getApplication();
+		this.config = PreferenceManager.getDefaultSharedPreferences(this);
+		this.app = (WikipOff) getApplication();
 
 		setContentView(R.layout.activity_main);
 
 		setStorage();
 
+
 		clearSearchButton = (ImageButton) findViewById(R.id.clear_search_button);
-		randomlistview= (ListView) findViewById(R.id.randomView);
+		randomlistview = (ListView) findViewById(R.id.randomView);
 		rndbutton = (Button) findViewById(R.id.buttonRandom);
 		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
 		goSelectWikiButton = (Button) findViewById(R.id.goSelectWikiButton);
 	}
+
 	private void setStorage() {
 		String storage_root_path = config.getString(getString(R.string.config_key_storage), StorageUtils.getDefaultStorage(this));
-		dbdir= new File(storage_root_path,getString(R.string.DBDir));
+		dbdir = new File(storage_root_path, getString(R.string.DBDir));
 		createEnv();
 	}
 
 	@Override
-	public void onResume(){
-		super.onResume();	
+	public void onResume() {
+		super.onResume();
 		setStorage();
 		newDatabaseSelected();
 		showViews();
+
 	}
 
-	private void showViews(){
+	private void showViews() {
 		clearSearchButton.setOnClickListener(new ClearSearchClickListener());
-		randomlistview.setOnItemClickListener(new RandomItemClickListener());			
+		randomlistview.setOnItemClickListener(new RandomItemClickListener());
 		rndbutton.setOnClickListener(new ShowRandomClickListener());
 		searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.getDatabaseHandler(context)));
 		searchtextview.setOnItemClickListener(new SearchClickListener());
 		searchtextview.setOnEditorActionListener(new SearchClickListener());
 		goSelectWikiButton.setOnClickListener(new GoSelectWikiListener());
 
-	} 
+	}
 
 	private void startArticleActivity(String title) {
 		Intent myIntent = new Intent(MainActivity.this, ArticleActivity.class);
-		myIntent.putExtra("article_title",  title);
-//		myIntent.putExtra("wikisource",  wikisource); no can do =(
+		myIntent.putExtra(getString(R.string.intent_article_extra_key_title), title);
 		MainActivity.this.startActivity(myIntent);
 	}
 
@@ -124,7 +128,9 @@ public class MainActivity extends SherlockActivity {
 		// Handles clicks on an item in the random article list
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			startArticleActivity((String) randomlistview.getItemAtPosition(position));
+			Cursor c = (Cursor) randomlistview.getItemAtPosition(position);
+			String title = c.getString(1);
+			startArticleActivity(title);
 		}
 	}
 
@@ -133,7 +139,9 @@ public class MainActivity extends SherlockActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Cursor c = (Cursor) parent.getItemAtPosition(position);
-			startArticleActivity(c.getString(1));
+			String title = c.getString(1);
+			searchtextview.setText(title);
+			startArticleActivity(title);
 		}
 
 		@Override
@@ -159,10 +167,12 @@ public class MainActivity extends SherlockActivity {
 				rndtitles = app.getDatabaseHandler(MainActivity.this).getRandomTitles();
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rndtitles); 
 				randomlistview.setAdapter(adapter);
-			} catch (DatabaseException e) {e.alertUser(context);}
+			} catch (DatabaseException e) {
+				e.alertUser(context);
+			}
 		}
 	}
-	
+
 	public class GoSelectWikiListener implements OnClickListener {
 		@Override
 		public void onClick(View arg0) {
@@ -170,9 +180,9 @@ public class MainActivity extends SherlockActivity {
 			startActivity(i3);
 		}
 	}
-	
+
 	private void createEnv() {
-		if (! dbdir.exists()) {
+		if (!dbdir.exists()) {
 			createDir(dbdir);
 		}
 	}
@@ -181,9 +191,9 @@ public class MainActivity extends SherlockActivity {
 		if (!f.exists()) {
 			f.mkdirs();
 			if (!f.exists()) {
-				Toast.makeText(this,getString(R.string.message_cant_create_in_storage, f.getAbsolutePath()) , Toast.LENGTH_LONG).show();
+				Toast.makeText(this, getString(R.string.message_cant_create_in_storage, f.getAbsolutePath()), Toast.LENGTH_LONG).show();
 				Intent i = new Intent(this, SettingsActivity.class);
-				startActivity(i); 
+				startActivity(i);
 			}
 		}
 	}
@@ -197,21 +207,21 @@ public class MainActivity extends SherlockActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.action_settings:
-			Intent i = new Intent(this, SettingsActivity.class);
-			startActivity(i);
-			return true;
-		case R.id.action_manage_wikis:
-			Intent i3 = new Intent(this, WikiManagerActivity.class);
-			startActivity(i3);
-			return true;
-		case R.id.action_about:
-			Intent i2 = new Intent(this, AboutActivity.class);
-			startActivity(i2);
-			return true;
+			case R.id.action_settings:
+				Intent i = new Intent(this, SettingsActivity.class);
+				startActivity(i);
+				return true;
+			case R.id.action_manage_wikis:
+				Intent i3 = new Intent(this, WikiManagerActivity.class);
+				startActivity(i3);
+				return true;
+			case R.id.action_about:
+				Intent i2 = new Intent(this, AboutActivity.class);
+				startActivity(i2);
+				return true;
 
-		default:
-			return super.onOptionsItemSelected(item);
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -221,7 +231,7 @@ public class MainActivity extends SherlockActivity {
 			showViews();
 			toggleAllViews(true);
 			goSelectWikiButton.setVisibility(View.GONE);
-			
+
 		} else {
 			toggleAllViews(false);
 			clearViewData();
