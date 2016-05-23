@@ -29,6 +29,5 @@ android {
 
 dependencies {
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.google.android:support-v4:r7'
+    compile 'com.android.support:support-v4:22.0.0'
 }
