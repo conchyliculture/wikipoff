@@ -25,17 +25,21 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.AbstractCursor;
+import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.MergeCursor;
+import android.database.CursorWrapper;
+import android.database.DataSetObserver;
+import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Database {
@@ -77,31 +81,36 @@ public class Database {
 		this.maxId = getMaxId();
 	}
 
-	public Cursor myRawQuery(String query) throws DatabaseException {
-		return myRawQuery(query,new String[0]);
+	public MyMergeCursor myRawQuery(String query) throws DatabaseException {
+		return myRawQuery(query, new String[0]);
 	}
 
-	public Cursor myRawQuery(String query, String param1) throws DatabaseException {
-		return myRawQuery(query,new String[]{param1});
+	public MyMergeCursor myRawQuery(String query, String param1) throws DatabaseException {
+		return myRawQuery(query, new String[]{param1});
 	}
 
-	public Cursor myRawQuery(String query, String[] objects ) throws DatabaseException {
-		Cursor[] arraycursors = new Cursor[this.sqlh.size()];
-		int i=0;
+	public MyMergeCursor myRawQuery(String query, String[] objects) throws DatabaseException {
+		MetaCursor[] arraycursors = new MetaCursor[this.sqlh.size()];
+		int i = 0;
 		for (SQLiteDatabase sh : this.sqlh) {
-			Cursor c=null;
+			MetaCursor c = null;
 			try {
-				c = sh.rawQuery(query, objects);		
-				arraycursors[i]=c;
-				i+=1;
+				try {
+					c = new MetaCursor(sh.rawQuery(query, objects),new Wiki(context,new File(sh.getPath())));
+				} catch (WikiException e) {
+					e.printStackTrace();
+					throw new DatabaseException("Pute chie race");
+				}
+				arraycursors[i] = c;
+				i += 1;
 			} catch (SQLiteException e) {
-				if (c!= null){
+				if (c != null) {
 					c.close();
 				}
 				throw new DatabaseException(e.getMessage());
 			}
 		}
-		return (Cursor) new MergeCursor(arraycursors);
+		return new MyMergeCursor(arraycursors);
 	}
 
 	public String checkDatabaseHealth() {
@@ -128,20 +137,20 @@ public class Database {
 		return 0;
 	}
 
-	public List<String> getRandomTitles(int nb) throws DatabaseException {
+	public Cursor getRandomTitles(int nb) throws DatabaseException {
 		long[] rnd_ids = new long[nb];
 		for (int i = 0; i < rnd_ids.length; i++) {
 			rnd_ids[i] = 0;
 		}
 		long max = this.maxId;
 
-		int idx=0;
-		while (rnd_ids[nb-1]==0) {
-			boolean found=false;
-			long ir = Math.round(Math.random()*max) + 1;
-			for (int i = 0; i < idx+1; i++) {
-				if (rnd_ids[i]==ir){
-					found=true;
+		int idx = 0;
+		while (rnd_ids[nb - 1] == 0) {
+			boolean found = false;
+			long ir = Math.round(Math.random() * max) + 1;
+			for (int i = 0; i < idx + 1; i++) {
+				if (rnd_ids[i] == ir) {
+					found = true;
 					break;
 				}
 			}
@@ -151,38 +160,38 @@ public class Database {
 			}
 		}
 
-		ArrayList<String> res = new ArrayList<String>();
 		String q = "(" + rnd_ids[0];
 		for (int i = 1; i < rnd_ids.length; i++) {
 			q = q + ", " + String.valueOf(rnd_ids[i]);
 		}
+		q = q + " )";
+		MyMergeCursor c = (MyMergeCursor)  myRawQuery("SELECT title FROM articles WHERE _id IN " + q);
 
-		Cursor c = myRawQuery("SELECT title FROM articles WHERE _id IN "+q);
+		int stupid_id=0;
+		MatrixCursor mc = new MatrixCursor(new String[] {"_id","title","wiki"});
 		if (c.moveToFirst()) {
-			do {
-				String t = c.getString(0);
-				res.add(t);
-			} while (c.moveToNext());
-
-		} 
-		c.close();
-		return res;
+			while (c.moveToNext()) {
+				mc.addRow(new String[]{String.valueOf(stupid_id),c.getString(0), c.getWikiCursor().getName()});
+				stupid_id+=1;
+			}
+		}
+		return mc;
 	}
 
-	public List<String> getRandomTitles() throws DatabaseException {
+	public Cursor getRandomTitles() throws DatabaseException {
 		// TODO settings for R.integer.def_random_list_nb
-		int nb=context.getResources().getInteger(R.integer.def_random_list_nb);
+		int nb = context.getResources().getInteger(R.integer.def_random_list_nb);
 		return getRandomTitles(nb);
 	}
 
 	// This gets an existing article from an existing title and won't try weird stuff
 	public Article getArticleFromTitle(String title) throws DatabaseException {
-		Cursor c;
-		Article res=null;
-		String uppertitle=title.substring(0, 1).toUpperCase() + title.substring(1);
-		c = myRawQuery("SELECT _id,text FROM articles WHERE title= ? or title =?",new String[]{title,uppertitle});
+		MyMergeCursor c;
+		Article res = null;
+		String uppertitle = title.substring(0, 1).toUpperCase() + title.substring(1);
+		c =  myRawQuery("SELECT _id,text FROM articles WHERE title= ? or title =?", new String[]{title, uppertitle});
 		if (c.moveToFirst()) {
-			res = new Article(c.getInt(0),title,c.getBlob(1));
+			res = new Article(c.getInt(0), title, c.getBlob(1), c.getWikiCursor() );
 		}
 		return res;
 	}
@@ -237,6 +246,9 @@ public class Database {
 		return res;
 	}
 
+	public int getNbSQLiteFiles() {
+		return this.sqlh.size();
+	}
 
 	public class DatabaseException extends Exception {
 
@@ -261,6 +273,238 @@ public class Database {
 	public void close() {
 		for (SQLiteDatabase db : this.sqlh) {
 			db.close();
+		}
+	}
+
+	/* Simple helper class around a Cursor to remember from which Wiki SQLite file the results
+	 * comes from.
+	 */
+	public class MetaCursor extends CursorWrapper {
+
+		public Wiki wiki;
+		public MetaCursor(Cursor cursor, Wiki wiki) {
+			super(cursor);
+			this.wiki=wiki;
+		}
+	}
+
+	/* I copy MergeCursors' code because I need to be able to access the inner cursor.
+	 * Unfortunately, android's MergeCursors is all about private cursors and no getters
+	 */
+	public class MyMergeCursor extends AbstractCursor
+	{
+		private DataSetObserver mObserver = new DataSetObserver() {
+
+			@Override
+			public void onChanged() {
+				// Reset our position so the optimizations in move-related code
+				// don't screw us over
+				mPos = -1;
+			}
+
+			@Override
+			public void onInvalidated() {
+				mPos = -1;
+			}
+		};
+
+		public MyMergeCursor(Cursor[] cursors)
+		{
+			mCursors = cursors;
+			mCursor = cursors[0];
+
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 == null) continue;
+
+				mCursor1.registerDataSetObserver(mObserver);
+			}
+		}
+
+		@Override
+		public int getCount()
+		{
+			int count = 0;
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 != null) {
+					count += mCursor1.getCount();
+				}
+			}
+			return count;
+		}
+
+		@Override
+		public boolean onMove(int oldPosition, int newPosition)
+		{
+		// Find the right cursor
+			mCursor = null;
+			int cursorStartPos = 0;
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 == null) {
+					continue;
+				}
+
+				if (newPosition < (cursorStartPos + mCursor1.getCount())) {
+					mCursor = mCursor1;
+					break;
+				}
+
+				cursorStartPos += mCursor1.getCount();
+			}
+
+		// Move it to the right position
+			if (mCursor != null) {
+				boolean ret = mCursor.moveToPosition(newPosition - cursorStartPos);
+				return ret;
+			}
+			return false;
+		}
+
+		@Override
+		public String getString(int column)
+		{
+			return mCursor.getString(column);
+		}
+
+		@Override
+		public short getShort(int column)
+		{
+			return mCursor.getShort(column);
+		}
+
+		@Override
+		public int getInt(int column)
+		{
+			return mCursor.getInt(column);
+		}
+
+		@Override
+		public long getLong(int column)
+		{
+			return mCursor.getLong(column);
+		}
+
+		@Override
+		public float getFloat(int column)
+		{
+			return mCursor.getFloat(column);
+		}
+
+		@Override
+		public double getDouble(int column)
+		{
+			return mCursor.getDouble(column);
+		}
+
+		@Override
+		public int getType(int column) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				return mCursor.getType(column);
+			}
+			return 0;
+		}
+
+		@Override
+		public boolean isNull(int column)
+		{
+			return mCursor.isNull(column);
+		}
+
+		@Override
+		public byte[] getBlob(int column)
+		{
+			return mCursor.getBlob(column);
+		}
+
+		@Override
+		public String[] getColumnNames()
+		{
+			if (mCursor != null) {
+				return mCursor.getColumnNames();
+			} else {
+				return new String[0];
+			}
+		}
+
+		@Override
+		public void deactivate()
+		{
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 != null) {
+					mCursor1.deactivate();
+				}
+			}
+			super.deactivate();
+		}
+
+		@Override
+		public void close() {
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 == null) continue;
+				mCursor1.close();
+			}
+			super.close();
+		}
+
+		@Override
+		public void registerContentObserver(ContentObserver observer) {
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 != null) {
+					mCursor1.registerContentObserver(observer);
+				}
+			}
+		}
+		@Override
+		public void unregisterContentObserver(ContentObserver observer) {
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 != null) {
+					mCursor1.unregisterContentObserver(observer);
+				}
+			}
+		}
+
+		@Override
+		public void registerDataSetObserver(DataSetObserver observer) {
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 != null) {
+					mCursor1.registerDataSetObserver(observer);
+				}
+			}
+		}
+
+		@Override
+		public void unregisterDataSetObserver(DataSetObserver observer) {
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 != null) {
+					mCursor1.unregisterDataSetObserver(observer);
+				}
+			}
+		}
+
+		@Override
+		public boolean requery()
+		{
+			for (Cursor mCursor1 : mCursors) {
+				if (mCursor1 == null) {
+					continue;
+				}
+
+				if (!mCursor1.requery()) {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private Cursor mCursor; // updated in onMove
+		private Cursor[] mCursors;
+
+		public Wiki getWikiCursor() {
+			return ((MetaCursor) mCursor).wiki;
+		}
+
+		public Cursor getCurrentCursor() {
+			return this.mCursor;
 		}
 	}
 }

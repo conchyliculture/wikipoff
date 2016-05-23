@@ -55,7 +55,8 @@ import java.io.File;
 import fr.renzo.wikipoff.Database;
 import fr.renzo.wikipoff.Database.DatabaseException;
 import fr.renzo.wikipoff.R;
-import fr.renzo.wikipoff.SearchCursorAdapter;
+import fr.renzo.wikipoff.SearchCursorAdapter1;
+import fr.renzo.wikipoff.SearchCursorAdapterN;
 import fr.renzo.wikipoff.StorageUtils;
 import fr.renzo.wikipoff.WikipOff;
 
@@ -90,6 +91,7 @@ public class MainActivity extends SherlockActivity {
 		rndbutton = (Button) findViewById(R.id.buttonRandom);
 		searchtextview = (AutoCompleteTextView) findViewById(R.id.searchField);
 		goSelectWikiButton = (Button) findViewById(R.id.goSelectWikiButton);
+		newDatabaseSelected();
 	}
 
 	private void setStorage() {
@@ -111,7 +113,16 @@ public class MainActivity extends SherlockActivity {
 		clearSearchButton.setOnClickListener(new ClearSearchClickListener());
 		randomlistview.setOnItemClickListener(new RandomItemClickListener());
 		rndbutton.setOnClickListener(new ShowRandomClickListener());
-		searchtextview.setAdapter(new SearchCursorAdapter(context, null, app.getDatabaseHandler(context)));
+		if (app.getDatabaseHandler(this) != null) {
+			if (app.getDatabaseHandler(this).getNbSQLiteFiles() > 1) {
+				SearchCursorAdapterN a = new SearchCursorAdapterN(context, null, app.getDatabaseHandler(context));
+				searchtextview.setAdapter(a);
+			} else {
+				SearchCursorAdapter1 a = new SearchCursorAdapter1(context, null, app.getDatabaseHandler(context));
+				searchtextview.setAdapter(a);
+			}
+		}
+
 		searchtextview.setOnItemClickListener(new SearchClickListener());
 		searchtextview.setOnEditorActionListener(new SearchClickListener());
 		goSelectWikiButton.setOnClickListener(new GoSelectWikiListener());
@@ -162,10 +173,31 @@ public class MainActivity extends SherlockActivity {
 		@Override
 		public void onClick(View arg0) {
 			hideSoftKeyboard();
-			List<String> rndtitles;
+
 			try {
-				rndtitles = app.getDatabaseHandler(MainActivity.this).getRandomTitles();
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, rndtitles); 
+				Database dbh = app.getDatabaseHandler(MainActivity.this);
+				Cursor cursor = dbh.getRandomTitles();
+				ListAdapter adapter;
+				if(dbh.getNbSQLiteFiles()>1) {
+					//noinspection deprecation
+					adapter = new SimpleCursorAdapter(
+							context,
+							R.layout.article_result,
+							cursor,	 // Pass in the cursor to bind to.
+							new String[]{"title", "wiki"}, // Array of cursor columns to bind to.
+							new int[]{android.R.id.text1, android.R.id.text2}, // Parallel array of which template objects to bind to those columns.
+							CursorAdapter.FLAG_AUTO_REQUERY);
+
+				} else {
+					//noinspection deprecation
+					adapter = new SimpleCursorAdapter(
+							context,
+							android.R.layout.simple_list_item_1,
+							cursor,	 // Pass in the cursor to bind to.
+							new String[]{"title",}, // Array of cursor columns to bind to.
+							new int[]{android.R.id.text1}, // Parallel array of which template objects to bind to those columns.
+							CursorAdapter.FLAG_AUTO_REQUERY);
+				}
 				randomlistview.setAdapter(adapter);
 			} catch (DatabaseException e) {
 				e.alertUser(context);
@@ -236,12 +268,12 @@ public class MainActivity extends SherlockActivity {
 			toggleAllViews(false);
 			clearViewData();
 			goSelectWikiButton.setVisibility(View.VISIBLE);
-		}		
+		}
 	}
 
 	private void clearViewData() {
 		@SuppressWarnings("unchecked")
-		ArrayAdapter<String> adapter= ((ArrayAdapter<String>) this.randomlistview.getAdapter());
+		ArrayAdapter<String> adapter = ((ArrayAdapter<String>) this.randomlistview.getAdapter());
 		if (adapter != null) {
 			adapter.clear();
 			adapter.notifyDataSetChanged();
@@ -257,7 +289,7 @@ public class MainActivity extends SherlockActivity {
 	}
 
 	private void hideSoftKeyboard() {
-		InputMethodManager inputMethodManager = (InputMethodManager)  this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
 		inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 	}
 }

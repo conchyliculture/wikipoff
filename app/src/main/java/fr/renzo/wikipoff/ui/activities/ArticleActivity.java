@@ -56,6 +56,7 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 	private WebView webview;
 	private Article article;
 	private String wanted_title;
+    private String onlineURL;
 	private SharedPreferences config;
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -76,20 +77,21 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 		this.webview.getSettings().setJavaScriptEnabled(true);
 
 		Intent source_intent = getIntent();
-		wanted_title = source_intent.getStringExtra("article_title");
+		wanted_title = source_intent.getStringExtra(getString(R.string.intent_article_extra_key_title));
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				article = dbHandler.searchArticleFromTitle(wanted_title);
 				updateViews();
-			} 	
+			}
 		}).start();
 
 	}
 
 	private void displayNewArticle(String title) {
 		Intent myIntent = new Intent(this, ArticleActivity.class);
-		myIntent.putExtra("article_title", title);
+		myIntent.putExtra(getString(R.string.intent_article_extra_key_title), title);
 		startActivity(myIntent);
 	}
 
@@ -105,11 +107,11 @@ public class ArticleActivity extends SherlockActivity implements SearchView.OnQu
 			return true;
 		case R.id.action_webbrowser:
 			Intent webIntent = new Intent( Intent.ACTION_VIEW );
-            String uri_title=wanted_title;
+            Uri uri=Uri.parse("https://www.google.com/search?q="+wanted_title);
 			if (this.article!=null) {
-                uri_title=this.article.title;
-            }
-            webIntent.setData(Uri.parse("http://" + dbHandler.lang + ".wikipedia.org/wiki/" + uri_title));
+				uri = Uri.parse(this.article.wiki.getOnlineURL() + this.article.title);
+			}
+            webIntent.setData(uri);
 			startActivity( webIntent );
 			return true;
 		case R.id.action_about:
