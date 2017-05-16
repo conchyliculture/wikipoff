@@ -87,6 +87,20 @@
         </dbfiles>
         <version>2.5</version>
     </wiki>
-       
-    
+     <wiki>
+        <type>Wikivoyage</type>
+        <lang-code>en</lang-code>
+        <lang-english>English</lang-english>
+        <lang-local>English</lang-local>
+        <source>https://en.wikivoyage.org/</source>
+        <author>WikipOff</author>
+        <dbfiles>
+            <dbfile
+                filename="enwikivoyage.sqlite"
+                gendate="2017-05-16 11:47:37"
+                size="81498112"
+                url="http://wikipoff.renzokuken.eu/databases/enwikivoyage.sqlite" ></dbfile>
+        </dbfiles>
+         <version>2.5</version>
+    </wiki>    
 </root>
